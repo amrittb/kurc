@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="WelcomeText">
+        <item name="android:textSize">@dimen/font_super_single_heading</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+</resources>
