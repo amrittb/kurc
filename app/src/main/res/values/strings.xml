@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">KURC</string>
-    <string name="message_welcome">Welcome to KURC</string>
+    <string name="message_welcome">Kathmandu University Robotics Club</string>
+    <string name="message_tagline">Machines rule the world, We rule the machines.</string>
 </resources>
