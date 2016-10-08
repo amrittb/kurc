@@ -28,7 +28,7 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
 
     // Support Dependencies
-    compile 'com.android.support:appcompat-v7:24.2.0'
+    compile 'com.android.support:appcompat-v7:24.2.1'
 
     // KenBurns View
     compile 'com.flaviofaria:kenburnsview:1.0.7'
