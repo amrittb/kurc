@@ -5,10 +5,58 @@
     android:id="@+id/activity_login"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="np.edu.ku.kurc.LoginActivity">
+    android:padding="@dimen/spacing_normal"
+    tools:context=".LoginActivity">
+
+    <TextView
+        android:id="@+id/loginPrompt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/spacing_normal"
+        android:text="@string/message_login_prompt"
+        />
+
+    <FrameLayout
+        android:id="@+id/cameraViewContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/loginPrompt"
+        >
+        <SurfaceView
+            android:id="@+id/qrCameraView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+        <ImageButton
+            android:id="@+id/openScannerBtn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/black"
+            android:src="@drawable/ic_qr_code_scan"/>
+
+        <TextView
+            android:id="@+id/openScannerText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_large"
+            android:text="@string/message_open_scanner"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            />
+    </FrameLayout>
+
+    <Button
+        android:id="@+id/loginAsGuestBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cameraViewContainer"
+        android:layout_centerHorizontal="true"
+        android:text="@string/btn_text_login_as_guest"
+        style="@style/Widget.AppCompat.Button.Colored"
+        />
 
 </RelativeLayout>

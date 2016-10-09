@@ -5,6 +5,8 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import np.edu.ku.kurc.auth.AuthManager;
+
 public class SplashActivity extends AppCompatActivity {
 
     /**
@@ -22,6 +24,8 @@ public class SplashActivity extends AppCompatActivity {
      */
     private boolean canProceedAfterTimer = false;
 
+    private AuthManager authManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,10 +38,12 @@ public class SplashActivity extends AppCompatActivity {
                 canProceedAfterTimer = true;
 
                 if(SplashActivity.this.isActivityInForeground) {
-                    startActivity(new Intent(SplashActivity.this,LoginActivity.class));
+                    startApp();
                 }
             }
         }, SPLASH_TIMER);
+
+        authManager = new AuthManager(this);
     }
 
     @Override
@@ -47,7 +53,7 @@ public class SplashActivity extends AppCompatActivity {
         isActivityInForeground = true;
 
         if(canProceedAfterTimer) {
-            startActivity(new Intent(SplashActivity.this,LoginActivity.class));
+            startApp();
         }
     }
 
@@ -60,5 +66,17 @@ public class SplashActivity extends AppCompatActivity {
         if(canProceedAfterTimer) {
             finish();
         }
+    }
+
+    /**
+     * Starts the application by loading correct activity.
+     */
+    private void startApp() {
+        if(authManager.member() == null) {
+            startActivity(new Intent(this,LoginActivity.class));
+        } else {
+            startActivity(new Intent(this,MainActivity.class));
+        }
+        finish();
     }
 }
