@@ -10,7 +10,7 @@ public final class Const {
 
     // QrCode Scanner View sizes.
     public static final int QR_VIEW_MAX_SIZE_DP = 640;
-    public static final int QR_PREVIEW_SIZE = 640;
+    public static final int QR_PREVIEW_SIZE = 1024;
 
     // KURC Qr Code constants.
     public static final int KURC_QR_NUM_LINES = 5;

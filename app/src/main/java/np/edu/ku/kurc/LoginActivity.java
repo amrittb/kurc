@@ -78,6 +78,7 @@ public class LoginActivity extends AppCompatActivity implements KURCQrCodeProces
                 .build();
 
         cameraSource = new CameraSource.Builder(this, qrCodeDetector)
+                .setAutoFocusEnabled(true)
                 .setRequestedPreviewSize(Const.QR_PREVIEW_SIZE, Const.QR_PREVIEW_SIZE)
                 .build();
 

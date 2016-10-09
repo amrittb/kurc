@@ -72,6 +72,7 @@
             android:layout_below="@id/loginPrompt"
             android:layout_centerHorizontal="true"
             android:text="@string/btn_text_login_as_guest"
+            style="@style/Widget.AppCompat.Button.Colored"
             />
     </RelativeLayout>
 
