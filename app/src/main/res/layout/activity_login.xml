@@ -50,10 +50,21 @@
     </FrameLayout>
 
     <Button
-        android:id="@+id/loginAsGuestBtn"
+        android:id="@+id/toggleFlashBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/cameraViewContainer"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"
+        android:text="@string/message_flash_on"
+        style="@style/Widget.AppCompat.Button.Colored"
+        />
+
+    <Button
+        android:id="@+id/loginAsGuestBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toggleFlashBtn"
         android:layout_centerHorizontal="true"
         android:text="@string/btn_text_login_as_guest"
         style="@style/Widget.AppCompat.Button.Colored"

@@ -3,10 +3,10 @@ package np.edu.ku.kurc;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.hardware.Camera;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.SurfaceHolder;
@@ -25,6 +25,7 @@ import com.google.android.gms.vision.barcode.BarcodeDetector;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 
 import np.edu.ku.kurc.auth.AuthManager;
 import np.edu.ku.kurc.auth.MemberAuthHandler;
@@ -46,8 +47,13 @@ public class LoginActivity extends AppCompatActivity implements KURCQrCodeProces
     private TextView openScannerText;
     private ImageButton openScannerBtn;
     private FrameLayout cameraViewContainer;
+    private Button toggleFlashBtn;
 
     private KURCQrCodeProcessor qrProcessor;
+
+    private boolean isFlashTurnedOn;
+
+    private Camera qrCamera;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,11 +66,13 @@ public class LoginActivity extends AppCompatActivity implements KURCQrCodeProces
         openScannerText = (TextView) findViewById(R.id.openScannerText);
         openScannerBtn = (ImageButton) findViewById(R.id.openScannerBtn);
         cameraViewContainer = (FrameLayout) findViewById(R.id.cameraViewContainer);
+        toggleFlashBtn = (Button) findViewById(R.id.toggleFlashBtn);
 
         Button guestLoginBtn = (Button) findViewById(R.id.loginAsGuestBtn);
 
         guestLoginBtn.setOnClickListener(this);
         openScannerBtn.setOnClickListener(this);
+        toggleFlashBtn.setOnClickListener(this);
 
         initializeQrCodeScanner();
     }
@@ -140,6 +148,9 @@ public class LoginActivity extends AppCompatActivity implements KURCQrCodeProces
             case R.id.loginAsGuestBtn:
                 handleLogin(Member.getGuestMember());
                 break;
+            case R.id.toggleFlashBtn:
+                toggleCameraFlash();
+                break;
             default:
                 break;
         }
@@ -170,6 +181,10 @@ public class LoginActivity extends AppCompatActivity implements KURCQrCodeProces
             cameraSource.start(qrCameraView.getHolder());
             syncCameraViewWithSource();
 
+            if(getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
+                toggleFlashBtn.setVisibility(View.VISIBLE);
+            }
+
             openScannerBtn.setVisibility(View.INVISIBLE);
             openScannerText.setVisibility(View.INVISIBLE);
         } catch (IOException e) {
@@ -197,6 +212,57 @@ public class LoginActivity extends AppCompatActivity implements KURCQrCodeProces
             }
         });
     }
+
+    /**
+     * Toggles Camera Flash
+     */
+    private void toggleCameraFlash() {
+        Camera camera = getCamera();
+
+        if(camera != null) {
+            Camera.Parameters params = camera.getParameters();
+            isFlashTurnedOn = !isFlashTurnedOn;
+
+            String btnText = getResources().getString((!isFlashTurnedOn) ? R.string.message_flash_on : R.string.message_flash_off);
+            String mode = (isFlashTurnedOn) ? Camera.Parameters.FLASH_MODE_TORCH: Camera.Parameters.FLASH_MODE_OFF;
+
+            params.setFlashMode(mode);
+            camera.setParameters(params);
+
+            toggleFlashBtn.setText(btnText);
+        }
+    }
+
+    /**
+     * Returns Camera object from camera source.
+     *
+     * @return Camera object of camera source.
+     */
+    private Camera getCamera() {
+        if(qrCamera == null) {
+            Field[] declaredFields = CameraSource.class.getDeclaredFields();
+
+            if(declaredFields != null) {
+                for(Field field: declaredFields) {
+                    if(field.getType() == Camera.class) {
+                        field.setAccessible(true);
+
+                        try {
+                            Camera camera = (Camera) field.get(this.cameraSource);
+                            if(camera != null) {
+                                this.qrCamera = camera;
+                            }
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
+
+        return qrCamera;
+    }
+
 
     /**
      * Processes member for login.

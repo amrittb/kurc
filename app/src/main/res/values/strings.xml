@@ -5,4 +5,6 @@
     <string name="btn_text_login_as_guest">Nope! I don\'t have a KURC Card.</string>
     <string name="message_login_prompt">Scan your KURC Card\'s QR Code to get in.</string>
     <string name="message_open_scanner">Open Scanner</string>
+    <string name="message_flash_on">Turn On Flash</string>
+    <string name="message_flash_off">Turn off flash</string>
 </resources>
