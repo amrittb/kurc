@@ -28,6 +28,7 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     // Support Dependencies
     compile 'com.android.support:appcompat-v7:24.2.1'
+    compile 'com.android.support:design:24.2.1'
     // Google Play Services Dependencies
     compile 'com.google.android.gms:play-services-vision:9.6.1'
     // KenBurns View

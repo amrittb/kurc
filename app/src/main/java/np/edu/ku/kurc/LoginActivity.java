@@ -223,7 +223,7 @@ public class LoginActivity extends AppCompatActivity implements KURCQrCodeProces
             Camera.Parameters params = camera.getParameters();
             isFlashTurnedOn = !isFlashTurnedOn;
 
-            String btnText = getResources().getString((!isFlashTurnedOn) ? R.string.message_flash_on : R.string.message_flash_off);
+            String btnText = getResources().getString((!isFlashTurnedOn) ? R.string.btn_text_flash_on : R.string.btn_text_flash_off);
             String mode = (isFlashTurnedOn) ? Camera.Parameters.FLASH_MODE_TORCH: Camera.Parameters.FLASH_MODE_OFF;
 
             params.setFlashMode(mode);

@@ -11,5 +11,7 @@
     <color name="gray_dark">#5F5F5F</color>
     <color name="black">#323232</color>
 
+    <color name="midnight_blue">#2c3e50</color>
+
     <color name="black_trans_30">#4D000000</color>
 </resources>
