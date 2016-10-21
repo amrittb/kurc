@@ -17,9 +17,10 @@
     <dimen name="font_sub_heading">16sp</dimen>
 
     <!-- typical spacing between two views -->
+    <dimen name="spacing_ultra_huge">56dp</dimen>
     <dimen name="spacing_huge">40dp</dimen>
     <dimen name="spacing_large">24dp</dimen>
-    <dimen name="spacing_normal">14dp</dimen>
+    <dimen name="spacing_normal">16dp</dimen>
     <dimen name="spacing_small">10dp</dimen>
     <dimen name="spacing_tiny">4dp</dimen>
 
@@ -32,4 +33,6 @@
     <dimen name="nav_header_vertical_spacing">16dp</dimen>
     <dimen name="nav_header_height">160dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="avatar_size">40dp</dimen>
 </resources>

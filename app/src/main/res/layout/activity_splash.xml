@@ -58,7 +58,7 @@
             android:textAlignment="center"
             android:text="@string/message_tagline"
             style="@style/taglineText"
-            android:layout_margin="@dimen/spacing_huge"
+            android:layout_margin="@dimen/spacing_ultra_huge"
             android:layout_alignParentBottom="true" />
     </RelativeLayout>
 </FrameLayout>

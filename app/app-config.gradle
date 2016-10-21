@@ -1,0 +1,23 @@
+ext.getDebugProperties = {
+    return loadFileProperties(getApiPropertiesFilePath("debug"))
+}
+
+ext.getReleaseProperties = {
+    return loadFileProperties(getApiPropertiesFilePath("release"))
+}
+
+def String getApiPropertiesFilePath(String buildType) {
+    return "$projectDir/kurc-api." + buildType + ".properties"
+}
+
+def Properties loadFileProperties(String fileLocation) {
+    def Properties properties = new Properties()
+    try {
+        properties.load(new FileInputStream(fileLocation))
+    } catch (FileNotFoundException fnf) {
+        logger.log(LogLevel.ERROR,
+                String.format("Unable to load properties file: %s", fileLocation),
+                fnf)
+    }
+    return properties
+}

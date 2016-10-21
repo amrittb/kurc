@@ -1,18 +1,26 @@
 package np.edu.ku.kurc;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
 import np.edu.ku.kurc.auth.AuthManager;
+import np.edu.ku.kurc.common.Const;
+import np.edu.ku.kurc.fragments.PostsFragment;
 import np.edu.ku.kurc.models.Member;
+import np.edu.ku.kurc.network.api.ApiConstants;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -102,7 +110,74 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         toolbar.setTitle(item.getTitle());
 
+        switch (id) {
+            case R.id.nav_events:
+                swapPostsFragment(ApiConstants.CATEGORY_SLUG_EVENTS);
+                break;
+            case R.id.nav_notice:
+                swapPostsFragment(ApiConstants.CATEGORY_SLUG_NOTICE);
+                break;
+            case R.id.nav_projects:
+                swapPostsFragment(ApiConstants.CATEGORY_SLUG_PROJECTS);
+                break;
+        }
+
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    /**
+     * Swaps Posts Fragment in the fragment container.
+     *
+     * @param categorySlug Category slug of the post category.
+     */
+    private void swapPostsFragment(String categorySlug) {
+        FragmentManager manager = getSupportFragmentManager();
+
+        FragmentTransaction transaction = manager.beginTransaction();
+
+        String tag = getFragmentTag(categorySlug);
+
+        Fragment fragmentByTag = manager.findFragmentByTag(tag);
+
+        if(fragmentByTag != null && fragmentByTag.isAdded()) {
+            for(int i = 0;i < manager.getBackStackEntryCount(); i++) {
+                String fragmentTag = manager.getBackStackEntryAt(i).getName();
+                Fragment f = manager.findFragmentByTag(fragmentTag);
+
+                if(f.isAdded()) {
+                    transaction.hide(f);
+                }
+            }
+
+            transaction.show(fragmentByTag);
+        } else {
+            transaction.add(R.id.content_main,getPostsFragment(categorySlug), tag);
+            transaction.addToBackStack(tag);
+        }
+
+        transaction.commit();
+    }
+
+    /**
+     * Returns PostsFragment with correct category.
+     *
+     * @param categorySlug Category slug for which the posts fragment is to be loaded.
+     * @return              PostsFragment instance.
+     */
+    @NonNull
+    private Fragment getPostsFragment(String categorySlug) {
+        return PostsFragment.instance(categorySlug);
+    }
+
+    /**
+     * Returns Fragment tag for given category slug.
+     *
+     * @param categorySlug Category slug for which tag is to be returned.
+     * @return              Category fragment tag.
+     */
+    @NonNull
+    private String getFragmentTag(String categorySlug) {
+        return categorySlug.toUpperCase() + "_" + "FRAGMENT";
     }
 }
