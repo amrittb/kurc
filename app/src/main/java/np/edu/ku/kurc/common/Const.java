@@ -19,4 +19,9 @@ public final class Const {
     // Auth Constants.
     public static final String AUTH_PREFS = "auth_prefs";
     public static final String AUTH_PREFS_MEMBER_KEY = "member";
+
+    // Top Story Count
+    public static final int TOP_STORY_COUNT = 5;
+
+    public static final String FRAGMENT_TAG_HOME = "HOME_FRAGMENT";
 }

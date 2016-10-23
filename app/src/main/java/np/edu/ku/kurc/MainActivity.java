@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import np.edu.ku.kurc.auth.AuthManager;
 import np.edu.ku.kurc.common.Const;
+import np.edu.ku.kurc.fragments.HomeFragment;
 import np.edu.ku.kurc.fragments.PostsFragment;
 import np.edu.ku.kurc.models.Member;
 import np.edu.ku.kurc.network.api.ApiConstants;
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Toolbar toolbar;
     private DrawerLayout drawer;
     private NavigationView navigationView;
+    private FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         selectFirstNavItem();
         initHeaderWithMember();
+
+        fragmentManager = getSupportFragmentManager();
     }
 
     /**
@@ -111,6 +115,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toolbar.setTitle(item.getTitle());
 
         switch (id) {
+            case R.id.nav_home:
+                swapHomeFragment();
+                break;
             case R.id.nav_events:
                 swapPostsFragment(ApiConstants.CATEGORY_SLUG_EVENTS);
                 break;
@@ -127,36 +134,55 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     /**
+     * Swaps Home Fragment.
+     */
+    private void swapHomeFragment() {
+        swapFragment(HomeFragment.instance(),Const.FRAGMENT_TAG_HOME);
+    }
+
+    /**
      * Swaps Posts Fragment in the fragment container.
      *
      * @param categorySlug Category slug of the post category.
      */
     private void swapPostsFragment(String categorySlug) {
-        FragmentManager manager = getSupportFragmentManager();
-
-        FragmentTransaction transaction = manager.beginTransaction();
-
         String tag = getFragmentTag(categorySlug);
+        Fragment postsFragment = getPostsFragment(categorySlug);
 
-        Fragment fragmentByTag = manager.findFragmentByTag(tag);
+        swapFragment(postsFragment,tag);
+    }
 
+    /**
+     * Swaps a fragment.
+     *
+     * @param fragment Fragment to be swapped out.
+     * @param tag       Tag of the fragment.
+     */
+    private void swapFragment(Fragment fragment, String tag) {
+        Fragment fragmentByTag = fragmentManager.findFragmentByTag(tag);
+
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
         if(fragmentByTag != null && fragmentByTag.isAdded()) {
-            for(int i = 0;i < manager.getBackStackEntryCount(); i++) {
-                String fragmentTag = manager.getBackStackEntryAt(i).getName();
-                Fragment f = manager.findFragmentByTag(fragmentTag);
-
-                if(f.isAdded()) {
-                    transaction.hide(f);
-                }
-            }
+            hideAllFragments(transaction);
 
             transaction.show(fragmentByTag);
         } else {
-            transaction.add(R.id.content_main,getPostsFragment(categorySlug), tag);
-            transaction.addToBackStack(tag);
+            transaction.add(R.id.content_main, fragment,tag)
+                    .addToBackStack(tag);
         }
 
         transaction.commit();
+    }
+
+    private void hideAllFragments(FragmentTransaction transaction) {
+        for(int i = 0; i < fragmentManager.getBackStackEntryCount(); i++) {
+            String fragmentTag = fragmentManager.getBackStackEntryAt(i).getName();
+            Fragment f = fragmentManager.findFragmentByTag(fragmentTag);
+
+            if(f.isAdded()) {
+                transaction.hide(f);
+            }
+        }
     }
 
     /**

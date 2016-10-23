@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/post_container"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:visibility="gone"
+    >
+
+    <ImageView
+        android:id="@+id/post_featured_image"
+        android:layout_width="@dimen/avatar_size"
+        android:layout_height="@dimen/avatar_size"
+        android:layout_marginEnd="@dimen/spacing_small"
+        android:layout_marginRight="@dimen/spacing_small"
+        android:src="@drawable/ic_image_white_24dp"
+        android:background="@drawable/circle_shape"
+        android:scaleType="center"
+        />
+
+    <TextView
+        android:id="@+id/post_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/post_featured_image"
+        android:layout_toRightOf="@id/post_featured_image"
+        android:text="@string/placeholder_post_title"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        />
+
+    <TextView
+        android:id="@+id/post_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/post_title"
+        android:layout_alignLeft="@id/post_title"
+        android:layout_alignStart="@id/post_title"
+        android:text="@string/placeholder_post_date"
+        />
+
+    <TextView
+        android:id="@+id/post_author"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/post_date"
+        android:layout_toEndOf="@id/post_date"
+        android:layout_alignBaseline="@id/post_date"
+        android:text="@string/placeholder_post_author"
+        />
+
+    <TextView
+        android:id="@+id/post_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/post_author"
+        android:layout_marginTop="@dimen/spacing_normal"
+        android:text="@string/placeholder_large_txt"
+        />
+</RelativeLayout>

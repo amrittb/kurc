@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="PostCardStyle" parent="Theme.AppCompat.Light">
+        <item name="cardCornerRadius">@dimen/card_radius_default</item>
+        <item name="cardElevation">@dimen/elevation_2</item>
+    </style>
+</resources>

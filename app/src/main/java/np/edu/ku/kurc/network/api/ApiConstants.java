@@ -11,4 +11,5 @@ public final class ApiConstants {
     public static final String CATEGORY_SLUG_EVENTS = "events";
     public static final String CATEGORY_SLUG_NOTICE = "notice";
     public static final String CATEGORY_SLUG_PROJECTS = "projects";
+    public static final String CATEGORY_SLUG_PINNED = "pinned";
 }

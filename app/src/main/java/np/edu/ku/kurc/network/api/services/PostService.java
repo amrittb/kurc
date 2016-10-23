@@ -11,4 +11,10 @@ public interface PostService {
 
     @GET("posts")
     Call<List<Post>> getPostsForCategory(@Query("category_slug") String categorySlug);
+
+    @GET("posts?per_page=5")
+    Call<List<Post>> getTopStories();
+
+    @GET("posts?per_page=1&category_slug=pinned")
+    Call<List<Post>> getPinnedPost();
 }
