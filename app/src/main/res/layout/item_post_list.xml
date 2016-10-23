@@ -1,67 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/spacing_small"
+    android:layout_marginBottom="@dimen/spacing_small"
+    android:elevation="@dimen/elevation_2"
     android:clickable="true"
-    android:background="?android:attr/selectableItemBackground"
+    android:background="?android:windowBackground"
     >
-        <ImageView
-            android:id="@+id/post_featured_image"
-            android:layout_height="@dimen/avatar_size"
-            android:layout_width="@dimen/avatar_size"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_marginTop="@dimen/spacing_normal"
-            android:layout_marginLeft="@dimen/spacing_normal"
-            android:layout_marginStart="@dimen/spacing_normal"
-            android:src="@drawable/ic_image_white_24dp"
-            android:background="@drawable/circle_shape"
-            android:scaleType="center"
-        />
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_toRightOf="@id/post_featured_image"
-            android:layout_toEndOf="@id/post_featured_image"
-            android:layout_marginLeft="@dimen/spacing_normal"
-            android:layout_marginStart="@dimen/spacing_normal"
-            android:layout_marginEnd="@dimen/spacing_normal"
-            android:layout_marginRight="@dimen/spacing_normal"
-            android:paddingTop="@dimen/spacing_normal"
-            android:paddingBottom="@dimen/spacing_normal"
+            android:layout_height="match_parent"
+            android:background="?android:attr/selectableItemBackground"
             >
-            <TextView
-                android:id="@+id/post_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/placeholder_post_title"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                />
 
-            <TextView
-                android:id="@+id/post_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/post_title"
-                android:layout_alignLeft="@id/post_title"
-                android:layout_alignStart="@id/post_title"
-                android:text="@string/placeholder_post_date"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                />
+                <TextView
+                    android:id="@+id/post_author_by"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/txt_by"
+                    android:paddingTop="@dimen/spacing_small"
+                    android:paddingBottom="@dimen/spacing_small"
+                    android:paddingLeft="@dimen/spacing_normal"
+                    android:paddingStart="@dimen/spacing_normal"
+                    android:paddingEnd="@dimen/spacing_small"
+                    android:paddingRight="@dimen/spacing_small"
+                    />
 
-            <TextView
-                android:id="@+id/post_author"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/post_date"
-                android:layout_toEndOf="@id/post_date"
-                android:layout_alignBaseline="@id/post_date"
-                android:text="@string/placeholder_post_author"
-                />
+                <TextView
+                    android:id="@+id/post_author"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@id/post_author_by"
+                    android:layout_toRightOf="@id/post_author_by"
+                    android:layout_alignBaseline="@id/post_author_by"
+                    android:text="@string/placeholder_post_author"
+                    android:textColor="@color/colorAccent"
+                    />
+
+                <TextView
+                    android:id="@+id/post_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/post_author_by"
+                    android:layout_alignLeft="@id/post_author_by"
+                    android:layout_alignStart="@id/post_author_by"
+                    android:paddingLeft="@dimen/spacing_normal"
+                    android:paddingStart="@dimen/spacing_normal"
+                    android:paddingEnd="@dimen/spacing_normal"
+                    android:paddingRight="@dimen/spacing_normal"
+                    android:text="@string/placeholder_post_date"
+                    />
+
+                <ImageView
+                    android:id="@+id/post_featured_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="30dp"
+                    android:layout_below="@id/post_date"
+                    android:layout_marginTop="@dimen/spacing_normal"
+                    android:layout_marginBottom="@dimen/spacing_normal"
+                    android:background="@color/gray_green"
+                    android:scaleType="center"
+                    />
+
+                <TextView
+                    android:id="@+id/post_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/post_featured_image"
+                    android:paddingLeft="@dimen/spacing_normal"
+                    android:paddingStart="@dimen/spacing_normal"
+                    android:paddingEnd="@dimen/spacing_normal"
+                    android:paddingRight="@dimen/spacing_normal"
+                    android:text="@string/placeholder_post_title"
+                    android:textSize="@dimen/font_sub_heading"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                    />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/post_title"
+                    android:layout_margin="@dimen/spacing_normal"
+                    >
+
+                        <ImageButton
+                            android:id="@+id/post_bookmark_btn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:padding="@dimen/spacing_small"
+                            android:background="@android:color/transparent"
+                            android:tint="@color/gray"
+                            app:srcCompat="@drawable/ic_bookmark_border_black_24dp"
+                            />
+                </RelativeLayout>
         </RelativeLayout>
 </RelativeLayout>

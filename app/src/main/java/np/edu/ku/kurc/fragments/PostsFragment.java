@@ -8,9 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,11 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import np.edu.ku.kurc.R;
-import np.edu.ku.kurc.common.Const;
 import np.edu.ku.kurc.models.Post;
 import np.edu.ku.kurc.network.api.ServiceFactory;
 import np.edu.ku.kurc.network.api.services.PostService;
 import np.edu.ku.kurc.views.adapters.PostsAdapter;
+import np.edu.ku.kurc.views.widget.PreCachingLinearLayoutManager;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -97,7 +95,7 @@ public class PostsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
      * Initializes Recycler View.
      */
     private void initRecyclerView() {
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setLayoutManager(new PreCachingLinearLayoutManager(getContext(),getContext().getResources().getDisplayMetrics().heightPixels));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
     }

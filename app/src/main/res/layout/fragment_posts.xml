@@ -5,7 +5,7 @@
     android:id="@+id/swipe_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?android:windowBackground"
+    android:background="@color/gray_light"
     tools:context="np.edu.ku.kurc.fragments.PostsFragment"
     >
 
@@ -13,15 +13,6 @@
         android:layout_height="match_parent"
         android:layout_width="match_parent"
     >
-        <TextView
-            android:id="@+id/post_list_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/message_latest_post"
-            android:layout_marginTop="@dimen/spacing_normal"
-            android:layout_marginLeft="@dimen/spacing_normal"
-            android:layout_marginStart="@dimen/spacing_normal"
-        />
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/txt_no_posts"
@@ -38,9 +29,7 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/post_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/post_list_title"
-            android:layout_alignParentBottom="true"
+            android:layout_height="match_parent"
         />
 
     </RelativeLayout>

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,11 +54,30 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             postDate = (TextView) itemView.findViewById(R.id.post_date);
             postAuthor = (TextView) itemView.findViewById(R.id.post_author);
 
+            resizeImageView(featureImage);
+
             itemView.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View v) {
                     int pos = getAdapterPosition();
+                }
+            });
+        }
+
+        private void resizeImageView(final ImageView featureImage) {
+            featureImage.post(new Runnable() {
+
+                @Override
+                public void run() {
+                    int width = featureImage.getWidth();
+
+                    int newHeight = (int) ((9.0f / 16.0f) * width);
+
+                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) featureImage.getLayoutParams();
+                    params.width = width;
+                    params.height = newHeight;
+                    featureImage.setLayoutParams(params);
                 }
             });
         }
