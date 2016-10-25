@@ -10,11 +10,11 @@ import retrofit2.http.Query;
 public interface PostService {
 
     @GET("posts")
-    Call<List<Post>> getPostsForCategory(@Query("category_slug") String categorySlug);
+    Call<List<Post>> getPostsForCategory(@Query("category_name") String categorySlug);
 
     @GET("posts?per_page=5")
     Call<List<Post>> getTopStories();
 
-    @GET("posts?per_page=1&category_slug=pinned")
+    @GET("posts?per_page=1&category_name=pinned&include_content")
     Call<List<Post>> getPinnedPost();
 }
