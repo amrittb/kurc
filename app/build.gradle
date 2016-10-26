@@ -50,6 +50,8 @@ dependencies {
     //Networking
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    // Image Manipulation
+    compile 'com.squareup.picasso:picasso:2.5.2'
     // Android Test Dependencies
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
