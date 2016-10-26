@@ -75,7 +75,7 @@ public class PostsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
         coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.coordinator_layout);
 
-        adapter = new PostsAdapter(postList);
+        adapter = new PostsAdapter(getContext(), postList);
 
         initSwipeContainer();
         initRecyclerView();

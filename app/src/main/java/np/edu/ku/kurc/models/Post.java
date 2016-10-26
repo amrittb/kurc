@@ -1,5 +1,8 @@
 package np.edu.ku.kurc.models;
 
+import android.content.Context;
+import android.text.format.DateUtils;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -30,11 +33,12 @@ public class Post {
         this.excerpt = excerpt;
     }
 
-    public String getDateString() {
-        return dateFormat.format(this.date);
+    public String getDateString(Context context) {
+        return (String) DateUtils.getRelativeDateTimeString(context, date.getTime(), DateUtils.MINUTE_IN_MILLIS, DateUtils.WEEK_IN_MILLIS, DateUtils.FORMAT_ABBREV_RELATIVE);
     }
 
-    public String getModifiedDateString() {
-        return dateFormat.format(this.modified);
+    public String getModifiedDateString(Context context) {
+        return (String) DateUtils.getRelativeDateTimeString(context, modified.getTime(), DateUtils.MINUTE_IN_MILLIS, DateUtils.WEEK_IN_MILLIS, DateUtils.FORMAT_ABBREV_RELATIVE);
+
     }
 }

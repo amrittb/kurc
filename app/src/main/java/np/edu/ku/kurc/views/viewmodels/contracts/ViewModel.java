@@ -1,8 +1,11 @@
 package np.edu.ku.kurc.views.viewmodels.contracts;
 
+import android.content.Context;
 import android.view.View;
 
 abstract public class ViewModel<T> {
+
+    protected Context context;
 
     /**
      * Creates a view model instance.
@@ -10,6 +13,7 @@ abstract public class ViewModel<T> {
      * @param root View root instance.
      */
     public ViewModel(View root) {
+        this.context = root.getContext();
         this.onBindView(root);
     }
 

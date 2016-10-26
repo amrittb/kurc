@@ -1,5 +1,6 @@
 package np.edu.ku.kurc.views.adapters;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -23,8 +24,10 @@ import np.edu.ku.kurc.models.Post;
 public class TopStoriesAdapter extends RecyclerView.Adapter<TopStoriesAdapter.ViewHolder> {
 
     private List<Post> stories;
+    private Context context;
 
-    public TopStoriesAdapter(List<Post> stories) {
+    public TopStoriesAdapter(Context context,List<Post> stories) {
+        this.context = context;
         this.stories = stories;
     }
 
@@ -39,7 +42,7 @@ public class TopStoriesAdapter extends RecyclerView.Adapter<TopStoriesAdapter.Vi
     public void onBindViewHolder(ViewHolder holder, int position) {
         Post post = stories.get(position);
         holder.postTitle.setText(post.title);
-        holder.postDate.setText(post.getDateString());
+        holder.postDate.setText(post.getDateString(context));
     }
 
     @Override

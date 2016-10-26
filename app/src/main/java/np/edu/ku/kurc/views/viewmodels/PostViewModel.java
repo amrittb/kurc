@@ -42,7 +42,7 @@ public class PostViewModel extends ViewModel<Post> {
         postContainer.setVisibility(View.VISIBLE);
 
         postTitle.setText(model.title);
-        postDate.setText(model.getDateString());
+        postDate.setText(model.getDateString(context));
         postContent.setText(model.content);
     }
 }

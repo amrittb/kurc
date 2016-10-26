@@ -110,7 +110,7 @@ public class HomeFragment extends Fragment {
     private void initStories() {
         Post dummyPost = new Post(0,"Loading...", Calendar.getInstance().getTime(),Calendar.getInstance().getTime(),"slug","link","content","excerpt");
         stories.add(dummyPost);
-        topStoriesAdapter = new TopStoriesAdapter(stories);
+        topStoriesAdapter = new TopStoriesAdapter(getContext(), stories);
     }
 
     /**
@@ -245,7 +245,7 @@ public class HomeFragment extends Fragment {
     private void consumePinnedPost(Post post) {
         if(post != null) {
             postTitle.setText(post.title);
-            postDate.setText(post.getDateString());
+            postDate.setText(post.getDateString(getContext()));
 
             pinnedPostLoadingContainer.setVisibility(View.GONE);
             pinnedPostContainer.setVisibility(View.VISIBLE);

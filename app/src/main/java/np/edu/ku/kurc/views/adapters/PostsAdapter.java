@@ -1,5 +1,6 @@
 package np.edu.ku.kurc.views.adapters;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -24,7 +25,10 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
 
     private List<Post> list;
 
-    public PostsAdapter(List<Post> list) {
+    private Context context;
+
+    public PostsAdapter(Context context, List<Post> list) {
+        this.context = context;
         this.list = list;
     }
 
@@ -39,7 +43,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
     public void onBindViewHolder(ViewHolder holder, int position) {
         Post post = list.get(position);
         holder.postTitle.setText(post.title);
-        holder.postDate.setText(post.getDateString());
+        holder.postDate.setText(post.getDateString(context));
     }
 
     @Override
