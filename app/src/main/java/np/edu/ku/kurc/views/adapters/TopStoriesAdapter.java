@@ -1,5 +1,6 @@
 package np.edu.ku.kurc.views.adapters;
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,8 +11,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import java.util.List;
 
+import np.edu.ku.kurc.PostActivity;
 import np.edu.ku.kurc.R;
 import np.edu.ku.kurc.common.Const;
 import np.edu.ku.kurc.models.Post;
@@ -61,7 +65,12 @@ public class TopStoriesAdapter extends RecyclerView.Adapter<TopStoriesAdapter.Vi
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(v.getContext(),"Clicked on item",Toast.LENGTH_LONG).show();
+                    int pos = getAdapterPosition();
+
+                    Intent i = new Intent(v.getContext(),PostActivity.class);
+                    i.putExtra(Const.KEY_POST,new Gson().toJson(stories.get(pos)));
+
+                    v.getContext().startActivity(i);
                 }
             });
         }
