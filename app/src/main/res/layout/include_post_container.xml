@@ -4,6 +4,7 @@
     android:id="@+id/post_container"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
+    android:padding="@dimen/spacing_normal"
     android:visibility="gone"
     >
 

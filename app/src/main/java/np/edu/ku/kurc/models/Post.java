@@ -11,18 +11,30 @@ public class Post {
     public int id;
     public String title;
     public Date date;
+    public Date modified;
 
-    public Post() {
+    public String slug;
+    public String link;
 
-    }
+    public String content;
+    public String excerpt;
 
-    public Post(int id, String title, Date date) {
+    public Post(int id,String title, Date date, Date modified, String slug, String link, String content, String excerpt) {
         this.id = id;
         this.title = title;
         this.date = date;
+        this.modified = modified;
+        this.slug = slug;
+        this.link = link;
+        this.content = content;
+        this.excerpt = excerpt;
     }
 
     public String getDateString() {
         return dateFormat.format(this.date);
+    }
+
+    public String getModifiedDateString() {
+        return dateFormat.format(this.modified);
     }
 }

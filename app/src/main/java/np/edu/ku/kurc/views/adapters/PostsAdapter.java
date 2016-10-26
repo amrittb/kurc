@@ -1,5 +1,7 @@
 package np.edu.ku.kurc.views.adapters;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,9 +11,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import java.util.List;
 
+import np.edu.ku.kurc.PostActivity;
 import np.edu.ku.kurc.R;
+import np.edu.ku.kurc.common.Const;
 import np.edu.ku.kurc.models.Post;
 
 public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> {
@@ -61,6 +67,11 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                 @Override
                 public void onClick(View v) {
                     int pos = getAdapterPosition();
+
+                    Intent i = new Intent(v.getContext(),PostActivity.class);
+                    i.putExtra(Const.KEY_POST,new Gson().toJson(list.get(pos)));
+
+                    v.getContext().startActivity(i);
                 }
             });
         }

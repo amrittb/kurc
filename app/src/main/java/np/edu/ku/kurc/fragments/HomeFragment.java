@@ -108,7 +108,7 @@ public class HomeFragment extends Fragment {
      * Initializes Stories.
      */
     private void initStories() {
-        Post dummyPost = new Post(0,"Loading...", Calendar.getInstance().getTime());
+        Post dummyPost = new Post(0,"Loading...", Calendar.getInstance().getTime(),Calendar.getInstance().getTime(),"slug","link","content","excerpt");
         stories.add(dummyPost);
         topStoriesAdapter = new TopStoriesAdapter(stories);
     }

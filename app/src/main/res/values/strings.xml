@@ -1,7 +1,9 @@
 <resources>
     <string name="app_name">KURC</string>
 
-    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_main">Home</string>
+    <string name="title_activity_post">Post</string>
+
 
     <string name="message_welcome">Kathmandu University Robotics Club</string>
     <string name="message_tagline">Machines rule the world, We rule the machines.</string>
