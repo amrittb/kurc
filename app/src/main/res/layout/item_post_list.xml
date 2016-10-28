@@ -59,12 +59,12 @@
                     android:id="@+id/post_featured_image"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:minHeight="30dp"
                     android:layout_below="@id/post_date"
                     android:layout_marginTop="@dimen/spacing_normal"
                     android:layout_marginBottom="@dimen/spacing_normal"
                     android:background="@color/gray_green"
                     android:scaleType="center"
+                    android:visibility="gone"
                     />
 
                 <TextView

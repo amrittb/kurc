@@ -13,6 +13,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,6 +100,20 @@ public class PostsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         recyclerView.setLayoutManager(new PreCachingLinearLayoutManager(getContext(),getContext().getResources().getDisplayMetrics().heightPixels));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
+        recyclerView.setOnFlingListener(new RecyclerView.OnFlingListener() {
+            @Override
+            public boolean onFling(int velocityX, int velocityY) {
+                final Picasso picasso = Picasso.with(getContext());
+
+                if(velocityY > 0) {
+                    picasso.pauseTag("Post");
+                } else {
+                    picasso.resumeTag("Post");
+                }
+
+                return true;
+            }
+        });
     }
 
     /**

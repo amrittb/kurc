@@ -5,9 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +19,6 @@ import java.util.List;
 
 import np.edu.ku.kurc.R;
 import np.edu.ku.kurc.models.Post;
-import np.edu.ku.kurc.network.api.ApiConstants;
 import np.edu.ku.kurc.network.api.ServiceFactory;
 import np.edu.ku.kurc.network.api.services.PostService;
 import np.edu.ku.kurc.views.adapters.TopStoriesAdapter;
