@@ -70,7 +70,7 @@ public class TopStoriesAdapter extends RecyclerView.Adapter<TopStoriesAdapter.Vi
                     String url = media.getOptimalSize(holder.featuredImageWidth,holder.featuredImageHeight).sourceUrl;
                     Picasso.with(context)
                             .load(url)
-                            .resize(holder.featuredImageWidth,holder.featuredImageHeight)
+                            .fit()
                             .centerCrop()
                             .placeholder(R.drawable.ic_image_white_24dp)
                             .error(R.drawable.ic_image_white_24dp)
@@ -101,8 +101,6 @@ public class TopStoriesAdapter extends RecyclerView.Adapter<TopStoriesAdapter.Vi
             postDate = (TextView) itemView.findViewById(R.id.post_date);
             postAuthor = (TextView) itemView.findViewById(R.id.post_author);
 
-            resizeImageView(featureImage);
-
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -112,22 +110,6 @@ public class TopStoriesAdapter extends RecyclerView.Adapter<TopStoriesAdapter.Vi
                     i.putExtra(Const.KEY_POST,new Gson().toJson(stories.get(pos)));
 
                     v.getContext().startActivity(i);
-                }
-            });
-        }
-
-        private void resizeImageView(final ImageView featureImage) {
-            featureImage.post(new Runnable() {
-
-                @Override
-                public void run() {
-                    featuredImageWidth = featureImage.getWidth();
-                    featuredImageHeight = (int) ((9.0f / 16.0f) * featuredImageWidth);
-
-                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) featureImage.getLayoutParams();
-                    params.width = featuredImageWidth;
-                    params.height = featuredImageHeight;
-                    featureImage.setLayoutParams(params);
                 }
             });
         }

@@ -110,8 +110,6 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             postDate = (TextView) itemView.findViewById(R.id.post_date);
             postAuthor = (TextView) itemView.findViewById(R.id.post_author);
 
-            resizeImageView(featureImage);
-
             itemView.setOnClickListener(new View.OnClickListener() {
 
                 @Override
@@ -122,23 +120,6 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                     i.putExtra(Const.KEY_POST,new Gson().toJson(list.get(pos)));
 
                     v.getContext().startActivity(i);
-                }
-            });
-        }
-
-        private void resizeImageView(final ImageView featureImage) {
-            featureImage.post(new Runnable() {
-
-                @Override
-                public void run() {
-                    featuredImageWidth = featureImage.getWidth();
-
-                    featuredImageHeight = (int) ((9.0f / 16.0f) * featuredImageWidth);
-
-                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) featureImage.getLayoutParams();
-                    params.width = featuredImageWidth;
-                    params.height = featuredImageHeight;
-                    featureImage.setLayoutParams(params);
                 }
             });
         }
