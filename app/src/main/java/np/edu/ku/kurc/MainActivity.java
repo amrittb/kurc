@@ -16,6 +16,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.HashMap;
+
 import np.edu.ku.kurc.auth.AuthManager;
 import np.edu.ku.kurc.common.Const;
 import np.edu.ku.kurc.fragments.HomeFragment;
@@ -30,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private FragmentManager fragmentManager;
+    private HashMap<String, Fragment> fragmentMap = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         navigationView.setNavigationItemSelectedListener(this);
@@ -155,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /**
      * Swaps a fragment.
      *
-     * @param fragment Fragment to be swapped out.
+     * @param fragment  Fragment to be swapped out.
      * @param tag       Tag of the fragment.
      */
     private void swapFragment(Fragment fragment, String tag) {
@@ -167,18 +170,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             transaction.show(fragmentByTag);
         } else {
-            transaction.add(R.id.content_main, fragment,tag)
-                    .addToBackStack(tag);
+            transaction.add(R.id.content_main, fragment,tag);
+
+            fragmentMap.put(tag,fragment);
         }
 
         transaction.commit();
     }
 
+    /**
+     * Hides all fragments.
+     *
+     * @param transaction Transaction from which the fragments are to be hidden.
+     */
     private void hideAllFragments(FragmentTransaction transaction) {
-        for(int i = 0; i < fragmentManager.getBackStackEntryCount(); i++) {
-            String fragmentTag = fragmentManager.getBackStackEntryAt(i).getName();
-            Fragment f = fragmentManager.findFragmentByTag(fragmentTag);
-
+        for(Fragment f: fragmentMap.values()) {
             if(f.isAdded()) {
                 transaction.hide(f);
             }
