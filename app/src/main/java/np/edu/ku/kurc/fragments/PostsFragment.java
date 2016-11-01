@@ -110,9 +110,9 @@ public class PostsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 final Picasso picasso = Picasso.with(getContext());
 
                 if(velocityY > 0) {
-                    picasso.pauseTag(getContext());
+                    picasso.pauseTag(Const.POSTS_TAG);
                 } else {
-                    picasso.resumeTag(getContext());
+                    picasso.resumeTag(Const.POSTS_TAG);
                 }
 
                 return true;

@@ -26,4 +26,6 @@ public final class Const {
     public static final String FRAGMENT_TAG_HOME = "HOME_FRAGMENT";
 
     public static final String KEY_POST = "POST";
+
+    public static final String POSTS_TAG = "Posts";
 }
