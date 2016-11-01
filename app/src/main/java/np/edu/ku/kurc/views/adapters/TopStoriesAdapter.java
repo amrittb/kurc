@@ -61,6 +61,12 @@ public class TopStoriesAdapter extends RecyclerView.Adapter<TopStoriesAdapter.Vi
             public void run() {
                 if(post.hasFeaturedMedia()) {
                     FeaturedMedia media = post.getFeaturedMedia();
+
+                    if(holder.featuredImageWidth <= 0 || holder.featuredImageHeight <= 0) {
+                        holder.featuredImageWidth = holder.featureImage.getWidth();
+                        holder.featuredImageHeight = (int) ((9.0f / 16.0f) * holder.featuredImageWidth);
+                    }
+
                     String url = media.getOptimalSize(holder.featuredImageWidth,holder.featuredImageHeight).sourceUrl;
                     Picasso.with(context)
                             .load(url)

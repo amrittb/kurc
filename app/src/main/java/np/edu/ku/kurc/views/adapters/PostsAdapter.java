@@ -1,8 +1,15 @@
 package np.edu.ku.kurc.views.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +49,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Post post = list.get(position);
+
         holder.postTitle.setText(post.title);
         holder.postDate.setText(post.getDateString(context));
 
@@ -55,26 +63,30 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
      * @param holder View holder instance.
      * @param post Post for which the featured media is to be loaded.
      */
-    private void loadFeaturedImage(final PostsAdapter.ViewHolder holder, final Post post) {
-        if (post.hasFeaturedMedia()) {
-            holder.featureImage.setVisibility(View.VISIBLE);
+    private void loadFeaturedImage(PostsAdapter.ViewHolder holder, Post post) {
+        Picasso.with(context).cancelRequest(holder.featureImage);
+        holder.featureImage.setImageBitmap(null);
+        holder.featureImage.setVisibility(View.VISIBLE);
 
-            holder.featureImage.post(new Runnable() {
-
-                @Override
-                public void run() {
-                    FeaturedMedia media = post.getFeaturedMedia();
-                    String url = media.getOptimalSize(holder.featuredImageWidth, holder.featuredImageHeight).sourceUrl;
-                    Picasso.with(context)
-                            .load(url)
-                            .resize(holder.featuredImageWidth, holder.featuredImageHeight)
-                            .centerCrop()
-                            .tag("Post")
-                            .into(holder.featureImage);
-                }
-            });
-        } else {
+        if ( ! post.hasFeaturedMedia()) {
             holder.featureImage.setVisibility(View.GONE);
+        } else {
+            int width = holder.featuredImageWidth;
+            int height = holder.featuredImageHeight;
+
+            if(width <= 0 || height <= 0) {
+                width = context.getResources().getDisplayMetrics().widthPixels;
+                height = (int) ((9.0/16.0) * width);
+            }
+
+            FeaturedMedia media = post.getFeaturedMedia();
+            String url = media.getOptimalSize(width, height).sourceUrl;
+            Picasso.with(context)
+                    .load(url)
+                    .fit()
+                    .centerCrop()
+                    .tag(context)
+                    .into(holder.featureImage);
         }
     }
 

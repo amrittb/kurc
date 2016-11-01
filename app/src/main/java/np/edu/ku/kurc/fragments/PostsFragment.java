@@ -8,7 +8,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import np.edu.ku.kurc.R;
+import np.edu.ku.kurc.common.Const;
 import np.edu.ku.kurc.models.Post;
 import np.edu.ku.kurc.network.api.ServiceFactory;
 import np.edu.ku.kurc.network.api.services.PostService;
@@ -100,15 +103,16 @@ public class PostsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         recyclerView.setLayoutManager(new PreCachingLinearLayoutManager(getContext(),getContext().getResources().getDisplayMetrics().heightPixels));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
+        recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setOnFlingListener(new RecyclerView.OnFlingListener() {
             @Override
             public boolean onFling(int velocityX, int velocityY) {
                 final Picasso picasso = Picasso.with(getContext());
 
                 if(velocityY > 0) {
-                    picasso.pauseTag("Post");
+                    picasso.pauseTag(getContext());
                 } else {
-                    picasso.resumeTag("Post");
+                    picasso.resumeTag(getContext());
                 }
 
                 return true;
