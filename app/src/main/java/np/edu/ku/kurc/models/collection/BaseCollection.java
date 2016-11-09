@@ -12,7 +12,7 @@ import np.edu.ku.kurc.models.BaseModel;
 public abstract class BaseCollection<T extends BaseModel> extends ArrayList<T> implements CollectionContract<T> {
 
     public BaseCollection() {super(); }
-    
+
     public BaseCollection(List<T> list) {
         super(list);
     }

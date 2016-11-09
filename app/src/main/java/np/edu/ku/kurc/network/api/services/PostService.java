@@ -16,7 +16,7 @@ public interface PostService {
     @GET("posts?per_page=5&_embed")
     Call<List<Post>> getTopStories();
 
-    @GET("posts?per_page=1&filter[category_name]=pinned&include_content&_embed")
+    @GET("posts?per_page=1&sticky&include_content&_embed")
     Call<List<Post>> getPinnedPost();
 
     @GET("posts/{id}")
