@@ -1,5 +1,7 @@
 package np.edu.ku.kurc.database.schema;
 
+import np.edu.ku.kurc.database.schema.contracts.SchemaContract;
+
 public abstract class BaseSchema implements SchemaContract {
 
     public static final String TABLE_CREATE = "CREATE TABLE";

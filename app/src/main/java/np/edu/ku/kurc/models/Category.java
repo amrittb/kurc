@@ -7,7 +7,7 @@ import np.edu.ku.kurc.database.schema.CategorySchema;
 import np.edu.ku.kurc.models.collection.BaseCollection;
 import np.edu.ku.kurc.models.collection.CategoryCollection;
 import np.edu.ku.kurc.models.transformers.CategoryTransformer;
-import np.edu.ku.kurc.models.transformers.ModelTransformerContract;
+import np.edu.ku.kurc.models.transformers.contracts.ModelTransformerContract;
 
 public class Category extends BaseModel<Category,CategorySchema> {
 

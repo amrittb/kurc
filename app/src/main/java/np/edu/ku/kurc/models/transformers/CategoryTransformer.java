@@ -5,6 +5,7 @@ import android.database.Cursor;
 
 import np.edu.ku.kurc.database.schema.CategorySchema;
 import np.edu.ku.kurc.models.Category;
+import np.edu.ku.kurc.models.transformers.contracts.ModelTransformerContract;
 
 public class CategoryTransformer implements ModelTransformerContract<Category,CategorySchema> {
 

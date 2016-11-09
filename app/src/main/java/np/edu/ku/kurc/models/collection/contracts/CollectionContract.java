@@ -1,4 +1,4 @@
-package np.edu.ku.kurc.models.collection;
+package np.edu.ku.kurc.models.collection.contracts;
 
 import android.content.Context;
 

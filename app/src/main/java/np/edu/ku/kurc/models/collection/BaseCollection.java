@@ -8,6 +8,7 @@ import android.content.Context;
 import np.edu.ku.kurc.common.AsyncCallback;
 import np.edu.ku.kurc.database.tasks.BulkSaveTask;
 import np.edu.ku.kurc.models.BaseModel;
+import np.edu.ku.kurc.models.collection.contracts.CollectionContract;
 
 public abstract class BaseCollection<T extends BaseModel> extends ArrayList<T> implements CollectionContract<T> {
 

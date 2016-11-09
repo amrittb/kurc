@@ -9,12 +9,15 @@ import java.util.ArrayList;
 import np.edu.ku.kurc.database.DatabaseHelper;
 import np.edu.ku.kurc.database.schema.BaseSchema;
 import np.edu.ku.kurc.models.collection.BaseCollection;
-import np.edu.ku.kurc.models.transformers.TransformerResolverContract;
+import np.edu.ku.kurc.models.collection.contracts.CollectionResolverContract;
+import np.edu.ku.kurc.models.contracts.ModelContract;
+import np.edu.ku.kurc.database.schema.contracts.SchemaResolver;
+import np.edu.ku.kurc.models.transformers.contracts.TransformerResolverContract;
 
 public abstract class BaseModel<M extends BaseModel,S extends BaseSchema> implements TransformerResolverContract<M,S>,
-                                                                                        ModelContract<M>,
-                                                                                        SchemaResolver<S>,
-                                                                                        CollectionResolverContract<M> {
+        ModelContract<M>,
+        SchemaResolver<S>,
+        CollectionResolverContract<M> {
 
     @Override
     public long save(Context context) {

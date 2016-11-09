@@ -1,7 +1,8 @@
-package np.edu.ku.kurc.models;
+package np.edu.ku.kurc.models.collection.contracts;
 
 import java.util.List;
 
+import np.edu.ku.kurc.models.BaseModel;
 import np.edu.ku.kurc.models.collection.BaseCollection;
 
 public interface CollectionResolverContract<M extends BaseModel> {
