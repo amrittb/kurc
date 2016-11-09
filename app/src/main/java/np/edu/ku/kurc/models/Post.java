@@ -7,11 +7,16 @@ import com.google.gson.annotations.SerializedName;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-public class Post {
+import np.edu.ku.kurc.database.schema.PostSchema;
+import np.edu.ku.kurc.models.collection.BaseCollection;
+import np.edu.ku.kurc.models.collection.PostCollection;
+import np.edu.ku.kurc.models.transformers.PostTransformer;
+import np.edu.ku.kurc.models.transformers.contracts.ModelTransformerContract;
+
+public class Post extends BaseModel<Post,PostSchema> {
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH);
 
@@ -31,6 +36,18 @@ public class Post {
 
     @SerializedName("_embedded")
     public Embedded embedded;
+
+    @SerializedName("author")
+    public int authorId;
+
+    @SerializedName("featured_media")
+    public int featuredMediaId;
+
+    @SerializedName("categories")
+    public List<Integer> categoryIds;
+
+    private static PostSchema schema;
+    private static PostTransformer transformer;
 
     public Post(int id,String title, Date date, Date modified, String slug, String link, String content, String excerpt) {
         this.id = id;
@@ -68,5 +85,33 @@ public class Post {
      */
     public FeaturedMedia getFeaturedMedia() {
         return embedded.featured.get(0);
+    }
+
+    @Override
+    public PostSchema getSchema() {
+        if(schema == null) {
+            schema = new PostSchema();
+        }
+
+        return schema;
+    }
+
+    @Override
+    public BaseCollection<Post> getCollection(List<Post> list) {
+        return new PostCollection(list);
+    }
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public ModelTransformerContract<Post, PostSchema> getTransformer() {
+        if(transformer == null) {
+            transformer = new PostTransformer();
+        }
+
+        return transformer;
     }
 }
