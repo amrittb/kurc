@@ -11,6 +11,7 @@ public class PostSchema extends BaseSchema {
     public static final String COLUMN_LINK = "link";
     public static final String COLUMN_EXCERPT = "excerpt";
     public static final String COLUMN_CONTENT = "content";
+    public static final String COLUMN_STICKY = "sticky";
     public static final String COLUMN_AUTHOR_ID = "author_id";
     public static final String COLUMN_FEATURED_MEDIA_ID = "featured_media_id";
 
@@ -27,6 +28,7 @@ public class PostSchema extends BaseSchema {
                 COLUMN_LINK + " " + TYPE_TEXT + "," +
                 COLUMN_EXCERPT + " " + TYPE_TEXT + "," +
                 COLUMN_CONTENT + " " + TYPE_TEXT + "," +
+                COLUMN_STICKY + " " + TYPE_INT + "," +
                 COLUMN_CREATED_AT + " " + TYPE_TEXT + "," +
                 COLUMN_UPDATED_AT + " " + TYPE_TEXT + "," +
                 COLUMN_AUTHOR_ID + " " + TYPE_INT + "," +

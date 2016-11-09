@@ -26,6 +26,9 @@ public class Post {
     public String content;
     public String excerpt;
 
+    @SerializedName("sticky")
+    public boolean isSticky;
+
     @SerializedName("_embedded")
     public Embedded embedded;
 
