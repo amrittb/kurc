@@ -12,6 +12,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -22,7 +23,9 @@ import np.edu.ku.kurc.auth.AuthManager;
 import np.edu.ku.kurc.common.Const;
 import np.edu.ku.kurc.fragments.HomeFragment;
 import np.edu.ku.kurc.fragments.PostsFragment;
+import np.edu.ku.kurc.models.Category;
 import np.edu.ku.kurc.models.Member;
+import np.edu.ku.kurc.models.collection.CategoryCollection;
 import np.edu.ku.kurc.network.api.ApiConstants;
 
 
@@ -33,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private NavigationView navigationView;
     private FragmentManager fragmentManager;
     private HashMap<String, Fragment> fragmentMap = new HashMap<>();
+    private CategoryCollection categories;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,10 +56,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         navigationView.setNavigationItemSelectedListener(this);
 
-        selectFirstNavItem();
+        populateMenuItems(navigationView.getMenu());
         initHeaderWithMember();
 
         fragmentManager = getSupportFragmentManager();
+    }
+
+    /**
+     * Populates Menu Items from database.
+     *
+     * @param menu Menu instance.
+     * @TODO Move fetching of categories in another thread.
+     */
+    private void populateMenuItems(Menu menu) {
+        categories = (CategoryCollection) (new Category()).all(getApplicationContext());
+
+        for(Category category: categories) {
+            MenuItem item = menu.add(R.id.menu_group_main,category.id,2,category.name);
+            item.setIcon(category.getMenuIcon());
+            item.setCheckable(true);
+        }
+
+        selectFirstNavItem();
     }
 
     /**
@@ -121,14 +143,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_home:
                 swapHomeFragment();
                 break;
-            case R.id.nav_events:
-                swapPostsFragment(ApiConstants.CATEGORY_SLUG_EVENTS);
-                break;
-            case R.id.nav_notice:
-                swapPostsFragment(ApiConstants.CATEGORY_SLUG_NOTICE);
-                break;
-            case R.id.nav_projects:
-                swapPostsFragment(ApiConstants.CATEGORY_SLUG_PROJECTS);
+            default:
+                if(categories != null) {
+                    Category category = categories.findById(id);
+                    if(category != null) {
+                        swapPostsFragment(category.slug);
+                    }
+                }
                 break;
         }
 

@@ -1,6 +1,9 @@
 package np.edu.ku.kurc.models.transformers;
 
-public interface TransformerResolverContract {
+import np.edu.ku.kurc.database.schema.BaseSchema;
+import np.edu.ku.kurc.models.BaseModel;
 
-    ModelTransformerContract getTransformer();
+public interface TransformerResolverContract<M extends BaseModel,S extends BaseSchema> {
+
+    ModelTransformerContract<M,S> getTransformer();
 }
