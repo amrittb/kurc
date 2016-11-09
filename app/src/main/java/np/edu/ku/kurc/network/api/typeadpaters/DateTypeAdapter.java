@@ -1,5 +1,7 @@
 package     np.edu.ku.kurc.network.api.typeadpaters;
 
+import android.support.annotation.Nullable;
+
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
@@ -10,6 +12,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import np.edu.ku.kurc.utils.DateUtils;
+
 public class DateTypeAdapter extends TypeAdapter<Date> {
 
     /**
@@ -19,23 +23,13 @@ public class DateTypeAdapter extends TypeAdapter<Date> {
 
     @Override
     public void write(JsonWriter out, Date value) throws IOException {
-        out.value(sdf.format(value));
+        out.value(DateUtils.toString(value,sdf));
     }
 
     @Override
     public Date read(JsonReader in) throws IOException {
         String dateString = in.nextString();
 
-        Date date = null;
-
-        synchronized (sdf) {
-            try {
-                date = sdf.parse(dateString);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return date;
+        return DateUtils.fromString(dateString,sdf);
     }
 }
