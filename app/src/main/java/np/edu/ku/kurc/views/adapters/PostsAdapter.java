@@ -19,6 +19,7 @@ import np.edu.ku.kurc.R;
 import np.edu.ku.kurc.common.Const;
 import np.edu.ku.kurc.models.FeaturedMedia;
 import np.edu.ku.kurc.models.Post;
+import np.edu.ku.kurc.utils.Metrics;
 
 public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> {
 
@@ -45,7 +46,28 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
         holder.postTitle.setText(post.title);
         holder.postDate.setText(post.getDateString(context));
 
+        holder.postAuthor.setText(post.getAuthor().name);
+
+        loadAuthorAvatar(holder,post);
         loadFeaturedImage(holder,post);
+    }
+
+    /**
+     * Loads Author Avatar.
+     *
+     * @param holder    ViewHolder instance.
+     * @param post      Post for which author avatar is to be loaded.
+     */
+    private void loadAuthorAvatar(ViewHolder holder, Post post) {
+        Picasso.with(context).cancelRequest(holder.authorAvatar);
+
+        holder.authorAvatar.setImageBitmap(null);
+
+        Picasso.with(context)
+                .load(post.getAuthor().avatar)
+                .resize(holder.avatarSize,holder.avatarSize)
+                .centerCrop()
+                .into(holder.authorAvatar);
     }
 
 
@@ -89,18 +111,23 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
+        public ImageView authorAvatar;
         public ImageView featureImage;
         public TextView postTitle, postDate, postAuthor;
         public int featuredImageWidth;
         public int featuredImageHeight;
+        public int avatarSize;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
+            authorAvatar = (ImageView) itemView.findViewById(R.id.post_author_avatar);
             featureImage = (ImageView) itemView.findViewById(R.id.post_featured_image);
             postTitle = (TextView) itemView.findViewById(R.id.post_title);
             postDate = (TextView) itemView.findViewById(R.id.post_date);
             postAuthor = (TextView) itemView.findViewById(R.id.post_author);
+
+            avatarSize = (int) Metrics.dipToPixels(context,context.getResources().getDimension(R.dimen.avatar_size));
 
             itemView.setOnClickListener(new View.OnClickListener() {
 

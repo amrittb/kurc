@@ -14,54 +14,74 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingTop="@dimen/spacing_small"
+            android:paddingBottom="@dimen/spacing_small"
             android:background="?android:attr/selectableItemBackground"
             >
 
-                <TextView
-                    android:id="@+id/post_author_by"
+                <ImageView
+                    android:id="@+id/post_author_avatar"
+                    android:layout_width="@dimen/avatar_size"
+                    android:layout_height="@dimen/avatar_size"
+                    android:layout_marginLeft="@dimen/spacing_small"
+                    android:layout_marginStart="@dimen/spacing_small"
+                    android:layout_marginBottom="@dimen/spacing_small"
+                    android:background="@color/gray_green"
+                    />
+
+                <RelativeLayout
+                    android:id="@+id/post_detail"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/txt_by"
-                    android:paddingTop="@dimen/spacing_small"
-                    android:paddingBottom="@dimen/spacing_small"
-                    android:paddingLeft="@dimen/spacing_normal"
-                    android:paddingStart="@dimen/spacing_normal"
-                    android:paddingEnd="@dimen/spacing_small"
+                    android:layout_height="@dimen/avatar_size"
+                    android:layout_toRightOf="@id/post_author_avatar"
+                    android:layout_toEndOf="@id/post_author_avatar"
+                    android:layout_marginBottom="@dimen/spacing_small"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/spacing_small"
+                    android:paddingStart="@dimen/spacing_small"
                     android:paddingRight="@dimen/spacing_small"
-                    />
+                    android:paddingEnd="@dimen/spacing_small"
+                    >
 
-                <TextView
-                    android:id="@+id/post_author"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toEndOf="@id/post_author_by"
-                    android:layout_toRightOf="@id/post_author_by"
-                    android:layout_alignBaseline="@id/post_author_by"
-                    android:text="@string/placeholder_post_author"
-                    android:textColor="@color/colorAccent"
-                    />
+                        <TextView
+                            android:id="@+id/post_author_by"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingRight="@dimen/spacing_small"
+                            android:paddingEnd="@dimen/spacing_small"
+                            android:text="@string/txt_by"
+                            />
 
-                <TextView
-                    android:id="@+id/post_date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/post_author_by"
-                    android:layout_alignLeft="@id/post_author_by"
-                    android:layout_alignStart="@id/post_author_by"
-                    android:paddingLeft="@dimen/spacing_normal"
-                    android:paddingStart="@dimen/spacing_normal"
-                    android:paddingEnd="@dimen/spacing_normal"
-                    android:paddingRight="@dimen/spacing_normal"
-                    android:text="@string/placeholder_post_date"
-                    />
+                        <TextView
+                            android:id="@+id/post_author"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toEndOf="@id/post_author_by"
+                            android:layout_toRightOf="@id/post_author_by"
+                            android:layout_alignBaseline="@id/post_author_by"
+                            android:text="@string/placeholder_post_author"
+                            android:textColor="@color/colorAccent"
+                            />
+
+                        <TextView
+                            android:id="@+id/post_date"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/post_author_by"
+                            android:layout_alignLeft="@id/post_author_by"
+                            android:layout_alignStart="@id/post_author_by"
+                            android:text="@string/placeholder_post_date"
+                            />
+
+                </RelativeLayout>
 
                 <np.edu.ku.kurc.views.widget.HDImageView
                     android:id="@+id/post_featured_image"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/post_date"
-                    android:layout_marginTop="@dimen/spacing_normal"
-                    android:layout_marginBottom="@dimen/spacing_normal"
+                    android:layout_below="@id/post_detail"
+                    android:layout_marginTop="@dimen/spacing_small"
+                    android:layout_marginBottom="@dimen/spacing_small"
                     android:background="@color/gray_green"
                     android:scaleType="center"
                     android:visibility="gone"
@@ -72,6 +92,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/post_featured_image"
+                    android:paddingTop="@dimen/spacing_small"
                     android:paddingLeft="@dimen/spacing_normal"
                     android:paddingStart="@dimen/spacing_normal"
                     android:paddingEnd="@dimen/spacing_normal"
@@ -85,7 +106,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/post_title"
-                    android:layout_margin="@dimen/spacing_normal"
+                    android:layout_margin="@dimen/spacing_small"
                     >
 
                         <ImageButton
