@@ -6,12 +6,14 @@ import android.text.format.DateUtils;
 import com.google.gson.annotations.SerializedName;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import np.edu.ku.kurc.database.schema.PostSchema;
 import np.edu.ku.kurc.models.collection.BaseCollection;
+import np.edu.ku.kurc.models.collection.CategoryCollection;
 import np.edu.ku.kurc.models.collection.PostCollection;
 import np.edu.ku.kurc.models.transformers.PostTransformer;
 import np.edu.ku.kurc.models.transformers.contracts.ModelTransformerContract;
@@ -85,6 +87,24 @@ public class Post extends BaseModel<Post,PostSchema> {
      */
     public FeaturedMedia getFeaturedMedia() {
         return embedded.featured.get(0);
+    }
+
+    /**
+     * Returns Author of the post.
+     *
+     * @return Author of post.
+     */
+    public Author getAuthor() {
+        return embedded.authors.get(0);
+    }
+
+    /**
+     * Returns categories from array of terms.
+     *
+     * @return CategoryCollection.
+     */
+    public CategoryCollection getCategories() {
+        return new CategoryCollection(Arrays.asList(embedded.terms[0]));
     }
 
     @Override
