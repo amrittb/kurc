@@ -19,6 +19,6 @@ public interface PostService {
     @GET("posts?per_page=1&sticky&include_content&_embed")
     Call<List<Post>> getPinnedPost();
 
-    @GET("posts/{id}")
-    Call<Post> getPost(@Path("id") int postId);
+    @GET("posts/{id}?_embed")
+    Call<Post> getPost(@Path("id") int postId); // @TODO no _embed needed. Remove after saving posts to DB
 }

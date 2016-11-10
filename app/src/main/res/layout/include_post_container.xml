@@ -5,55 +5,63 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:padding="@dimen/spacing_normal"
-    android:visibility="gone"
     >
 
     <ImageView
-        android:id="@+id/post_featured_image"
+        android:id="@+id/post_author_avatar"
         android:layout_width="@dimen/avatar_size"
         android:layout_height="@dimen/avatar_size"
         android:layout_marginEnd="@dimen/spacing_small"
         android:layout_marginRight="@dimen/spacing_small"
-        android:src="@drawable/ic_image_white_24dp"
-        android:background="@drawable/circle_shape"
-        android:scaleType="center"
+        android:background="@color/gray_green"
         />
 
-    <TextView
-        android:id="@+id/post_title"
+    <RelativeLayout
+        android:id="@+id/post_detail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/post_featured_image"
-        android:layout_toRightOf="@id/post_featured_image"
-        android:text="@string/placeholder_post_title"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        />
+        android:layout_toRightOf="@id/post_author_avatar"
+        android:layout_toEndOf="@id/post_author_avatar"
+        android:minHeight="@dimen/avatar_size"
+        android:gravity="center_vertical"
+        >
 
-    <TextView
-        android:id="@+id/post_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/post_title"
-        android:layout_alignLeft="@id/post_title"
-        android:layout_alignStart="@id/post_title"
-        android:text="@string/placeholder_post_date"
-        />
+        <TextView
+            android:id="@+id/post_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/placeholder_post_title"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            />
 
-    <TextView
-        android:id="@+id/post_author"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/post_date"
-        android:layout_toEndOf="@id/post_date"
-        android:layout_alignBaseline="@id/post_date"
-        android:text="@string/placeholder_post_author"
-        />
+        <TextView
+            android:id="@+id/post_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/post_title"
+            android:layout_alignLeft="@id/post_title"
+            android:layout_alignStart="@id/post_title"
+            android:text="@string/placeholder_post_date"
+            />
+
+        <TextView
+            android:id="@+id/post_author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/post_date"
+            android:layout_toEndOf="@id/post_date"
+            android:layout_alignBaseline="@id/post_date"
+            android:paddingLeft="@dimen/spacing_small"
+            android:paddingStart="@dimen/spacing_small"
+            android:text="@string/placeholder_post_author"
+            />
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/post_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/post_author"
+        android:layout_below="@id/post_detail"
         android:layout_marginTop="@dimen/spacing_normal"
         android:text="@string/placeholder_large_txt"
         />
