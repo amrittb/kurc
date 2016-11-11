@@ -1,9 +1,15 @@
 package np.edu.ku.kurc.models;
 
+import android.util.Log;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 import java.util.HashMap;
+
+import np.edu.ku.kurc.BuildConfig;
+import np.edu.ku.kurc.common.Const;
+import np.edu.ku.kurc.utils.StringUtils;
 
 public class FeaturedMedia {
 
@@ -40,5 +46,18 @@ public class FeaturedMedia {
 
         @SerializedName("source_url")
         public String sourceUrl;
+
+        /**
+         * Returns Correct Size URL.
+         *
+         * @return  URL of media size.
+         */
+        public String getUrl() {
+            if(BuildConfig.DEBUG) {
+                return StringUtils.replaceLocalhost(sourceUrl);
+            }
+
+            return sourceUrl;
+        }
     }
 }

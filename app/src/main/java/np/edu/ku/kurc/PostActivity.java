@@ -89,7 +89,7 @@ public class PostActivity extends AppCompatActivity {
                     int height = featuredImage.getHeight();
 
                     FeaturedMedia media = post.getFeaturedMedia();
-                    String url = media.getOptimalSize(width,height).sourceUrl;
+                    String url = media.getOptimalSize(width,height).getUrl();
 
                     Picasso.with(PostActivity.this)
                             .load(url)
