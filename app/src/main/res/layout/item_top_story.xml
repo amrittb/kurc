@@ -64,6 +64,10 @@
                     android:layout_toRightOf="@id/post_date"
                     android:layout_toEndOf="@id/post_date"
                     android:layout_alignBaseline="@id/post_date"
+                    android:paddingLeft="@dimen/spacing_small"
+                    android:paddingStart="@dimen/spacing_small"
+                    android:maxLines="1"
+                    android:ellipsize="end"
                     android:text="@string/placeholder_post_author"
                     />
             </RelativeLayout>

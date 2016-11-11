@@ -14,10 +14,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
 import np.edu.ku.kurc.R;
+import np.edu.ku.kurc.models.Author;
+import np.edu.ku.kurc.models.Embedded;
 import np.edu.ku.kurc.models.Post;
 import np.edu.ku.kurc.network.api.ServiceFactory;
 import np.edu.ku.kurc.network.api.services.PostService;
@@ -104,6 +107,13 @@ public class HomeFragment extends Fragment {
      */
     private void initStories() {
         Post dummyPost = new Post(0,"Loading...", Calendar.getInstance().getTime(),Calendar.getInstance().getTime(),"slug","link","content","excerpt");
+        Author dummyAuthor = new Author();
+        dummyAuthor.name = "kurc";
+
+        dummyPost.embedded = new Embedded();
+        dummyPost.embedded.authors = new ArrayList<>();
+        dummyPost.embedded.authors.add(dummyAuthor);
+        
         stories.add(dummyPost);
         topStoriesAdapter = new TopStoriesAdapter(getContext(), stories);
     }

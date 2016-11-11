@@ -44,6 +44,7 @@ public class TopStoriesAdapter extends RecyclerView.Adapter<TopStoriesAdapter.Vi
         Post post = stories.get(position);
         holder.postTitle.setText(post.title);
         holder.postDate.setText(post.getDateString(context));
+        holder.postAuthor.setText(post.getAuthor().name);
 
         loadFeaturedImage(holder, post);
     }
