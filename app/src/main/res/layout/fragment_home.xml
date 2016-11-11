@@ -1,107 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+
+<android.support.v4.widget.SwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swipe_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
 
-    <RelativeLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         >
 
         <RelativeLayout
-            android:id="@+id/top_stories_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:background="@color/gray_light"
             >
-
-            <TextView
-                android:id="@+id/top_stories_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/message_top_stories"
-                android:padding="@dimen/spacing_normal"
-                />
-
-            <ProgressBar
-                android:id="@+id/top_stories_loading_bar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="?android:attr/progressBarStyle"
-                android:layout_centerInParent="true"
-                />
-
-            <np.edu.ku.kurc.views.widget.SnappingRecyclerView
-                android:id="@+id/top_stories"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/top_stories_title"
-                android:layout_marginBottom="@dimen/spacing_small"
-                android:scrollbars="horizontal"
-                android:visibility="invisible"
-                />
-
-            <include
-                layout="@layout/include_retry_container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_centerInParent="true"
-                />
-
-        </RelativeLayout>
-
-        <TextView
-            android:id="@+id/pinned_posts_message"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/top_stories_container"
-            android:paddingTop="@dimen/spacing_normal"
-            android:paddingLeft="@dimen/spacing_normal"
-            android:paddingRight="@dimen/spacing_normal"
-            android:text="@string/message_pinned_post"
-            />
-
-        <FrameLayout
-            android:id="@+id/pinned_posts_container"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:layout_below="@id/pinned_posts_message"
-            android:layout_alignParentBottom="true"
-            >
-
-            <include
-                layout="@layout/include_post_container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                />
 
             <RelativeLayout
-                android:id="@+id/pinned_post_loading_container"
-                android:layout_height="match_parent"
+                android:id="@+id/top_stories_container"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:background="@color/gray_light"
                 >
 
+                <TextView
+                    android:id="@+id/top_stories_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/message_top_stories"
+                    android:padding="@dimen/spacing_normal"
+                    />
+
                 <ProgressBar
-                    android:id="@+id/pinned_post_loading_bar"
+                    android:id="@+id/top_stories_loading_bar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="?android:attr/progressBarStyle"
                     android:layout_centerInParent="true"
-                />
+                    />
+
+                <np.edu.ku.kurc.views.widget.SnappingRecyclerView
+                    android:id="@+id/top_stories"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/top_stories_title"
+                    android:layout_marginBottom="@dimen/spacing_small"
+                    android:scrollbars="horizontal"
+                    android:visibility="invisible"
+                    />
 
                 <include
                     layout="@layout/include_retry_container"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
                     />
 
             </RelativeLayout>
 
-        </FrameLayout>
+            <TextView
+                android:id="@+id/pinned_posts_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/top_stories_container"
+                android:paddingTop="@dimen/spacing_normal"
+                android:paddingLeft="@dimen/spacing_normal"
+                android:paddingRight="@dimen/spacing_normal"
+                android:text="@string/message_pinned_post"
+                />
 
-    </RelativeLayout>
+            <FrameLayout
+                android:id="@+id/pinned_posts_container"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_below="@id/pinned_posts_message"
+                android:layout_alignParentBottom="true"
+                >
 
-</ScrollView>
+                <include
+                    layout="@layout/include_post_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    />
+
+                <RelativeLayout
+                    android:id="@+id/pinned_post_loading_container"
+                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"
+                    >
+
+                    <ProgressBar
+                        android:id="@+id/pinned_post_loading_bar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="?android:attr/progressBarStyle"
+                        android:layout_centerInParent="true"
+                    />
+
+                    <include
+                        layout="@layout/include_retry_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        />
+
+                </RelativeLayout>
+
+            </FrameLayout>
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+</android.support.v4.widget.SwipeRefreshLayout>

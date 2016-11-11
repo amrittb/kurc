@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,7 +33,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private SnappingRecyclerView topStoriesView;
     private CoordinatorLayout coordinatorLayout;
@@ -58,6 +59,7 @@ public class HomeFragment extends Fragment {
     private View topStoriesRetryContainer;
     private Button topStoriesRetryBtn;
     private PostViewModel postViewModel;
+    private SwipeRefreshLayout swipeContainer;
 
     /**
      * Creates home fragment instance.
@@ -78,6 +80,8 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.coordinator_layout);
 
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
+
         topStoriesContainer = view.findViewById(R.id.top_stories_container);
         topStoriesLoadingBar = topStoriesContainer.findViewById(R.id.top_stories_loading_bar);
         topStoriesView = (SnappingRecyclerView) topStoriesContainer.findViewById(R.id.top_stories);
@@ -92,6 +96,8 @@ public class HomeFragment extends Fragment {
         retryPinnedPostContainer = pinnedPostLoadingContainer.findViewById(R.id.retry_container);
         retryPinnedPostBtn = (Button) retryPinnedPostContainer.findViewById(R.id.retry_btn);
 
+        initSwipeContainer();
+
         initStories();
         initStoriesView();
         initPinnedPost();
@@ -100,6 +106,11 @@ public class HomeFragment extends Fragment {
         loadPinnedPost();
 
         postViewModel = new PostViewModel(pinnedPostContainer);
+    }
+
+    private void initSwipeContainer() {
+        swipeContainer.setOnRefreshListener(this);
+        swipeContainer.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent);
     }
 
     /**
@@ -113,7 +124,7 @@ public class HomeFragment extends Fragment {
         dummyPost.embedded = new Embedded();
         dummyPost.embedded.authors = new ArrayList<>();
         dummyPost.embedded.authors.add(dummyAuthor);
-        
+
         stories.add(dummyPost);
         topStoriesAdapter = new TopStoriesAdapter(getContext(), stories);
     }
@@ -173,6 +184,8 @@ public class HomeFragment extends Fragment {
      * @param posts List of posts.
      */
     private void consumeStories(List<Post> posts) {
+        swipeContainer.setRefreshing(false);
+
         if(posts != null) {
             stories.clear();
 
@@ -265,5 +278,11 @@ public class HomeFragment extends Fragment {
                         }
                     }).show();
         }
+    }
+
+    @Override
+    public void onRefresh() {
+        fetchStories();
+        fetchPinnedPost();
     }
 }

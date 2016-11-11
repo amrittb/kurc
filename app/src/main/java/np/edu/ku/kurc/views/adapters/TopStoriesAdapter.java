@@ -76,6 +76,9 @@ public class TopStoriesAdapter extends RecyclerView.Adapter<TopStoriesAdapter.Vi
                             .placeholder(R.drawable.ic_image_white_24dp)
                             .error(R.drawable.ic_image_white_24dp)
                             .into(holder.featureImage);
+                } else {
+                    Picasso.with(context).cancelRequest(holder.featureImage);
+                    holder.featureImage.setImageResource(R.drawable.ic_image_white_24dp);
                 }
             }
         });
