@@ -8,7 +8,6 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/gray_light"
         >
 
         <RelativeLayout
@@ -16,6 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
+            android:background="@color/gray_light"
             >
 
             <TextView
@@ -61,17 +61,15 @@
             android:paddingTop="@dimen/spacing_normal"
             android:paddingLeft="@dimen/spacing_normal"
             android:paddingRight="@dimen/spacing_normal"
-            android:background="@color/white"
             android:text="@string/message_pinned_post"
             />
 
         <FrameLayout
             android:id="@+id/pinned_posts_container"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:padding="@dimen/spacing_normal"
             android:layout_below="@id/pinned_posts_message"
-            android:background="@color/white"
+            android:layout_alignParentBottom="true"
             >
 
             <include

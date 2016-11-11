@@ -22,6 +22,7 @@ import np.edu.ku.kurc.models.Post;
 import np.edu.ku.kurc.network.api.ServiceFactory;
 import np.edu.ku.kurc.network.api.services.PostService;
 import np.edu.ku.kurc.views.adapters.TopStoriesAdapter;
+import np.edu.ku.kurc.views.viewmodels.PostViewModel;
 import np.edu.ku.kurc.views.widget.PreCachingLinearLayoutManager;
 import np.edu.ku.kurc.views.widget.SnappingRecyclerView;
 import retrofit2.Call;
@@ -53,6 +54,7 @@ public class HomeFragment extends Fragment {
     private View topStoriesLoadingBar;
     private View topStoriesRetryContainer;
     private Button topStoriesRetryBtn;
+    private PostViewModel postViewModel;
 
     /**
      * Creates home fragment instance.
@@ -87,18 +89,14 @@ public class HomeFragment extends Fragment {
         retryPinnedPostContainer = pinnedPostLoadingContainer.findViewById(R.id.retry_container);
         retryPinnedPostBtn = (Button) retryPinnedPostContainer.findViewById(R.id.retry_btn);
 
-        postFeaturedImage = (ImageView) pinnedPostContainer.findViewById(R.id.post_featured_image);
-        postTitle = (TextView) pinnedPostContainer.findViewById(R.id.post_title);
-        postDate = (TextView) pinnedPostContainer.findViewById(R.id.post_date);
-        postAuthor = (TextView) pinnedPostContainer.findViewById(R.id.post_author);
-        postContent = (TextView) pinnedPostContainer.findViewById(R.id.post_content);
-
         initStories();
         initStoriesView();
         initPinnedPost();
 
         loadStories();
         loadPinnedPost();
+
+        postViewModel = new PostViewModel(pinnedPostContainer);
     }
 
     /**
@@ -241,8 +239,7 @@ public class HomeFragment extends Fragment {
 
     private void consumePinnedPost(Post post) {
         if(post != null) {
-            postTitle.setText(post.title);
-            postDate.setText(post.getDateString(getContext()));
+            postViewModel.onBindModel(post);
 
             pinnedPostLoadingContainer.setVisibility(View.GONE);
             pinnedPostContainer.setVisibility(View.VISIBLE);
