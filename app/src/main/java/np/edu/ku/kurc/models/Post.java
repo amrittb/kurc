@@ -77,7 +77,7 @@ public class Post extends BaseModel<Post,PostSchema> {
      * @return Flag to check if featured media exists.
      */
     public boolean hasFeaturedMedia() {
-        return embedded != null && embedded.featured != null && (! embedded.featured.isEmpty());
+        return embedded != null && embedded.featured != null && (! embedded.featured.isEmpty() && embedded.featured.get(0).hasImageData());
     }
 
     /**

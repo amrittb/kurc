@@ -1,6 +1,5 @@
 package np.edu.ku.kurc;
 
-
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
@@ -13,7 +12,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
@@ -89,7 +87,7 @@ public class PostActivity extends AppCompatActivity {
                     int height = featuredImage.getHeight();
 
                     FeaturedMedia media = post.getFeaturedMedia();
-                    String url = media.getOptimalSize(width,height).getUrl();
+                    String url = media.getOptimalSourceUrl(width,height);
 
                     Picasso.with(PostActivity.this)
                             .load(url)

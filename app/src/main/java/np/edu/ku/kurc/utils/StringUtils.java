@@ -9,6 +9,10 @@ public final class StringUtils {
      * @return      Replaced URL.
      */
     public static String replaceLocalhost(String url) {
+        if(url == null) {
+            return url;
+        }
+
         return url.replace("http://localhost/","http://10.0.2.2/");
     }
 }

@@ -15,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -39,12 +38,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private CoordinatorLayout coordinatorLayout;
 
     private TopStoriesAdapter topStoriesAdapter;
-
-    private ImageView postFeaturedImage;
-    private TextView postTitle;
-    private TextView postDate;
-    private TextView postAuthor;
-    private TextView postContent;
 
     private View pinnedPostContainer;
     private View pinnedPostLoadingBar;
@@ -246,7 +239,9 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         call.enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
-                if(response.body().isEmpty()) {
+                if(response.body() == null) {
+                    consumePinnedPost(null);
+                } else if(response.body().isEmpty()) {
                     consumePinnedPost(null);
                 } else {
                     consumePinnedPost(response.body().get(0));

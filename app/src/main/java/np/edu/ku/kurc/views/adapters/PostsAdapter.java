@@ -94,7 +94,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             }
 
             FeaturedMedia media = post.getFeaturedMedia();
-            String url = media.getOptimalSize(width, height).getUrl();
+            String url = media.getOptimalSourceUrl(width, height);
             Picasso.with(context)
                     .load(url)
                     .fit()
