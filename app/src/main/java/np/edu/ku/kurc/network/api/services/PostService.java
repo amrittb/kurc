@@ -3,6 +3,7 @@ package np.edu.ku.kurc.network.api.services;
 import java.util.List;
 
 import np.edu.ku.kurc.models.Post;
+import np.edu.ku.kurc.models.collection.PostCollection;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -21,4 +22,13 @@ public interface PostService {
 
     @GET("posts/{id}?_embed")
     Call<Post> getPost(@Path("id") int postId); // @TODO no _embed needed. Remove after saving posts to DB
+
+    @GET("posts")
+    Call<PostCollection> getPosts(@Query("per_page") int perPage);
+
+    @GET("posts")
+    Call<PostCollection> getPostsAfter(@Query("after") String after, @Query("per_page") int perPage);
+
+    @GET("posts")
+    Call<PostCollection> getPostsBefore(@Query("before") String before, @Query("per_page") int perPage);
 }

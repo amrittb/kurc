@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 
 import np.edu.ku.kurc.common.AsyncCallback;
+import np.edu.ku.kurc.database.DatabaseHelper;
 import np.edu.ku.kurc.database.tasks.BulkSaveTask;
 import np.edu.ku.kurc.models.BaseModel;
 import np.edu.ku.kurc.models.collection.contracts.CollectionContract;
+import np.edu.ku.kurc.models.exception.DatabaseErrorException;
 
 public abstract class BaseCollection<T extends BaseModel> extends ArrayList<T> implements CollectionContract<T> {
 
@@ -29,6 +32,29 @@ public abstract class BaseCollection<T extends BaseModel> extends ArrayList<T> i
         BulkSaveTask<T> task = new BulkSaveTask<>(context, this, callback);
 
         task.execute();
+    }
+
+    /**
+     * Saves all collection entries into database synchronously.
+     *
+     * @param context   Application Context.
+     * @throws DatabaseErrorException
+     */
+    @Override
+    public void saveAllSync(Context context) throws DatabaseErrorException {
+        SQLiteDatabase db = DatabaseHelper.getInstance(context).getWritableDatabase();
+
+        try {
+            db.beginTransaction();
+
+            for(T model: this) {
+                model.save(db);
+            }
+
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
     }
 
     @Override

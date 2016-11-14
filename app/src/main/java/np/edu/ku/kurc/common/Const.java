@@ -28,4 +28,15 @@ public final class Const {
     public static final String KEY_POST = "POST";
 
     public static final String POSTS_TAG = "Posts";
+
+    // Service Constants.
+    public static final String SERVICE_KEY_RESULT_CODE = "RESULT_CODE";
+    public static final String SERVICE_KEY_RESULT_VALUE = "RESULT_VALUE";
+
+    public static final int SERVICE_RESULT_OK = 1;
+    public static final int SERVICE_RESULT_FAILURE = 0;
+    public static final int SERVICE_RESULT_NETWORK_ERROR = -1;
+    public static final int SERVICE_RESULT_DATABASE_ERROR = -2;
+
+    public static final String SERVICE_RESPONSE_SUCCESS = "SYNCED";
 }

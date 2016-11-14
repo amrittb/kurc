@@ -148,6 +148,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         topStoriesView.setVisibility(View.INVISIBLE);
         topStoriesLoadingBar.setVisibility(View.VISIBLE);
         topStoriesRetryContainer.setVisibility(View.GONE);
+
         fetchStories();
     }
 

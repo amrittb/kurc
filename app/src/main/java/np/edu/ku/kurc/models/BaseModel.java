@@ -12,6 +12,7 @@ import np.edu.ku.kurc.models.collection.BaseCollection;
 import np.edu.ku.kurc.models.collection.contracts.CollectionResolverContract;
 import np.edu.ku.kurc.models.contracts.ModelContract;
 import np.edu.ku.kurc.database.schema.contracts.SchemaResolver;
+import np.edu.ku.kurc.models.exception.DatabaseErrorException;
 import np.edu.ku.kurc.models.transformers.contracts.TransformerResolverContract;
 
 public abstract class BaseModel<M extends BaseModel,S extends BaseSchema> implements TransformerResolverContract<M,S>,
@@ -20,17 +21,21 @@ public abstract class BaseModel<M extends BaseModel,S extends BaseSchema> implem
         CollectionResolverContract<M> {
 
     @Override
-    public long save(Context context) {
+    public void save(Context context) throws DatabaseErrorException {
         SQLiteDatabase db = DatabaseHelper.getInstance(context).getWritableDatabase();
 
-        return save(db);
+        save(db);
     }
 
     @Override
-    public long save(SQLiteDatabase db) {
+    public void save(SQLiteDatabase db) throws DatabaseErrorException {
         String tableName = getSchema().getTableName();
 
-        return db.insertWithOnConflict(tableName,null, getTransformer().toContentValues((M) this, getSchema()),SQLiteDatabase.CONFLICT_REPLACE);
+        long result = db.insertWithOnConflict(tableName,null, getTransformer().toContentValues((M) this, getSchema()),SQLiteDatabase.CONFLICT_REPLACE);
+
+        if(result == -1) {
+            throw new DatabaseErrorException("An error occurred while saving model");
+        }
     }
 
     @Override

@@ -1,13 +1,12 @@
 package np.edu.ku.kurc.database.tasks;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 
 import np.edu.ku.kurc.common.AsyncCallback;
-import np.edu.ku.kurc.database.DatabaseHelper;
 import np.edu.ku.kurc.models.BaseModel;
 import np.edu.ku.kurc.models.collection.BaseCollection;
+import np.edu.ku.kurc.models.exception.DatabaseErrorException;
 
 public class BulkSaveTask<U extends BaseModel> extends AsyncTask<Void,Void,Void> {
 
@@ -37,20 +36,11 @@ public class BulkSaveTask<U extends BaseModel> extends AsyncTask<Void,Void,Void>
 
     @Override
     protected Void doInBackground(Void... list) {
-        SQLiteDatabase db = DatabaseHelper.getInstance(context).getWritableDatabase();
-
         try {
-            db.beginTransaction();
-
-            for(U model: collection) {
-                model.save(db);
-            }
-
-            db.setTransactionSuccessful();
-        } catch(Exception e) {
+            collection.saveAllSync(context);
+        } catch (DatabaseErrorException e) {
             cancel(true);
-        } finally {
-            db.endTransaction();
+            e.printStackTrace();
         }
 
         return null;

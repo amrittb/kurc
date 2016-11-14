@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import np.edu.ku.kurc.models.BaseModel;
 import np.edu.ku.kurc.models.collection.BaseCollection;
-import np.edu.ku.kurc.models.collection.CategoryCollection;
+import np.edu.ku.kurc.models.exception.DatabaseErrorException;
 
 public interface ModelContract<M extends BaseModel> {
 
@@ -13,17 +13,17 @@ public interface ModelContract<M extends BaseModel> {
      * Saves model into database.
      *
      * @param context   Application context.
-     * @return          Save status.
+     * @throws DatabaseErrorException
      */
-    long save(Context context);
+    void save(Context context) throws DatabaseErrorException;
 
     /**
      * Saves Model into given database.
      *
      * @param db    Database into which model is to be saved.
-     * @return      Save status.
+     * @throws DatabaseErrorException
      */
-    long save(SQLiteDatabase db);
+    void save(SQLiteDatabase db) throws DatabaseErrorException;
 
     /**
      * Counts number of rows in table.
