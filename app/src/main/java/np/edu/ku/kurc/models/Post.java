@@ -269,7 +269,20 @@ public class Post extends BaseModel<Post,PostSchema> {
                 "created_at DESC",
                 "1");
 
-        return get(cursor);
+        PostCollection posts = (PostCollection) getCollection(cursor);
+
+        if(posts.isEmpty()) {
+            posts = latestPaginated(context, 1, 1, false, false);
+        }
+
+        if ( ! posts.isEmpty()) {
+
+            attachMetaData(context,true,false,posts);
+
+            return posts.get(0);
+        }
+
+        return null;
     }
 
     /**

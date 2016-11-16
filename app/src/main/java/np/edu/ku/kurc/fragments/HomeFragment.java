@@ -76,6 +76,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 showStoriesError();
             } else {
                 loadStories();
+                loadPinnedPost();
             }
         }
     };
@@ -118,6 +119,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         retryPinnedPostContainer = pinnedPostLoadingContainer.findViewById(R.id.retry_container);
         retryPinnedPostBtn = (Button) retryPinnedPostContainer.findViewById(R.id.retry_btn);
 
+        postViewModel = new PostViewModel(pinnedPostContainer);
+
         initSwipeContainer();
 
         initStories();
@@ -127,7 +130,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         loadStories();
         loadPinnedPost();
 
-        postViewModel = new PostViewModel(pinnedPostContainer);
     }
 
     private void initSwipeContainer() {
@@ -251,34 +253,14 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
      * Loads Pinned Post.
      */
     private void loadPinnedPost() {
-        fetchPinnedPost();
         pinnedPostLoadingBar.setVisibility(View.VISIBLE);
         retryPinnedPostContainer.setVisibility(View.GONE);
-    }
 
-    /**
-     * Fetches pinned post.
-     */
-    private void fetchPinnedPost() {
-        Call<List<Post>> call = ServiceFactory.makeService(PostService.class).getPinnedPost();
+        Post p = new Post();
 
-        call.enqueue(new Callback<List<Post>>() {
-            @Override
-            public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
-                if(response.body() == null) {
-                    consumePinnedPost(null);
-                } else if(response.body().isEmpty()) {
-                    consumePinnedPost(null);
-                } else {
-                    consumePinnedPost(response.body().get(0));
-                }
-            }
+        Post post = p.getLatestPinned(getActivity().getApplicationContext());
 
-            @Override
-            public void onFailure(Call<List<Post>> call, Throwable t) {
-                consumePinnedPost(null);
-            }
-        });
+        consumePinnedPost(post);
     }
 
     private void consumePinnedPost(Post post) {
@@ -303,6 +285,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     @Override
     public void onRefresh() {
-        fetchPinnedPost();
+
     }
 }
