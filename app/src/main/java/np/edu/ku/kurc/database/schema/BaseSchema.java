@@ -26,4 +26,9 @@ public abstract class BaseSchema implements SchemaContract {
     public static final String CONSTRAINT_PK = "PRIMARY KEY";
     public static final String CONSTRAINT_FK = "FOREIGN KEY";
     public static final String CONSTRAINT_REFERENCES = "REFERENCES";
+
+    @Override
+    public String getPrimaryKey() {
+        return COLUMN_ID;
+    }
 }

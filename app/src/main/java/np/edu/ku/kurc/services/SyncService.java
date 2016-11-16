@@ -134,5 +134,16 @@ public abstract class SyncService<T extends BaseModel,C extends BaseCollection<T
         i.putExtra(Const.SERVICE_KEY_RESULT_VALUE,message);
 
         localBroadcastManager.sendBroadcast(i);
+
+        onBroadcast(action, resultCode, message);
     }
+
+    /**
+     * Callback called when a message is broadcast.
+     *
+     * @param action        Action Name.
+     * @param resultCode    Result Code.
+     * @param message       Message of broadcast.
+     */
+    protected abstract void onBroadcast(String action, int resultCode, String message);
 }

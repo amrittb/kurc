@@ -7,20 +7,14 @@ import np.edu.ku.kurc.database.schema.CategorySchema;
 import np.edu.ku.kurc.models.Category;
 import np.edu.ku.kurc.models.transformers.contracts.ModelTransformerContract;
 
-public class CategoryTransformer implements ModelTransformerContract<Category,CategorySchema> {
-
-    private ContentValues transformed;
-
-    public CategoryTransformer() {
-        transformed = new ContentValues();
-    }
+public class CategoryTransformer extends BaseTransformer<Category> {
 
     @Override
-    public ContentValues toContentValues(Category model, CategorySchema schema) {
-        transformed.put(schema.COLUMN_ID,model.id);
-        transformed.put(schema.COLUMN_NAME,model.name);
-        transformed.put(schema.COLUMN_SLUG,model.slug);
-        transformed.put(schema.COLUMN_LINK,model.link);
+    public ContentValues toContentValues(Category model) {
+        transformed.put(CategorySchema.COLUMN_ID,model.id);
+        transformed.put(CategorySchema.COLUMN_NAME,model.name);
+        transformed.put(CategorySchema.COLUMN_SLUG,model.slug);
+        transformed.put(CategorySchema.COLUMN_LINK,model.link);
 
         return transformed;
     }
@@ -29,13 +23,16 @@ public class CategoryTransformer implements ModelTransformerContract<Category,Ca
     public Category toModel(Cursor c) {
         Category category = new Category();
 
-        CategorySchema schema = (CategorySchema) category.getSchema();
-
-        category.id = c.getInt(c.getColumnIndexOrThrow(schema.COLUMN_ID));
-        category.name = c.getString(c.getColumnIndexOrThrow(schema.COLUMN_NAME));
-        category.slug = c.getString(c.getColumnIndexOrThrow(schema.COLUMN_SLUG));
-        category.link = c.getString(c.getColumnIndexOrThrow(schema.COLUMN_LINK));
+        toModel(c,category);
 
         return category;
+    }
+
+    @Override
+    public void toModel(Cursor c, Category model) {
+        model.id = c.getInt(c.getColumnIndexOrThrow(CategorySchema.COLUMN_ID));
+        model.name = c.getString(c.getColumnIndexOrThrow(CategorySchema.COLUMN_NAME));
+        model.slug = c.getString(c.getColumnIndexOrThrow(CategorySchema.COLUMN_SLUG));
+        model.link = c.getString(c.getColumnIndexOrThrow(CategorySchema.COLUMN_LINK));
     }
 }

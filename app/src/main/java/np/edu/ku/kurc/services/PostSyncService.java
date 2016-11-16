@@ -22,6 +22,12 @@ public class PostSyncService extends SyncService<Post, PostCollection> {
     private static final String EXTRA_POSTS_BEFORE = EXTRA_PREFIX + "POSTS_BEFORE";
     private static final String EXTRA_POSTS_PER_PAGE = EXTRA_PREFIX + "POSTS_PER_PAGE";
 
+    private static boolean isSyncingPost = false;
+    private static boolean isSyncingPosts = false;
+    private static boolean isSyncingPostsAfter = false;
+    private static boolean isSyncingPostsBefore = false;
+
+
     public PostSyncService() {
         super("PostSyncService");
     }
@@ -126,6 +132,7 @@ public class PostSyncService extends SyncService<Post, PostCollection> {
      * @param postId    Post Id of post to be synced.
      */
     private void handlePostSync(int postId) {
+        isSyncingPost = true;
         Call<Post> call = ServiceFactory.makeService(PostService.class).getPost(postId);
         handleModelSync(call, ACTION_POST_SYNC);
     }
@@ -136,6 +143,7 @@ public class PostSyncService extends SyncService<Post, PostCollection> {
      * @param perPage   Posts per page.
      */
     private void handlePostsSync(int perPage) {
+        isSyncingPosts = true;
         Call<PostCollection> postsCall = ServiceFactory.makeService(PostService.class).getPosts(perPage);
         handleCollectionSync(postsCall,ACTION_POSTS_SYNC);
     }
@@ -147,6 +155,7 @@ public class PostSyncService extends SyncService<Post, PostCollection> {
      * @param perPage   Posts per page.
      */
     private void handlePostsBeforeSync(String before, int perPage) {
+        isSyncingPostsBefore = true;
         Call<PostCollection> call = ServiceFactory.makeService(PostService.class).getPostsBefore(before, perPage);
         handleCollectionSync(call,ACTION_POSTS_BEFORE_SYNC);
     }
@@ -158,7 +167,67 @@ public class PostSyncService extends SyncService<Post, PostCollection> {
      * @param perPage   Posts per page.
      */
     private void handlePostsAfterSync(String after, int perPage) {
+        isSyncingPostsAfter = true;
         Call<PostCollection> call = ServiceFactory.makeService(PostService.class).getPostsAfter(after, perPage);
         handleCollectionSync(call,ACTION_POSTS_AFTER_SYNC);
+    }
+
+    /**
+     * Determines if service is syncing post.
+     *
+     * @return  isSyncingPosts flag.
+     */
+    public static boolean isSyncingPost() {
+        return isSyncingPost;
+    }
+
+    /**
+     * Determines if service is syncing posts.
+     *
+     * @return  isSyncingPosts flag.
+     */
+    public static boolean isSyncingPosts() {
+        return isSyncingPosts;
+    }
+
+    /**
+     * Determines if service is syncing posts after.
+     *
+     * @return  isSyncingPosts flag.
+     */
+    public static boolean isSyncingPostsAfter() {
+        return isSyncingPostsAfter;
+    }
+
+    /**
+     * Determines if service is syncing posts before.
+     *
+     * @return  isSyncingPosts flag.
+     */
+    public static boolean isSyncingPostsBefore() {
+        return isSyncingPostsBefore;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        isSyncingPost = false;
+        isSyncingPosts = false;
+        isSyncingPostsAfter = false;
+        isSyncingPostsBefore = false;
+    }
+
+    @Override
+    protected void onBroadcast(String action, int resultCode, String message) {
+        if(ACTION_POST_SYNC.equals(action)) {
+            isSyncingPost = false;
+        } else if(ACTION_POSTS_SYNC.equals(action)) {
+            isSyncingPosts = false;
+        } else if(ACTION_POSTS_BEFORE_SYNC.equals(action)) {
+            isSyncingPostsBefore = false;
+        } else if(ACTION_POSTS_AFTER_SYNC.equals(action)) {
+            isSyncingPostsAfter = false;
+        }
     }
 }

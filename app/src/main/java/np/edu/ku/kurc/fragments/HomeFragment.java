@@ -1,29 +1,35 @@
 package np.edu.ku.kurc.fragments;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 import np.edu.ku.kurc.R;
+import np.edu.ku.kurc.common.Const;
 import np.edu.ku.kurc.models.Author;
 import np.edu.ku.kurc.models.Embedded;
 import np.edu.ku.kurc.models.Post;
+import np.edu.ku.kurc.models.collection.PostCollection;
 import np.edu.ku.kurc.network.api.ServiceFactory;
 import np.edu.ku.kurc.network.api.services.PostService;
+import np.edu.ku.kurc.services.PostSyncService;
 import np.edu.ku.kurc.views.adapters.TopStoriesAdapter;
 import np.edu.ku.kurc.views.viewmodels.PostViewModel;
 import np.edu.ku.kurc.views.widget.PreCachingLinearLayoutManager;
@@ -54,6 +60,26 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private PostViewModel postViewModel;
     private SwipeRefreshLayout swipeContainer;
 
+    private IntentFilter postsSyncFilter;
+    private LocalBroadcastManager localBroadcastManager;
+
+    private boolean isSyncedPreviously = false;
+
+    private BroadcastReceiver postsSyncBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int resultCode = intent.getIntExtra(Const.SERVICE_KEY_RESULT_CODE,Const.SERVICE_RESULT_FAILURE);
+
+            if(resultCode != Const.SERVICE_RESULT_OK) {
+                isSyncedPreviously = false;
+
+                showStoriesError();
+            } else {
+                loadStories();
+            }
+        }
+    };
+
     /**
      * Creates home fragment instance.
      *
@@ -66,6 +92,9 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        localBroadcastManager = LocalBroadcastManager.getInstance(getContext());
+        postsSyncFilter = new IntentFilter(PostSyncService.ACTION_POSTS_SYNC);
+
         return inflater.inflate(R.layout.fragment_home,container,false);
     }
 
@@ -149,27 +178,11 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         topStoriesLoadingBar.setVisibility(View.VISIBLE);
         topStoriesRetryContainer.setVisibility(View.GONE);
 
-        fetchStories();
-    }
+        Post p = new Post();
 
+        PostCollection posts = p.latestPaginated(getActivity().getApplicationContext(),5,1,true,true);
 
-    /**
-     * Fetches new stories.
-     */
-    private void fetchStories() {
-        Call<List<Post>> call = ServiceFactory.makeService(PostService.class).getTopStories();
-
-        call.enqueue(new Callback<List<Post>>() {
-            @Override
-            public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
-                consumeStories(response.body());
-            }
-
-            @Override
-            public void onFailure(Call<List<Post>> call, Throwable t) {
-                consumeStories(null);
-            }
-        });
+        consumeStories(posts);
     }
 
     /**
@@ -181,14 +194,22 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         swipeContainer.setRefreshing(false);
 
         if(posts != null) {
-            stories.clear();
-
             if(posts.isEmpty()) {
                 topStoriesLoadingBar.setVisibility(View.VISIBLE);
                 topStoriesView.setVisibility(View.INVISIBLE);
-                topStoriesRetryContainer.setVisibility(View.VISIBLE);
+                topStoriesRetryContainer.setVisibility(View.GONE);
+
+                if((! PostSyncService.isSyncingPosts()) && (! isSyncedPreviously)) {
+                    isSyncedPreviously = true;
+
+                    PostSyncService.startPostsSync(getContext());
+
+                    localBroadcastManager.registerReceiver(postsSyncBroadcastReceiver, postsSyncFilter);
+                }
             } else {
-                topStoriesLoadingBar.setVisibility(View.INVISIBLE);
+                stories.clear();
+
+                topStoriesLoadingBar.setVisibility(View.GONE);
                 topStoriesView.setVisibility(View.VISIBLE);
 
                 stories.addAll(posts);
@@ -196,17 +217,21 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 topStoriesAdapter.notifyDataSetChanged();
             }
         } else {
-            topStoriesLoadingBar.setVisibility(View.INVISIBLE);
-            topStoriesRetryContainer.setVisibility(View.VISIBLE);
-
-            Snackbar.make(coordinatorLayout,"Could not fetch top stories.", Snackbar.LENGTH_LONG)
-                    .setAction("TRY AGAIN", new View.OnClickListener(){
-                        @Override
-                        public void onClick(View v) {
-                            loadStories();
-                        }
-                    }).show();
+            showStoriesError();
         }
+    }
+
+    private void showStoriesError() {
+        topStoriesLoadingBar.setVisibility(View.INVISIBLE);
+        topStoriesRetryContainer.setVisibility(View.VISIBLE);
+
+        Snackbar.make(coordinatorLayout,"Could not fetch top stories.", Snackbar.LENGTH_LONG)
+                .setAction("TRY AGAIN", new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        loadStories();
+                    }
+                }).show();
     }
 
     /**
@@ -278,7 +303,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     @Override
     public void onRefresh() {
-        fetchStories();
         fetchPinnedPost();
     }
 }

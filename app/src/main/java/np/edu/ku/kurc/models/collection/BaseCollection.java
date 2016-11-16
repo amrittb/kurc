@@ -44,6 +44,17 @@ public abstract class BaseCollection<T extends BaseModel> extends ArrayList<T> i
     public void saveAllSync(Context context) throws DatabaseErrorException {
         SQLiteDatabase db = DatabaseHelper.getInstance(context).getWritableDatabase();
 
+        saveAllSync(db);
+    }
+
+    /**
+     * Saves all items synchronously.
+     *
+     * @param db    SQLiteDatabase instance.
+     * @throws DatabaseErrorException
+     */
+    @Override
+    public void saveAllSync(SQLiteDatabase db) throws DatabaseErrorException {
         try {
             db.beginTransaction();
 
@@ -57,6 +68,12 @@ public abstract class BaseCollection<T extends BaseModel> extends ArrayList<T> i
         }
     }
 
+    /**
+     * Finds items by id.
+     *
+     * @param id    Id to find.
+     * @return      Found item.
+     */
     @Override
     public T findById(int id) {
         for(T m: this) {

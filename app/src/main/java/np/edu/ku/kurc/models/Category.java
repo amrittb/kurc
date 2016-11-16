@@ -1,41 +1,40 @@
 package np.edu.ku.kurc.models;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 import np.edu.ku.kurc.R;
 import np.edu.ku.kurc.database.schema.CategorySchema;
+import np.edu.ku.kurc.database.schema.SchemaFactory;
 import np.edu.ku.kurc.models.collection.BaseCollection;
 import np.edu.ku.kurc.models.collection.CategoryCollection;
+import np.edu.ku.kurc.models.transformers.BaseTransformer;
 import np.edu.ku.kurc.models.transformers.CategoryTransformer;
-import np.edu.ku.kurc.models.transformers.contracts.ModelTransformerContract;
+import np.edu.ku.kurc.models.transformers.TransformerFactory;
 
 public class Category extends BaseModel<Category,CategorySchema> {
 
+    @SerializedName("id")
     public int id;
+
+    @SerializedName("name")
     public String name;
+
+    @SerializedName("slug")
     public String slug;
+
+    @SerializedName("link")
     public String link;
-
-    private static CategorySchema schema;
-
-    private static CategoryTransformer transformer;
 
     @Override
     public CategorySchema getSchema() {
-        if(schema == null) {
-            schema = new CategorySchema();
-        }
-
-        return schema;
+        return SchemaFactory.getInstance(CategorySchema.class);
     }
 
     @Override
-    public ModelTransformerContract<Category,CategorySchema> getTransformer() {
-        if(transformer == null) {
-            transformer = new CategoryTransformer();
-        }
-
-        return transformer;
+    public BaseTransformer<Category> getTransformer() {
+        return TransformerFactory.getInstance(CategoryTransformer.class);
     }
 
     @Override

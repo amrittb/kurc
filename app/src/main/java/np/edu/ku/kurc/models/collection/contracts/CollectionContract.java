@@ -1,6 +1,7 @@
 package np.edu.ku.kurc.models.collection.contracts;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 
 import np.edu.ku.kurc.common.AsyncCallback;
 import np.edu.ku.kurc.models.exception.DatabaseErrorException;
@@ -22,6 +23,8 @@ public interface CollectionContract<T> {
      * @throws DatabaseErrorException
      */
     void saveAllSync(Context context) throws DatabaseErrorException;
+
+    void saveAllSync(SQLiteDatabase db) throws DatabaseErrorException;
 
     /**
      * Finds a model for given id.

@@ -8,4 +8,11 @@ public interface SchemaContract {
       * @return Table name of schema.
      */
     String getTableName();
+
+    /**
+     * Returns the primary key of schema.
+     *
+     * @return  Primary key column of schema.
+     */
+    String getPrimaryKey();
 }

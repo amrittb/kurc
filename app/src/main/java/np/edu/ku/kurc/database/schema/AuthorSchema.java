@@ -2,7 +2,7 @@ package np.edu.ku.kurc.database.schema;
 
 import android.database.sqlite.SQLiteDatabase;
 
-public abstract class AuthorSchema extends BaseSchema {
+public class AuthorSchema extends BaseSchema {
 
     public static final String TABLE_NAME = "authors";
 
