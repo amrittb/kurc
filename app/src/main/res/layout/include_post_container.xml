@@ -58,12 +58,11 @@
             />
     </RelativeLayout>
 
-    <TextView
+    <WebView
         android:id="@+id/post_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/post_detail"
         android:layout_marginTop="@dimen/spacing_normal"
-        android:text="@string/placeholder_large_txt"
         />
 </RelativeLayout>
