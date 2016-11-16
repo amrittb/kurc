@@ -406,4 +406,19 @@ public class Post extends BaseModel<Post,PostSchema> {
             db.endTransaction();
         }
     }
+
+    @Override
+    public Post findById(Context context, int id) {
+        Post post = super.findById(context, id);
+
+        if(post == null) {
+            return null;
+        }
+
+        PostCollection posts = new PostCollection();
+        posts.add(post);
+        attachMetaData(context,true,false,posts);
+
+        return posts.get(0);
+    }
 }
