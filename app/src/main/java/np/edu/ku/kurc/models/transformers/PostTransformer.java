@@ -11,6 +11,8 @@ public class PostTransformer extends BaseTransformer<Post> {
 
     @Override
     public ContentValues toContentValues(Post model) {
+        transformed.clear();
+
         transformed.put(PostSchema.COLUMN_ID,model.id);
         transformed.put(PostSchema.COLUMN_TITLE,model.title);
         transformed.put(PostSchema.COLUMN_SLUG,model.slug);
@@ -21,9 +23,7 @@ public class PostTransformer extends BaseTransformer<Post> {
         transformed.put(PostSchema.COLUMN_CREATED_AT,DateUtils.toString(model.date));
         transformed.put(PostSchema.COLUMN_UPDATED_AT,DateUtils.toString(model.modified));
 
-        if(model.featuredMediaId != 0) {
-            transformed.put(PostSchema.COLUMN_FEATURED_MEDIA_ID,model.featuredMediaId);
-        }
+        transformed.put(PostSchema.COLUMN_FEATURED_MEDIA_ID,(model.featuredMediaId != 0)?model.featuredMediaId:null);
 
         transformed.put(PostSchema.COLUMN_AUTHOR_ID,model.authorId);
 
