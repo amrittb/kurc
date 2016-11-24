@@ -21,7 +21,7 @@ import java.util.HashMap;
 import np.edu.ku.kurc.auth.AuthManager;
 import np.edu.ku.kurc.common.Const;
 import np.edu.ku.kurc.fragments.HomeFragment;
-import np.edu.ku.kurc.fragments.PostsFragment;
+import np.edu.ku.kurc.posts.PostsFragment;
 import np.edu.ku.kurc.models.Category;
 import np.edu.ku.kurc.models.Member;
 import np.edu.ku.kurc.models.collection.CategoryCollection;
@@ -182,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * Swaps Home Fragment.
      */
     private void swapHomeFragment() {
-        swapFragment(HomeFragment.instance(),Const.FRAGMENT_TAG_HOME);
+        swapFragment(HomeFragment.instance(postsRepository),Const.FRAGMENT_TAG_HOME);
     }
 
     /**

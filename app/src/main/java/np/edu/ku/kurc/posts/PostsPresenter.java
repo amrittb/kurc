@@ -35,6 +35,8 @@ public class PostsPresenter implements PostsContract.Presenter {
                 return;
             }
 
+            postsView.setLoadingIndicator(false);
+
             postsView.showPostsLoadError();
         }
     };

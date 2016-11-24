@@ -16,6 +16,7 @@ import np.edu.ku.kurc.services.PostSyncService;
 public class PostsRemoteDataSource implements PostsRemoteDataSourceContract {
 
     private Context context;
+    private LocalBroadcastManager localBroadcastManager;
 
     private BroadcastReceiver postsSyncBroadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -39,22 +40,23 @@ public class PostsRemoteDataSource implements PostsRemoteDataSourceContract {
 
     public PostsRemoteDataSource(Context context) {
         this.context = context;
+        localBroadcastManager = LocalBroadcastManager.getInstance(this.context);
     }
 
     /**
      * Registers Broadcast receivers.
      */
     public void registerReceivers() {
-        this.context.registerReceiver(postsSyncBroadcastReceiver, postsFilter);
-        this.context.registerReceiver(postsSyncBroadcastReceiver, postsAfterFilter);
-        this.context.registerReceiver(postsSyncBroadcastReceiver, postsBeforeFilter);
+        localBroadcastManager.registerReceiver(postsSyncBroadcastReceiver, postsFilter);
+        localBroadcastManager.registerReceiver(postsSyncBroadcastReceiver, postsAfterFilter);
+        localBroadcastManager.registerReceiver(postsSyncBroadcastReceiver, postsBeforeFilter);
     }
 
     /**
      * Unregisters Broadcast receivers.
      */
     public void unregisterReceivers() {
-        this.context.unregisterReceiver(postsSyncBroadcastReceiver);
+        localBroadcastManager.unregisterReceiver(postsSyncBroadcastReceiver);
     }
 
     @Override

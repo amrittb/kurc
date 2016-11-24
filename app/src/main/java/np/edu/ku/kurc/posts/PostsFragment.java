@@ -1,4 +1,4 @@
-package np.edu.ku.kurc.fragments;
+package np.edu.ku.kurc.posts;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -19,7 +19,6 @@ import java.util.List;
 
 import np.edu.ku.kurc.R;
 import np.edu.ku.kurc.models.Post;
-import np.edu.ku.kurc.posts.PostsContract;
 import np.edu.ku.kurc.utils.DateUtils;
 import np.edu.ku.kurc.views.adapters.PostsAdapter;
 

@@ -20,14 +20,11 @@ public final class Const {
     public static final String AUTH_PREFS = "auth_prefs";
     public static final String AUTH_PREFS_MEMBER_KEY = "member";
 
-    // Top Story Count
-    public static final int TOP_STORY_COUNT = 5;
-
+    // Fragment tags.
     public static final String FRAGMENT_TAG_HOME = "HOME_FRAGMENT";
+    public static final String TOP_STORIES_FRAGMENT_TAG = "TOP_STORIES_FRAGMENT";
 
     public static final String KEY_POST = "POST";
-
-    public static final String POSTS_TAG = "Posts";
 
     // Service Constants.
     public static final String SERVICE_KEY_RESULT_CODE = "RESULT_CODE";
