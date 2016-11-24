@@ -20,11 +20,23 @@ public class PostCollection extends BaseCollection<Post> {
     }
 
     /**
+     * Loads Metadata for posts from database.
+     *
+     * @param context   Application Context.
+     */
+    public void loadMetadata(Context context) {
+        if(! isEmpty()) {
+            lazyLoadAuthors(context);
+            lazyLoadFeaturedMedia(context);
+        }
+    }
+
+    /**
      * Loads Authors for each posts.
      *
      * @param context   Application Context.
      */
-    public void lazyLoadAuthors(Context context) {
+    private void lazyLoadAuthors(Context context) {
         List<Integer> authorIds = new ArrayList<>();
 
         for(Post p: this) {
@@ -47,7 +59,7 @@ public class PostCollection extends BaseCollection<Post> {
      *
      * @param context   Application Context.
      */
-    public void lazyLoadFeaturedMedia(Context context) {
+    private void lazyLoadFeaturedMedia(Context context) {
         List<Integer> mediaIds = new ArrayList<>();
 
         for(Post p: this) {

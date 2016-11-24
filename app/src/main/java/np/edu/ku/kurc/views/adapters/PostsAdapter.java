@@ -3,6 +3,7 @@ package np.edu.ku.kurc.views.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,31 +78,30 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
      * @param holder View holder instance.
      * @param post Post for which the featured media is to be loaded.
      */
-    private void loadFeaturedImage(PostsAdapter.ViewHolder holder, Post post) {
+    private void loadFeaturedImage(ViewHolder holder, Post post) {
+        String url = null;
+
         Picasso.with(context).cancelRequest(holder.featureImage);
-        holder.featureImage.setImageBitmap(null);
+        holder.featureImage.setImageResource(android.R.color.transparent);
         holder.featureImage.setVisibility(View.VISIBLE);
 
-        if ( ! post.hasFeaturedMedia()) {
+        if (! post.hasFeaturedMedia()) {
             holder.featureImage.setVisibility(View.GONE);
         } else {
-            int width = holder.featuredImageWidth;
-            int height = holder.featuredImageHeight;
-
-            if(width <= 0 || height <= 0) {
-                width = context.getResources().getDisplayMetrics().widthPixels;
-                height = (int) ((9.0/16.0) * width);
+            if(holder.featuredImageWidth <= 0 || holder.featuredImageHeight <= 0) {
+                holder.featuredImageWidth = context.getResources().getDisplayMetrics().widthPixels;
+                holder.featuredImageHeight = (int) ((9.0/16.0) * holder.featuredImageWidth);
             }
 
             FeaturedMedia media = post.getFeaturedMedia();
-            String url = media.getOptimalSourceUrl(width, height);
-            Picasso.with(context)
-                    .load(url)
-                    .fit()
-                    .centerCrop()
-                    .tag(Const.POSTS_TAG)
-                    .into(holder.featureImage);
+            url = media.getOptimalSourceUrl(holder.featuredImageWidth, holder.featuredImageHeight);
         }
+
+        Picasso.with(context)
+                .load(url)
+                .fit()
+                .centerCrop()
+                .into(holder.featureImage);
     }
 
     @Override

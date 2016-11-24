@@ -10,28 +10,20 @@ import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import np.edu.ku.kurc.R;
-import np.edu.ku.kurc.common.Const;
 import np.edu.ku.kurc.models.Post;
-import np.edu.ku.kurc.network.api.ServiceFactory;
-import np.edu.ku.kurc.network.api.services.PostService;
+import np.edu.ku.kurc.posts.PostsContract;
+import np.edu.ku.kurc.utils.DateUtils;
 import np.edu.ku.kurc.views.adapters.PostsAdapter;
-import np.edu.ku.kurc.views.widget.PreCachingLinearLayoutManager;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
-public class PostsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
+public class PostsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, PostsContract.View {
 
     private List<Post> postList = new ArrayList<>();
 
@@ -44,10 +36,15 @@ public class PostsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private SwipeRefreshLayout swipeContainer;
     private CoordinatorLayout coordinatorLayout;
 
+    private PostsContract.Presenter presenter;
+
+    private boolean isViewActive;
+
+
     /**
      * Creates a new instance of PostsFragment.
      *
-     * @param categorySlug Category slug for which posts fragment is to be created.
+     * @param categorySlug  Category slug for which posts fragment is to be created.
      * @return              PostsFragment instance.
      */
     public static PostsFragment instance(String categorySlug) {
@@ -84,8 +81,6 @@ public class PostsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
         initSwipeContainer();
         initRecyclerView();
-
-        loadPosts();
     }
 
     /**
@@ -100,94 +95,113 @@ public class PostsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
      * Initializes Recycler View.
      */
     private void initRecyclerView() {
-        recyclerView.setLayoutManager(new PreCachingLinearLayoutManager(getContext(),getContext().getResources().getDisplayMetrics().heightPixels));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
         recyclerView.setNestedScrollingEnabled(false);
-        recyclerView.setOnFlingListener(new RecyclerView.OnFlingListener() {
-            @Override
-            public boolean onFling(int velocityX, int velocityY) {
-                final Picasso picasso = Picasso.with(getContext());
-
-                if(velocityY > 0) {
-                    picasso.pauseTag(Const.POSTS_TAG);
-                } else {
-                    picasso.resumeTag(Const.POSTS_TAG);
-                }
-
-                return true;
-            }
-        });
     }
 
-    /**
-     * Loads posts on next UI update tick for swipe container.
-     */
-    private void loadPosts() {
-        swipeContainer.post(new Runnable() {
+    @Override
+    public void onStart() {
+        super.onStart();
+        isViewActive = true;
 
-            @Override
-            public void run() {
-            swipeContainer.setRefreshing(true);
-            onRefresh();
-            }
-        });
+        presenter.loadPostsForCategory(categorySlug, false);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        isViewActive = false;
     }
 
     /**
      * OnRefresh Listener.
-     *
-     * @TODO Instead of simply fetching posts fetch posts from database and cache it then load it from datsbase.
      */
     @Override
     public void onRefresh() {
-        fetchPosts();
+        // Get newer posts after the date of the top post.
     }
 
     /**
-     * Fetches posts from posts service for given category.
+     * Returns latest post date in the post list.
+     *
+     * @return  Latest post date.
      */
-    private void fetchPosts() {
-        Call<List<Post>> call = ServiceFactory.makeService(PostService.class).getPostsForCategory(categorySlug);
-        call.enqueue(new Callback<List<Post>>() {
-            @Override
-            public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
-                consumePosts(response.body());
-            }
+    @Nullable
+    private String getLatestPostDate() {
+        return getPostDateOfIndex(0);
+    }
+
+    /**
+     * Returns oldest post date in the post list.
+     *
+     * @return  Oldest post date.
+     */
+    @Nullable
+    private String getOldestPostDate() {
+        return getPostDateOfIndex(postList.size() - 1);
+    }
+
+    /**
+     * Returns post date of the index.
+     *
+     * @param index Index of the post in the list.
+     * @return      Post date of the index.
+     */
+    @Nullable
+    private String getPostDateOfIndex(int index) {
+        if(postList == null || postList.isEmpty()) {
+            return null;
+        }
+
+        return DateUtils.toString(postList.get(index).date);
+    }
+
+    @Override
+    public void setLoadingIndicator(final boolean active) {
+        swipeContainer.post(new Runnable() {
 
             @Override
-            public void onFailure(Call<List<Post>> call, Throwable t) {
-                consumePosts(null);
+            public void run() {
+                swipeContainer.setRefreshing(active);
             }
         });
     }
 
-    /**
-     * Consumes Posts.
-     *
-     * @param posts Posts to be consumed.
-     */
-    private void consumePosts(List<Post> posts) {
-        swipeContainer.setRefreshing(false);
+    @Override
+    public void showPosts(List<Post> posts) {
+        postList.clear();
 
-        if(posts != null) {
-            postList.clear();
+        postList.addAll(posts);
 
-            if(posts.isEmpty()) {
-                noPostsTxt.setVisibility(View.VISIBLE);
-            } else {
-                postList.addAll(posts);
+        adapter.notifyDataSetChanged();
+    }
 
-                adapter.notifyDataSetChanged();
-            }
-        } else {
-            Snackbar.make(coordinatorLayout,"Could not fetch latest entries.", Snackbar.LENGTH_LONG)
-                    .setAction("TRY AGAIN", new View.OnClickListener(){
-                        @Override
-                        public void onClick(View v) {
-                            loadPosts();
-                        }
-                    }).show();
-        }
+    @Override
+    public void showPostsLoadError() {
+        Snackbar.make(coordinatorLayout,"Could not fetch entries.", Snackbar.LENGTH_LONG)
+                .setAction("TRY AGAIN", new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        // Show retry container.
+                    }
+                }).show();
+    }
+
+    @Override
+    public void showPostsNotFound() {
+        // Show no posts container.
+    }
+
+    @Override
+    public boolean isActive() {
+        return isViewActive;
+    }
+
+    @Override
+    public void setPresenter(PostsContract.Presenter presenter) {
+        this.presenter = presenter;
     }
 }

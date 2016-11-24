@@ -4,19 +4,14 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.annotation.NonNull;
 import android.text.format.DateUtils;
-import android.util.Log;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
-import np.edu.ku.kurc.common.Const;
 import np.edu.ku.kurc.database.DatabaseHelper;
 import np.edu.ku.kurc.database.schema.CategoryPostSchema;
 import np.edu.ku.kurc.database.schema.PostSchema;
@@ -170,89 +165,6 @@ public class Post extends BaseModel<Post,PostSchema> {
     }
 
     /**
-     * Returns latestPaginated rows.
-     *
-     * @param context           Application Context.
-     * @param perPage           Rows per page.
-     * @param after             Posts after this date.
-     * @param category          Post category.
-     * @param attachMetadata    Flag to determine if we need to attach meta data.
-     * @return                  Collection of rows in table.
-     */
-    public PostCollection getPostsAfter(Context context, int perPage, String after, String category, boolean attachMetadata) {
-        SQLiteDatabase db = DatabaseHelper.getInstance(context).getWritableDatabase();
-
-        String sql = getPostsQuery(perPage, null, after, category);
-
-        Cursor cursor = db.rawQuery(sql,null);
-
-        PostCollection posts = (PostCollection) getCollection(cursor);
-
-        attachMetaData(context,attachMetadata,attachMetadata,posts);
-
-        return posts;
-    }
-
-    /**
-     * Returns latestPaginated rows.
-     *
-     * @param context           Application Context.
-     * @param perPage           Rows per page.
-     * @param before            Posts before this date.
-     * @param category          Post category.
-     * @param attachMetadata    Flag to determine if we need to attach meta data.
-     * @return                  Collection of rows in table.
-     */
-    public PostCollection getPostsBefore(Context context, int perPage, String before, String category, boolean attachMetadata) {
-        SQLiteDatabase db = DatabaseHelper.getInstance(context).getWritableDatabase();
-
-        String sql = getPostsQuery(perPage, before, null, category);
-
-        Cursor cursor = db.rawQuery(sql,null);
-
-        PostCollection posts = (PostCollection) getCollection(cursor);
-
-        attachMetaData(context,attachMetadata,attachMetadata,posts);
-
-        return posts;
-    }
-
-    /**
-     * Returns posts query for given arguments.
-     *
-     * @param perPage   Posts per page.
-     * @param before    Posts before this date.
-     * @param after     Posts after this date.
-     * @param category  Posts in this category.
-     * @return          Returns query string.
-     */
-    @NonNull
-    private String getPostsQuery(int perPage, String before, String after, String category) {
-        String sql = "SELECT posts.* " +
-                "FROM category_post " +
-                "JOIN categories ON categories._id = category_post.category_id " +
-                "JOIN posts ON posts._id = category_post.post_id ";
-
-        if(category != null) {
-            sql += "WHERE categories.slug = " + category + " ";
-        }
-
-        if(before != null) {
-            sql += "AND WHERE created_at < " + before + " ";
-        }
-
-        if(after != null) {
-            sql += "AND WHERE created_at > " + after + " ";
-        }
-
-        sql += "ORDER BY created_at DESC ";
-
-        sql += "LIMIT " + Integer.toString(perPage);
-
-        return sql;
-    }
-
-    /**
      * Returns latest pinned post.
      *
      * @param context   Application Context.
@@ -277,7 +189,7 @@ public class Post extends BaseModel<Post,PostSchema> {
 
         if ( ! posts.isEmpty()) {
 
-            attachMetaData(context,true,false,posts);
+            posts.loadMetadata(context);
 
             return posts.get(0);
         }
@@ -298,20 +210,12 @@ public class Post extends BaseModel<Post,PostSchema> {
     public PostCollection latestPaginated(Context context, int perPage, int page, boolean includeAuthor, boolean includeFeaturedMedia) {
         PostCollection posts = latestPaginated(context,perPage,page);
 
-        attachMetaData(context, includeAuthor, includeFeaturedMedia, posts);
+        posts.loadMetadata(context);
 
         return posts;
     }
 
-    private void attachMetaData(Context context, boolean includeAuthor, boolean includeFeaturedMedia, PostCollection posts) {
-        if(includeAuthor && posts.size() != 0) {
-            posts.lazyLoadAuthors(context);
-        }
 
-        if(includeFeaturedMedia && posts.size() != 0) {
-            posts.lazyLoadFeaturedMedia(context);
-        }
-    }
 
     @Override
     public PostSchema getSchema() {
@@ -417,8 +321,31 @@ public class Post extends BaseModel<Post,PostSchema> {
 
         PostCollection posts = new PostCollection();
         posts.add(post);
-        attachMetaData(context,true,false,posts);
+        posts.loadMetadata(context);
 
         return posts.get(0);
+    }
+
+    /**
+     * Returns newest published date.
+     *
+     * @param context   Application Context.
+     * @return          Newest published date.
+     */
+    public String getNewestPublishedDate(Context context) {
+        SQLiteDatabase db = DatabaseHelper.getInstance(context).getReadableDatabase();
+        String sql = "SELECT max(created_at) as after FROM posts";
+
+        String after = null;
+
+        Cursor c = db.rawQuery(sql,null);
+
+        if(c.moveToFirst()) {
+            after = c.getString(0);
+        }
+
+        c.close();
+
+        return after;
     }
 }

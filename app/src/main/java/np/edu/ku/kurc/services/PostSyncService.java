@@ -49,11 +49,12 @@ public class PostSyncService extends SyncService<Post, PostCollection> {
      * Starts post sync.
      *
      * @param context   Service Context.
+     * @param perPage   Posts per page.
      */
-    public static void startPostsSync(Context context) {
+    public static void startPostsSync(Context context, int perPage) {
         Intent intent = new Intent(context, PostSyncService.class);
         intent.setAction(ACTION_POSTS_SYNC);
-        intent.putExtra(EXTRA_POSTS_PER_PAGE, ApiConstants.POSTS_PER_PAGE_DEFAULT);
+        intent.putExtra(EXTRA_POSTS_PER_PAGE, perPage);
         context.startService(intent);
     }
 

@@ -204,7 +204,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 if((! PostSyncService.isSyncingPosts()) && (! isSyncedPreviously)) {
                     isSyncedPreviously = true;
 
-                    PostSyncService.startPostsSync(getContext());
+                    PostSyncService.startPostsSync(getContext(), 20);
 
                     localBroadcastManager.registerReceiver(postsSyncBroadcastReceiver, postsSyncFilter);
                 }

@@ -11,7 +11,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,7 +25,10 @@ import np.edu.ku.kurc.fragments.PostsFragment;
 import np.edu.ku.kurc.models.Category;
 import np.edu.ku.kurc.models.Member;
 import np.edu.ku.kurc.models.collection.CategoryCollection;
-import np.edu.ku.kurc.network.api.ApiConstants;
+import np.edu.ku.kurc.posts.data.PostsLocalDataSource;
+import np.edu.ku.kurc.posts.PostsPresenter;
+import np.edu.ku.kurc.posts.data.PostsRemoteDataSource;
+import np.edu.ku.kurc.posts.data.PostsRepository;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -37,6 +39,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private FragmentManager fragmentManager;
     private HashMap<String, Fragment> fragmentMap = new HashMap<>();
     private CategoryCollection categories;
+    private PostsRemoteDataSource remoteDataSource;
+    private PostsRepository postsRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +64,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         initHeaderWithMember();
 
         fragmentManager = getSupportFragmentManager();
+
+        remoteDataSource = new PostsRemoteDataSource(getApplicationContext());
+        postsRepository = new PostsRepository(new PostsLocalDataSource(getApplicationContext()), remoteDataSource);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        remoteDataSource.registerReceivers();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        remoteDataSource.unregisterReceivers();
     }
 
     /**
@@ -171,7 +192,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      */
     private void swapPostsFragment(String categorySlug) {
         String tag = getFragmentTag(categorySlug);
-        Fragment postsFragment = getPostsFragment(categorySlug);
+        PostsFragment postsFragment = getPostsFragment(categorySlug);
+
+        postsFragment.setPresenter(new PostsPresenter(postsRepository, postsFragment));
 
         swapFragment(postsFragment,tag);
     }
@@ -219,7 +242,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * @return              PostsFragment instance.
      */
     @NonNull
-    private Fragment getPostsFragment(String categorySlug) {
+    private PostsFragment getPostsFragment(String categorySlug) {
         return PostsFragment.instance(categorySlug);
     }
 

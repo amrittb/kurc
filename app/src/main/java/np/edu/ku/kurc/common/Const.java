@@ -39,4 +39,7 @@ public final class Const {
     public static final int SERVICE_RESULT_DATABASE_ERROR = -2;
 
     public static final String SERVICE_RESPONSE_SUCCESS = "SYNCED";
+
+    // Posts Count Constants.
+    public static final int TOP_STORIES_POST_COUNT = 5;
 }

@@ -111,6 +111,8 @@ public abstract class BaseModel<M extends BaseModel,S extends BaseSchema> implem
             }
         }
 
+        cursor.close();
+
         return getCollection(list);
     }
 
@@ -120,6 +122,8 @@ public abstract class BaseModel<M extends BaseModel,S extends BaseSchema> implem
             getTransformer().toModel(cursor,(M) this);
             return (M) this;
         }
+
+        cursor.close();
 
         return null;
     }
