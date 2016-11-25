@@ -6,7 +6,7 @@ import np.edu.ku.kurc.models.Post;
 import np.edu.ku.kurc.posts.data.PostsDataSourceContract;
 import np.edu.ku.kurc.posts.data.PostsRepository;
 
-public class ExtendedPostsPresenter extends PostsPresenter implements PostsContract.ExtendedPresenter {
+public class ExtendedPostsPresenter extends PostsPresenter implements PostsContract.ExtendedListPresenter {
 
     private PostsDataSourceContract.LoadPostsCallback loadOlderPostsCallback = new PostsDataSourceContract.LoadPostsCallback() {
 

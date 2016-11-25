@@ -6,7 +6,7 @@ import np.edu.ku.kurc.models.Post;
 import np.edu.ku.kurc.posts.data.PostsDataSourceContract;
 import np.edu.ku.kurc.posts.data.PostsRepository;
 
-public class PostsPresenter implements PostsContract.Presenter {
+public class PostsPresenter implements PostsContract.ListPresenter {
 
     protected PostsRepository postsRepository;
 

@@ -35,7 +35,7 @@ public class TopStoriesFragment extends Fragment implements PostsContract.ListVi
 
     private TopStoriesAdapter topStoriesAdapter;
 
-    private PostsContract.Presenter presenter;
+    private PostsContract.ListPresenter presenter;
 
     private boolean isViewActive;
 
@@ -158,7 +158,7 @@ public class TopStoriesFragment extends Fragment implements PostsContract.ListVi
     }
 
     @Override
-    public void setPresenter(PostsContract.Presenter presenter) {
-        this.presenter = presenter;
+    public void setPresenter(PostsContract.ListPresenter listPresenter) {
+        this.presenter = listPresenter;
     }
 }

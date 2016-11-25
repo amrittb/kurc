@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import np.edu.ku.kurc.R;
-import np.edu.ku.kurc.common.Const;
 import np.edu.ku.kurc.models.Post;
 import np.edu.ku.kurc.utils.DateUtils;
 import np.edu.ku.kurc.views.adapters.PostsAdapter;
@@ -37,10 +36,10 @@ public class PostsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private SwipeRefreshLayout swipeContainer;
     private CoordinatorLayout coordinatorLayout;
 
-    private PostsContract.ExtendedPresenter presenter;
+    private PostsContract.ExtendedListPresenter presenter;
 
     private boolean isViewActive;
-    
+
     /**
      * Creates a new instance of PostsFragment.
      *
@@ -254,8 +253,8 @@ public class PostsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     @Override
-    public void setPresenter(PostsContract.Presenter presenter) {
-        this.presenter = (PostsContract.ExtendedPresenter) presenter;
+    public void setPresenter(PostsContract.ListPresenter listPresenter) {
+        this.presenter = (PostsContract.ExtendedListPresenter) listPresenter;
     }
 
     @Override
