@@ -86,20 +86,19 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
      * Initializes stories container.
      */
     private void initStoriesContainer() {
-        if(topStoriesFragment == null) {
-            Fragment f = getFragmentManager().findFragmentByTag(Const.TOP_STORIES_FRAGMENT_TAG);
-            if(f != null) {
-                topStoriesFragment = (TopStoriesFragment) f;
-            } else {
+        Fragment f = getFragmentManager().findFragmentById(R.id.top_stories_fragment_container);
+
+        if(f == null) {
+            if(topStoriesFragment == null) {
                 topStoriesFragment = TopStoriesFragment.instance();
                 topStoriesFragment.setPresenter(new PostsPresenter(postsRepository, topStoriesFragment));
             }
-        }
 
-        getFragmentManager()
-                .beginTransaction()
-                .add(R.id.top_stories_fragment_container,topStoriesFragment,Const.TOP_STORIES_FRAGMENT_TAG)
-                .commit();
+            getFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.top_stories_fragment_container,topStoriesFragment,Const.TOP_STORIES_FRAGMENT_TAG)
+                    .commit();
+        }
     }
 
     /**

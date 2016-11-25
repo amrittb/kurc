@@ -10,7 +10,7 @@ abstract public class ViewModel<T> {
     /**
      * Creates a view model instance.
      *
-     * @param root View root instance.
+     * @param root ListView root instance.
      */
     public ViewModel(View root) {
         this.context = root.getContext();
@@ -20,7 +20,7 @@ abstract public class ViewModel<T> {
     /**
      * Creates a view model instance.
      *
-     * @param root View root instance.
+     * @param root ListView root instance.
      * @param model Model to be bound.
      */
     public ViewModel(View root, T model) {
@@ -31,7 +31,7 @@ abstract public class ViewModel<T> {
     /**
      * Binds view to view model instance.
      *
-     * @param root View Root to be bound.
+     * @param root ListView Root to be bound.
      */
     public abstract void onBindView(View root);
 

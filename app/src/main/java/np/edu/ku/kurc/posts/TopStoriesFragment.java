@@ -23,7 +23,7 @@ import np.edu.ku.kurc.views.adapters.TopStoriesAdapter;
 import np.edu.ku.kurc.views.widget.PreCachingLinearLayoutManager;
 import np.edu.ku.kurc.views.widget.SnappingRecyclerView;
 
-public class TopStoriesFragment extends Fragment implements PostsContract.View {
+public class TopStoriesFragment extends Fragment implements PostsContract.ListView {
 
     private CoordinatorLayout coordinatorLayout;
 

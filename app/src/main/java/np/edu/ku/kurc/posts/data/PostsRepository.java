@@ -28,15 +28,23 @@ public class PostsRepository implements PostsDataSourceContract {
         if(isCacheOld) {
             getPostsFromRemoteDataSource(perPage, category, postsAfter, postsBefore, callback);
         } else {
+            // First fetch from local data source.
             localDataSource.getPosts(perPage, category, postsAfter, postsBefore, new PostsDataSourceContract.LoadPostsCallback() {
 
                 @Override
                 public void onPostsLoaded(List<Post> posts) {
-                    callback.onPostsLoaded(posts);
+                    if( ! posts.isEmpty()) {
+                        // If the loaded posts are not empty call the posts loaded method on callback.
+                        callback.onPostsLoaded(posts);
+                    } else {
+                        // If the posts are empty try remote source.
+                        getPostsFromRemoteDataSource(perPage, category, postsAfter, postsBefore, callback);
+                    }
                 }
 
                 @Override
                 public void onPostsLoadError() {
+                    // If there are any posts load error try from remote source.
                     getPostsFromRemoteDataSource(perPage, category, postsAfter, postsBefore, callback);
                 }
             });
@@ -57,11 +65,13 @@ public class PostsRepository implements PostsDataSourceContract {
 
             @Override
             public void onPostsLoaded(String action) {
+                // When posts are loaded from remote source, load its copy from local data source.
                 getPostsFromLocalDataSource(perPage, category, postsAfter, postsBefore, callback);
             }
 
             @Override
             public void onPostsLoadError(String action) {
+                // If there is any error show on posts load error.
                 callback.onPostsLoadError();
             }
         });
@@ -97,5 +107,27 @@ public class PostsRepository implements PostsDataSourceContract {
      */
     public void getPostsForCategory(String category, LoadPostsCallback callback) {
         getPosts(ApiConstants.POSTS_PER_PAGE_DEFAULT, category, null, null, callback);
+    }
+
+    /**
+     * Fetches Older posts for category.
+     *
+     * @param category      Posts of category.
+     * @param postsBefore   Posts Older than this date.
+     * @param callback      Posts Load Callback.
+     */
+    public void getOlderPostsForCategory(String category, String postsBefore, LoadPostsCallback callback) {
+        getPosts(ApiConstants.POSTS_PER_PAGE_DEFAULT, category, null, postsBefore, callback);
+    }
+
+    /**
+     * Fetches Newer posts for category.
+     *
+     * @param category      Posts of category.
+     * @param postsAfter    Posts Newer than this date.
+     * @param callback      Posts Load Callback.
+     */
+    public void getNewerPostsForCategory(String category, String postsAfter, LoadPostsCallback callback) {
+        getPosts(ApiConstants.POSTS_PER_PAGE_DEFAULT, category, postsAfter, null, callback);
     }
 }

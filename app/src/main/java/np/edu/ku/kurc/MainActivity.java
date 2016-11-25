@@ -21,15 +21,14 @@ import java.util.HashMap;
 import np.edu.ku.kurc.auth.AuthManager;
 import np.edu.ku.kurc.common.Const;
 import np.edu.ku.kurc.fragments.HomeFragment;
+import np.edu.ku.kurc.posts.ExtendedPostsPresenter;
 import np.edu.ku.kurc.posts.PostsFragment;
 import np.edu.ku.kurc.models.Category;
 import np.edu.ku.kurc.models.Member;
 import np.edu.ku.kurc.models.collection.CategoryCollection;
 import np.edu.ku.kurc.posts.data.PostsLocalDataSource;
-import np.edu.ku.kurc.posts.PostsPresenter;
 import np.edu.ku.kurc.posts.data.PostsRemoteDataSource;
 import np.edu.ku.kurc.posts.data.PostsRepository;
-
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -194,7 +193,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String tag = getFragmentTag(categorySlug);
         PostsFragment postsFragment = getPostsFragment(categorySlug);
 
-        postsFragment.setPresenter(new PostsPresenter(postsRepository, postsFragment));
+        postsFragment.setPresenter(new ExtendedPostsPresenter(postsRepository, postsFragment));
 
         swapFragment(postsFragment,tag);
     }

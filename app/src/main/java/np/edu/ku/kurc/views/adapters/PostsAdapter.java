@@ -3,7 +3,6 @@ package np.edu.ku.kurc.views.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,44 +21,89 @@ import np.edu.ku.kurc.models.FeaturedMedia;
 import np.edu.ku.kurc.models.Post;
 import np.edu.ku.kurc.utils.Metrics;
 
-public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> {
+public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<Post> list;
+    private static final int VIEW_TYPE_ITEM = 0;
+    private static final int VIEW_TYPE_FOOTER = 1;
 
     private Context context;
 
-    public PostsAdapter(Context context, List<Post> list) {
+    private List<Post> list;
+
+    private View.OnClickListener reloadOlderPostsClickListener;
+
+    private FooterViewHolder footerViewHolder;
+
+    public PostsAdapter(Context context, List<Post> list, View.OnClickListener reloadOlderPostsClickListener) {
         this.context = context;
         this.list = list;
+        this.reloadOlderPostsClickListener = reloadOlderPostsClickListener;
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_post_list, parent, false);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        // Creating footer view at the very beginning to show footer instantly when needed.
+        createFooterViewHolder(parent);
 
-        return new ViewHolder(itemView);
+        if(viewType == VIEW_TYPE_ITEM) {
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_post_list, parent, false);
+            return new PostViewHolder(itemView);
+        } else if(viewType == VIEW_TYPE_FOOTER) {
+            return createFooterViewHolder(parent);
+        }
+
+        return null;
+    }
+
+    /**
+     * Creates a footer view holder instance.
+     *
+     * @param parent    Parent view.
+     * @return          Footer View Holder instance.
+     */
+    private FooterViewHolder createFooterViewHolder(ViewGroup parent) {
+        if(footerViewHolder == null) {
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_post_list_footer, parent, false);
+
+            footerViewHolder = new FooterViewHolder(itemView);
+        }
+
+        return footerViewHolder;
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        Post post = list.get(position);
+    public int getItemViewType(int position) {
+        return (list.get(position) == null) ? VIEW_TYPE_FOOTER : VIEW_TYPE_ITEM;
+    }
 
-        holder.postTitle.setText(post.title);
-        holder.postDate.setText(post.getDateString(context));
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if(holder instanceof PostViewHolder) {
+            PostViewHolder viewHolder = (PostViewHolder) holder;
 
-        holder.postAuthor.setText(post.getAuthor().name);
+            Post post = list.get(position);
 
-        loadAuthorAvatar(holder,post);
-        loadFeaturedImage(holder,post);
+            viewHolder.postTitle.setText(post.title);
+            viewHolder.postDate.setText(post.getDateString(context));
+            viewHolder.postAuthor.setText(post.getAuthor().name);
+
+            loadAuthorAvatar(viewHolder,post);
+            loadFeaturedImage(viewHolder,post);
+        } else if(holder instanceof FooterViewHolder) {
+            FooterViewHolder viewHolder = (FooterViewHolder) holder;
+
+            viewHolder.setLoadingIndicator(true);
+            viewHolder.setLoadingError(false);
+        }
     }
 
     /**
      * Loads Author Avatar.
      *
-     * @param holder    ViewHolder instance.
+     * @param holder    PostViewHolder instance.
      * @param post      Post for which author avatar is to be loaded.
      */
-    private void loadAuthorAvatar(ViewHolder holder, Post post) {
+    private void loadAuthorAvatar(PostViewHolder holder, Post post) {
         Picasso.with(context).cancelRequest(holder.authorAvatar);
 
         holder.authorAvatar.setImageBitmap(null);
@@ -71,14 +115,13 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                 .into(holder.authorAvatar);
     }
 
-
     /**
      * Loads Featured image if it exists.
      *
-     * @param holder View holder instance.
+     * @param holder ListView holder instance.
      * @param post Post for which the featured media is to be loaded.
      */
-    private void loadFeaturedImage(ViewHolder holder, Post post) {
+    private void loadFeaturedImage(PostViewHolder holder, Post post) {
         String url = null;
 
         Picasso.with(context).cancelRequest(holder.featureImage);
@@ -109,16 +152,111 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
         return list.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    /**
+     * Replace posts with given posts.
+     *
+     * @param posts     Posts to be replaced.
+     */
+    public void replacePosts(List<Post> posts) {
+        list.clear();
+
+        list.addAll(posts);
+
+        notifyDataSetChanged();
+    }
+
+    /**
+     * Adds Older Posts to list.
+     *
+     * @param posts     Older posts to be added.
+     */
+    public void addOlderPosts(List<Post> posts) {
+        removeFooter();
+
+        list.addAll(posts);
+
+        notifyDataSetChanged();
+    }
+
+    /**
+     * Adds Newer Posts to list.
+     *
+     * @param posts     Newer Posts to be added.
+     */
+    public void addNewerPosts(List<Post> posts) {
+        posts.addAll(list);
+
+        list.clear();
+
+        list.addAll(posts);
+
+        notifyDataSetChanged();
+    }
+
+    /**
+     * Sets Older Posts Loading Indicator.
+     *
+     * @param active    Check if the loading indicator is active.
+     */
+    public void setOlderPostsLoadingIndicator(boolean active) {
+        if(footerViewHolder != null) {
+            footerViewHolder.setLoadingError(false);
+            footerViewHolder.setLoadingIndicator(active);
+        }
+
+        if(active) {
+            addFooter();
+        }
+    }
+
+    /**
+     * Shows Older posts loading error.
+     */
+    public void showOlderPostsLoadError() {
+        if(footerViewHolder != null) {
+            footerViewHolder.setLoadingIndicator(false);
+            footerViewHolder.setLoadingError(true);
+        }
+    }
+
+    /**
+     * Shows Older posts not found.
+     */
+    public void showOlderPostsNotFound() {
+        removeFooter();
+    }
+
+    /**
+     * Adds a footer to recycler view.
+     */
+    private void addFooter() {
+        if(list.get(list.size() - 1) != null) {
+            list.add(null);
+            notifyItemInserted(list.size() - 1);
+        }
+    }
+
+    /**
+     * Removes Footer.
+     */
+    private void removeFooter() {
+        if(list.get(list.size() - 1) == null) {
+            list.remove(list.size() - 1);
+            notifyItemRemoved(list.size());
+        }
+    }
+
+    public class PostViewHolder extends RecyclerView.ViewHolder {
 
         public ImageView authorAvatar;
         public ImageView featureImage;
         public TextView postTitle, postDate, postAuthor;
+
         public int featuredImageWidth;
         public int featuredImageHeight;
         public int avatarSize;
 
-        public ViewHolder(View itemView) {
+        public PostViewHolder(View itemView) {
             super(itemView);
 
             authorAvatar = (ImageView) itemView.findViewById(R.id.post_author_avatar);
@@ -141,6 +279,54 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                     v.getContext().startActivity(i);
                 }
             });
+        }
+    }
+
+    public class FooterViewHolder extends RecyclerView.ViewHolder {
+
+        private View container;
+        private View progressBar;
+        private View refreshImage;
+
+        public FooterViewHolder(View itemView) {
+            super(itemView);
+
+            container = itemView;
+            progressBar = itemView.findViewById(R.id.older_posts_progress_bar);
+            refreshImage = itemView.findViewById(R.id.older_posts_refresh_img);
+
+            itemView.setOnClickListener(reloadOlderPostsClickListener);
+        }
+
+        /**
+         * Sets Loading Indicator.
+         *
+         * @param active    Flag to determine if there to show loading indicator.
+         */
+        private void setLoadingIndicator(boolean active) {
+            container.setEnabled(false);
+
+            if(active) {
+                progressBar.setVisibility(View.VISIBLE);
+            } else {
+                progressBar.setVisibility(View.GONE);
+            }
+        }
+
+        /**
+         * Sets Loading Error.
+         *
+         * @param active    Flag to determine if there is loading error.
+         */
+        private void setLoadingError(boolean active) {
+            container.setEnabled(false);
+
+            if(active) {
+                container.setEnabled(true);
+                refreshImage.setVisibility(View.VISIBLE);
+            } else {
+                refreshImage.setVisibility(View.GONE);
+            }
         }
     }
 }

@@ -52,7 +52,7 @@ public class TopStoriesAdapter extends RecyclerView.Adapter<TopStoriesAdapter.Vi
     /**
      * Loads Featured image if it exists.
      *
-     * @param holder View holder instance.
+     * @param holder ListView holder instance.
      * @param post Post for which the featured media is to be loaded.
      */
     private void loadFeaturedImage(final ViewHolder holder, final Post post) {

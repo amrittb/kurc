@@ -36,11 +36,7 @@ public class PostsLocalDataSource implements PostsDataSourceContract {
         // Loads Metadata for posts. Metadata include author, featured media etc.
         posts.loadMetadata(context);
 
-        if(! posts.isEmpty()) {
-            callback.onPostsLoaded(posts);
-        } else {
-            callback.onPostsLoadError();
-        }
+        callback.onPostsLoaded(posts);
     }
 
     /**
@@ -64,11 +60,11 @@ public class PostsLocalDataSource implements PostsDataSourceContract {
         }
 
         if(postsAfter != null) {
-            sql += (category != null)?"AND":"" + "WHERE created_at > '" + postsAfter + "' ";
+            sql += ((category != null)?"AND":"WHERE") + " created_at > '" + postsAfter + "' ";
         }
 
         if(postsBefore != null) {
-            sql += (category != null || postsAfter != null)?"AND":"" + "WHERE created_at < '" + postsBefore + "' ";
+            sql += ((category != null || postsAfter != null)?"AND":"WHERE") + " created_at < '" + postsBefore + "' ";
         }
 
         sql += "ORDER BY created_at DESC ";

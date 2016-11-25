@@ -56,8 +56,7 @@ public class Category extends BaseModel<Category,CategorySchema> {
             case "projects":
                 return R.drawable.ic_event_note_black_24dp;
             default:
-                // @TODO change the drawable to generic post icon.
-                return R.drawable.ic_info_black_24dp;
+                return R.drawable.ic_note_black_24dp;
         }
     }
 }

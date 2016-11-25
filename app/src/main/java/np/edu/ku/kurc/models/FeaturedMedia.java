@@ -60,7 +60,13 @@ public class FeaturedMedia extends BaseModel<FeaturedMedia,MediaSchema> {
      * @return          URL of optimal sized image.
      */
     public String getOptimalSourceUrl(int width, int height) {
-        return getOptimalSize(width,height).getUrl();
+        MediaSize optimalSize = getOptimalSize(width, height);
+
+        if(optimalSize == null) {
+            return null;
+        }
+
+        return optimalSize.getUrl();
     }
 
     /**

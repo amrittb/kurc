@@ -157,8 +157,6 @@ public class PostViewFragment extends Fragment {
         if(post != null) {
             postLoadingContainer.setVisibility(View.GONE);
 
-            Log.d(Const.TAG,"post content: " + post.content);
-
             if((post.content == null || post.content.contentEquals("")) && (!PostSyncService.isSyncingPost()) && (!isSynced)) {
                 isSynced = true;
 

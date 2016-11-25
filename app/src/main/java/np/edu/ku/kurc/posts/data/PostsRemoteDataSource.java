@@ -8,6 +8,7 @@ import android.support.v4.content.LocalBroadcastManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import np.edu.ku.kurc.common.Const;
@@ -108,9 +109,11 @@ public class PostsRemoteDataSource implements PostsRemoteDataSourceContract {
         List<LoadPostsFromRemoteCallback> callbackList = callbacks.get(action);
 
         if(callbackList != null) {
-            for(LoadPostsFromRemoteCallback callback : callbackList) {
-                callback.onPostsLoaded(action);
-                callbackList.remove(callback);
+            Iterator<LoadPostsFromRemoteCallback> callbackIterator = callbackList.iterator();
+
+            while(callbackIterator.hasNext()) {
+                callbackIterator.next().onPostsLoaded(action);
+                callbackIterator.remove();
             }
         }
     }
@@ -124,9 +127,11 @@ public class PostsRemoteDataSource implements PostsRemoteDataSourceContract {
         List<LoadPostsFromRemoteCallback> callbackList = callbacks.get(action);
 
         if(callbackList != null) {
-            for(LoadPostsFromRemoteCallback callback : callbackList) {
-                callback.onPostsLoadError(action);
-                callbackList.remove(callback);
+            Iterator<LoadPostsFromRemoteCallback> callbackIterator = callbackList.iterator();
+
+            while(callbackIterator.hasNext()) {
+                callbackIterator.next().onPostsLoadError(action);
+                callbackIterator.remove();
             }
         }
     }

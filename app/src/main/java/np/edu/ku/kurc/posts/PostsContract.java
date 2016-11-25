@@ -7,7 +7,7 @@ import np.edu.ku.kurc.models.Post;
 
 public interface PostsContract {
 
-    interface View extends BaseView<Presenter> {
+    interface ListView extends BaseView<Presenter> {
         void setLoadingIndicator(boolean active);
 
         void showPosts(List<Post> posts);
@@ -19,9 +19,33 @@ public interface PostsContract {
         boolean isActive();
     }
 
+    interface ExtendedListView extends ListView {
+        void setOlderPostsLoadingIndicator(boolean active);
+
+        void showOlderPosts(List<Post> posts);
+
+        void showOlderPostsLoadError();
+
+        void showOlderPostsNotFound();
+
+        void setNewerPostsLoadingIndicator(boolean active);
+
+        void showNewerPosts(List<Post> posts);
+
+        void showNewerPostsLoadError();
+
+        void showNewerPostsNotFound();
+    }
+
     interface Presenter {
         void loadPostsForCategory(String category, boolean forceUpdate);
 
         void loadTopStories(boolean forceUpdate);
+    }
+
+    interface ExtendedPresenter extends Presenter {
+        void loadOlderPostsForCategory(String category, String postsBefore);
+
+        void loadNewerPostsForCategory(String category, String postsAfter);
     }
 }

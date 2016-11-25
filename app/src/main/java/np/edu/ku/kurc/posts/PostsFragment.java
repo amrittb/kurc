@@ -13,16 +13,20 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import np.edu.ku.kurc.R;
+import np.edu.ku.kurc.common.Const;
 import np.edu.ku.kurc.models.Post;
 import np.edu.ku.kurc.utils.DateUtils;
 import np.edu.ku.kurc.views.adapters.PostsAdapter;
+import np.edu.ku.kurc.views.widget.EndlessRecyclerViewScrollListener;
 
-public class PostsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, PostsContract.View {
+public class PostsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
+                                                        PostsContract.ExtendedListView{
 
     private List<Post> postList = new ArrayList<>();
 
@@ -34,8 +38,9 @@ public class PostsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private AppCompatTextView noPostsTxt;
     private SwipeRefreshLayout swipeContainer;
     private CoordinatorLayout coordinatorLayout;
+    private EndlessRecyclerViewScrollListener scrollListener;
 
-    private PostsContract.Presenter presenter;
+    private PostsContract.ExtendedPresenter presenter;
 
     private boolean isViewActive;
 
@@ -76,7 +81,13 @@ public class PostsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
         coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.coordinator_layout);
 
-        adapter = new PostsAdapter(getContext(), postList);
+        adapter = new PostsAdapter(getContext(), postList, new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                loadOlderPosts();
+            }
+        });
 
         initSwipeContainer();
         initRecyclerView();
@@ -91,13 +102,30 @@ public class PostsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     /**
-     * Initializes Recycler View.
+     * Initializes Recycler ListView.
      */
     private void initRecyclerView() {
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+
+        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
         recyclerView.setNestedScrollingEnabled(false);
+
+        scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                view.post(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        loadOlderPosts();
+                    }
+                });
+            }
+        };
+
+        recyclerView.addOnScrollListener(scrollListener);
     }
 
     @Override
@@ -120,7 +148,29 @@ public class PostsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
      */
     @Override
     public void onRefresh() {
-        // Get newer posts after the date of the top post.
+        loadNewerPosts();
+    }
+
+    /**
+     * Loads older posts.
+     */
+    public void loadOlderPosts() {
+        String olderThan = getOldestPostDate();
+        if(olderThan != null) {
+            presenter.loadOlderPostsForCategory(categorySlug, olderThan);
+        }
+    }
+
+    /**
+     * Loads Newer posts.
+     */
+    public void loadNewerPosts() {
+        String newerThan = getLatestPostDate();
+        if(newerThan != null) {
+            presenter.loadNewerPostsForCategory(categorySlug, newerThan);
+        } else {
+            swipeContainer.setRefreshing(false);
+        }
     }
 
     /**
@@ -155,7 +205,21 @@ public class PostsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             return null;
         }
 
-        return DateUtils.toString(postList.get(index).date);
+        Post post = postList.get(index);
+
+        // Post may be null because of footer item which is triggered when adding null to post list.
+        if(post == null) {
+            // If null check the item before it to fetch the date.
+            int i = index - 1;
+
+            if(i < 0) {
+                return null;
+            }
+
+            post = postList.get(i);
+        }
+
+        return DateUtils.toString(post.date);
     }
 
     @Override
@@ -171,15 +235,13 @@ public class PostsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     @Override
     public void showPosts(List<Post> posts) {
-        postList.clear();
-
-        postList.addAll(posts);
-
-        adapter.notifyDataSetChanged();
+        adapter.replacePosts(posts);
     }
 
     @Override
     public void showPostsLoadError() {
+        showNetworkError();
+
         Snackbar.make(coordinatorLayout,"Could not fetch entries.", Snackbar.LENGTH_LONG)
                 .setAction("TRY AGAIN", new View.OnClickListener(){
                     @Override
@@ -201,6 +263,64 @@ public class PostsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     @Override
     public void setPresenter(PostsContract.Presenter presenter) {
-        this.presenter = presenter;
+        this.presenter = (PostsContract.ExtendedPresenter) presenter;
+    }
+
+    @Override
+    public void setOlderPostsLoadingIndicator(boolean active) {
+        adapter.setOlderPostsLoadingIndicator(true);
+    }
+
+    @Override
+    public void showOlderPosts(List<Post> posts) {
+        adapter.addOlderPosts(posts);
+    }
+
+    @Override
+    public void showOlderPostsLoadError() {
+        adapter.showOlderPostsLoadError();
+        showNetworkError();
+    }
+
+    @Override
+    public void showOlderPostsNotFound() {
+        adapter.showOlderPostsNotFound();
+    }
+
+    @Override
+    public void setNewerPostsLoadingIndicator(boolean active) {
+        swipeContainer.setRefreshing(active);
+    }
+
+    @Override
+    public void showNewerPosts(List<Post> posts) {
+        adapter.addNewerPosts(posts);
+        Snackbar.make(coordinatorLayout,"New posts.", Snackbar.LENGTH_INDEFINITE)
+                .setAction("GOTO TOP", new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        recyclerView.smoothScrollToPosition(0);
+                    }
+                }).show();
+    }
+
+    @Override
+    public void showNewerPostsLoadError() {
+        Snackbar.make(coordinatorLayout,"Check your network connection.", Snackbar.LENGTH_INDEFINITE)
+                .setAction("TRY AGAIN", new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        loadNewerPosts();
+                    }
+                }).show();
+    }
+
+    @Override
+    public void showNewerPostsNotFound() {
+        Toast.makeText(getContext(),"No new entries.", Toast.LENGTH_LONG).show();
+    }
+
+    public void showNetworkError() {
+        Toast.makeText(getContext(),"Please, Check your network connection.", Toast.LENGTH_LONG).show();
     }
 }

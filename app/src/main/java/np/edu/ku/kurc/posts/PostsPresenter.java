@@ -8,9 +8,9 @@ import np.edu.ku.kurc.posts.data.PostsRepository;
 
 public class PostsPresenter implements PostsContract.Presenter {
 
-    private PostsRepository postsRepository;
+    protected PostsRepository postsRepository;
 
-    private PostsContract.View postsView;
+    protected PostsContract.ListView postsView;
 
     private PostsDataSourceContract.LoadPostsCallback loadPostsCallback = new PostsDataSourceContract.LoadPostsCallback() {
 
@@ -41,9 +41,9 @@ public class PostsPresenter implements PostsContract.Presenter {
         }
     };
 
-    public PostsPresenter(PostsRepository postsRepository, PostsContract.View tasksView) {
+    public PostsPresenter(PostsRepository postsRepository, PostsContract.ListView listView) {
         this.postsRepository = postsRepository;
-        this.postsView = tasksView;
+        this.postsView = listView;
 
         this.postsView.setPresenter(this);
     }
