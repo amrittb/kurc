@@ -48,4 +48,18 @@ public interface PostsContract {
 
         void loadNewerPostsForCategory(String category, String postsAfter);
     }
+
+    interface ItemView extends BaseView<ItemPresenter> {
+        void setLoadingIndicator(boolean active);
+
+        void showPost(Post post);
+
+        void showPostLoadError();
+
+        boolean isActive();
+    }
+
+    interface ItemPresenter {
+        void loadPost(int id, boolean forceUpdate);
+    }
 }

@@ -35,10 +35,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Toolbar toolbar;
     private DrawerLayout drawer;
     private NavigationView navigationView;
+
     private FragmentManager fragmentManager;
     private HashMap<String, Fragment> fragmentMap = new HashMap<>();
+
     private CategoryCollection categories;
-    private PostsRemoteDataSource remoteDataSource;
+
     private PostsRepository postsRepository;
 
     @Override
@@ -64,22 +66,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         fragmentManager = getSupportFragmentManager();
 
-        remoteDataSource = new PostsRemoteDataSource(getApplicationContext());
-        postsRepository = new PostsRepository(new PostsLocalDataSource(getApplicationContext()), remoteDataSource);
+        postsRepository = PostsRepository.getInstance(new PostsLocalDataSource(getApplicationContext()),
+                                                        new PostsRemoteDataSource(getApplicationContext()));
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        remoteDataSource.registerReceivers();
+        postsRepository.registerReceivers();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
 
-        remoteDataSource.unregisterReceivers();
+        postsRepository.unregisterReceivers();
     }
 
     /**

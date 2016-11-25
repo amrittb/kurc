@@ -39,6 +39,22 @@ public class PostsLocalDataSource implements PostsDataSourceContract {
         callback.onPostsLoaded(posts);
     }
 
+    @Override
+    public void refreshPost() {
+        // No implementation needed.
+    }
+
+    @Override
+    public void getPost(int id, LoadPostCallback callback) {
+        Post post = ModelFactory.getInstance(Post.class).findById(context,id);
+
+        if(post != null) {
+            callback.onPostLoaded(post);
+        } else {
+            callback.onPostLoadError();
+        }
+    }
+
     /**
      * Returns posts query for given arguments.
      *

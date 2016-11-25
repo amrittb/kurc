@@ -89,7 +89,15 @@ public class Post extends BaseModel<Post,PostSchema> {
 
     public String getModifiedDateString(Context context) {
         return (String) DateUtils.getRelativeDateTimeString(context, modified.getTime(), DateUtils.MINUTE_IN_MILLIS, DateUtils.WEEK_IN_MILLIS, DateUtils.FORMAT_ABBREV_RELATIVE);
+    }
 
+    /**
+     * Checks if the post has content.
+     *
+     * @return  Flag to determine if the post has content.
+     */
+    public boolean hasContent() {
+        return ! ((content == null) || (content.isEmpty()));
     }
 
     /**

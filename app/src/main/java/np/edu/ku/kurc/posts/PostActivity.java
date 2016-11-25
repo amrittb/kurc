@@ -1,4 +1,4 @@
-package np.edu.ku.kurc;
+package np.edu.ku.kurc.posts;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -12,6 +12,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
@@ -19,10 +20,13 @@ import com.google.gson.Gson;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import np.edu.ku.kurc.R;
 import np.edu.ku.kurc.common.Const;
-import np.edu.ku.kurc.fragments.PostViewFragment;
 import np.edu.ku.kurc.models.FeaturedMedia;
 import np.edu.ku.kurc.models.Post;
+import np.edu.ku.kurc.posts.data.PostsLocalDataSource;
+import np.edu.ku.kurc.posts.data.PostsRemoteDataSource;
+import np.edu.ku.kurc.posts.data.PostsRepository;
 
 public class PostActivity extends AppCompatActivity {
 
@@ -30,17 +34,46 @@ public class PostActivity extends AppCompatActivity {
     private ImageView featuredImage;
     private CollapsingToolbarLayout collapsingToolbar;
 
+    private PostsRepository postsRepository;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_post);
 
+        initPostsRepository();
+
         parsePostFromIntent();
 
         initToolbar();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        postsRepository.registerReceivers();
 
         initPostViewFragment();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        postsRepository.unregisterReceivers();
+    }
+
+    private void initPostsRepository() {
+        if(postsRepository == null) {
+            try {
+                postsRepository = PostsRepository.getInstance();
+            } catch (Exception e) {
+                postsRepository = PostsRepository.getInstance(new PostsLocalDataSource(getApplicationContext()),
+                        new PostsRemoteDataSource(getApplicationContext()));
+            }
+        }
     }
 
     /**
@@ -139,12 +172,22 @@ public class PostActivity extends AppCompatActivity {
 
     /**
      * Initializes Post View Fragment.
-     *
-     * @TODO Find existing post view fragment and repopulate the post if exists.
      */
     private void initPostViewFragment() {
+        PostViewFragment fragment = (PostViewFragment) getSupportFragmentManager().findFragmentById(R.id.post_container);
+
+        if(fragment != null) {
+            fragment.setPostId(post.id);
+            fragment.loadPost();
+
+            return;
+        }
+
+        PostViewFragment instance = PostViewFragment.instance(post.id);
+        instance.setPresenter(new PostPresenter(postsRepository,instance));
+
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.post_container, PostViewFragment.instance(post), getPostViewFragmentTag())
+                .add(R.id.post_container, instance, getPostViewFragmentTag())
                 .commit();
     }
 

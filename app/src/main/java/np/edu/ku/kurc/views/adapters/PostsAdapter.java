@@ -14,7 +14,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import np.edu.ku.kurc.PostActivity;
+import np.edu.ku.kurc.posts.PostActivity;
 import np.edu.ku.kurc.R;
 import np.edu.ku.kurc.common.Const;
 import np.edu.ku.kurc.models.FeaturedMedia;
@@ -284,7 +284,7 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     int pos = getAdapterPosition();
 
                     Intent i = new Intent(v.getContext(),PostActivity.class);
-                    i.putExtra(Const.KEY_POST,new Gson().toJson(list.get(pos)));
+                    i.putExtra(Const.KEY_POST,(new Gson()).toJson(list.get(pos)));
 
                     v.getContext().startActivity(i);
                 }

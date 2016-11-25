@@ -2,11 +2,17 @@ package np.edu.ku.kurc.posts.data;
 
 public interface PostsRemoteDataSourceContract {
 
-    void getPosts(int perPage, String category, String postsAfter, String postsBefore, LoadPostsFromRemoteCallback calback);
+    void registerReceivers();
 
-    interface LoadPostsFromRemoteCallback {
-        void onPostsLoaded(String action);
+    void unregisterReceivers();
 
-        void onPostsLoadError(String action);
+    void getPosts(int perPage, String category, String postsAfter, String postsBefore, LoadFromRemoteCallback calback);
+
+    void getPost(int id, LoadFromRemoteCallback callback);
+
+    interface LoadFromRemoteCallback {
+        void onLoaded(String action);
+
+        void onLoadError(String action);
     }
 }

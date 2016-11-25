@@ -3,12 +3,10 @@ package np.edu.ku.kurc.views.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -16,7 +14,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import np.edu.ku.kurc.PostActivity;
+import np.edu.ku.kurc.posts.PostActivity;
 import np.edu.ku.kurc.R;
 import np.edu.ku.kurc.common.Const;
 import np.edu.ku.kurc.models.FeaturedMedia;

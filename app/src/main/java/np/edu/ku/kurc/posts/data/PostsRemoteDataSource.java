@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,6 +19,8 @@ public class PostsRemoteDataSource implements PostsRemoteDataSourceContract {
 
     private Context context;
     private LocalBroadcastManager localBroadcastManager;
+
+    private int receiverReferenceCount = 0;
 
     private BroadcastReceiver postsSyncBroadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -33,11 +36,12 @@ public class PostsRemoteDataSource implements PostsRemoteDataSourceContract {
         }
     };
 
+    private IntentFilter postFilter = new IntentFilter(PostSyncService.ACTION_POST_SYNC);
     private IntentFilter postsFilter = new IntentFilter(PostSyncService.ACTION_POSTS_SYNC);
     private IntentFilter postsAfterFilter = new IntentFilter(PostSyncService.ACTION_POSTS_AFTER_SYNC);
     private IntentFilter postsBeforeFilter = new IntentFilter(PostSyncService.ACTION_POSTS_BEFORE_SYNC);
 
-    private HashMap<String,List<LoadPostsFromRemoteCallback>> callbacks = new HashMap<>();
+    private HashMap<String,List<LoadFromRemoteCallback>> callbacks = new HashMap<>();
 
     public PostsRemoteDataSource(Context context) {
         this.context = context;
@@ -47,40 +51,57 @@ public class PostsRemoteDataSource implements PostsRemoteDataSourceContract {
     /**
      * Registers Broadcast receivers.
      */
+    @Override
     public void registerReceivers() {
-        localBroadcastManager.registerReceiver(postsSyncBroadcastReceiver, postsFilter);
-        localBroadcastManager.registerReceiver(postsSyncBroadcastReceiver, postsAfterFilter);
-        localBroadcastManager.registerReceiver(postsSyncBroadcastReceiver, postsBeforeFilter);
+        // Only register receivers when there are no references.
+        receiverReferenceCount++;
+
+        if(receiverReferenceCount == 1) {
+            localBroadcastManager.registerReceiver(postsSyncBroadcastReceiver, postFilter);
+            localBroadcastManager.registerReceiver(postsSyncBroadcastReceiver, postsFilter);
+            localBroadcastManager.registerReceiver(postsSyncBroadcastReceiver, postsAfterFilter);
+            localBroadcastManager.registerReceiver(postsSyncBroadcastReceiver, postsBeforeFilter);
+        }
     }
 
     /**
      * Unregisters Broadcast receivers.
      */
+    @Override
     public void unregisterReceivers() {
-        localBroadcastManager.unregisterReceiver(postsSyncBroadcastReceiver);
+        // Only unregister receivers when there are no references.
+        receiverReferenceCount--;
+
+        if(receiverReferenceCount < 0) {
+            receiverReferenceCount = 0;
+        }
+
+        if (receiverReferenceCount == 0) {
+            localBroadcastManager.unregisterReceiver(postsSyncBroadcastReceiver);
+        }
     }
 
     @Override
-    public void getPosts(int perPage, String category, String postsAfter, String postsBefore, LoadPostsFromRemoteCallback callback) {
+    public void getPosts(int perPage, String category, String postsAfter, String postsBefore, LoadFromRemoteCallback callback) {
         if(postsAfter != null && postsBefore == null) {
             // Only postsAfter is not null
-            if (!PostSyncService.isSyncingPostsAfter()) {
-                PostSyncService.startPostsAfterSync(context, perPage, postsAfter);
-                registerCallback(PostSyncService.ACTION_POSTS_AFTER_SYNC, callback);
-            }
+            PostSyncService.startPostsAfterSync(context, perPage, postsAfter);
+            registerCallback(PostSyncService.ACTION_POSTS_AFTER_SYNC, callback);
         } else if(postsAfter == null && postsBefore != null) {
             // Only postsBefore is not null
-            if(! PostSyncService.isSyncingPostsBefore()) {
-                PostSyncService.startPostsBeforeSync(context, perPage, postsBefore);
-                registerCallback(PostSyncService.ACTION_POSTS_BEFORE_SYNC, callback);
-            }
+            PostSyncService.startPostsBeforeSync(context, perPage, postsBefore);
+            registerCallback(PostSyncService.ACTION_POSTS_BEFORE_SYNC, callback);
         } else if(postsAfter == null && postsBefore == null) {
             // When both are null.
-            if(! PostSyncService.isSyncingPosts()) {
-                PostSyncService.startPostsSync(context, perPage);
-                registerCallback(PostSyncService.ACTION_POSTS_SYNC, callback);
-            }
+            PostSyncService.startPostsSync(context, perPage);
+            registerCallback(PostSyncService.ACTION_POSTS_SYNC, callback);
         }
+    }
+
+    @Override
+    public void getPost(int id, LoadFromRemoteCallback callback) {
+        PostSyncService.startPostSync(context, id);
+        registerCallback(PostSyncService.ACTION_POST_SYNC, callback);
     }
 
     /**
@@ -89,8 +110,8 @@ public class PostsRemoteDataSource implements PostsRemoteDataSourceContract {
      * @param action        Action Type of load.
      * @param callback      Callback instance.
      */
-    private void registerCallback(String action, LoadPostsFromRemoteCallback callback) {
-        List<LoadPostsFromRemoteCallback> callbackList = callbacks.get(action);
+    private void registerCallback(String action, LoadFromRemoteCallback callback) {
+        List<LoadFromRemoteCallback> callbackList = callbacks.get(action);
 
         if(callbackList == null) {
             callbackList = new ArrayList<>();
@@ -106,13 +127,13 @@ public class PostsRemoteDataSource implements PostsRemoteDataSourceContract {
      * @param action    Action of load type.
      */
     private void handlePostsLoaded(String action) {
-        List<LoadPostsFromRemoteCallback> callbackList = callbacks.get(action);
+        List<LoadFromRemoteCallback> callbackList = callbacks.get(action);
 
         if(callbackList != null) {
-            Iterator<LoadPostsFromRemoteCallback> callbackIterator = callbackList.iterator();
+            Iterator<LoadFromRemoteCallback> callbackIterator = callbackList.iterator();
 
             while(callbackIterator.hasNext()) {
-                callbackIterator.next().onPostsLoaded(action);
+                callbackIterator.next().onLoaded(action);
                 callbackIterator.remove();
             }
         }
@@ -124,13 +145,13 @@ public class PostsRemoteDataSource implements PostsRemoteDataSourceContract {
      * @param action    Action of load type.
      */
     private void handlePostsLoadError(String action) {
-        List<LoadPostsFromRemoteCallback> callbackList = callbacks.get(action);
+        List<LoadFromRemoteCallback> callbackList = callbacks.get(action);
 
         if(callbackList != null) {
-            Iterator<LoadPostsFromRemoteCallback> callbackIterator = callbackList.iterator();
+            Iterator<LoadFromRemoteCallback> callbackIterator = callbackList.iterator();
 
             while(callbackIterator.hasNext()) {
-                callbackIterator.next().onPostsLoadError(action);
+                callbackIterator.next().onLoadError(action);
                 callbackIterator.remove();
             }
         }
