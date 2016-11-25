@@ -21,11 +21,16 @@ import np.edu.ku.kurc.R;
 import np.edu.ku.kurc.common.Const;
 import np.edu.ku.kurc.models.FeaturedMedia;
 import np.edu.ku.kurc.models.Post;
+import np.edu.ku.kurc.utils.Metrics;
 
 public class TopStoriesAdapter extends RecyclerView.Adapter<TopStoriesAdapter.ViewHolder> {
 
-    private List<Post> stories;
     private Context context;
+
+    private List<Post> stories;
+
+    public int featuredImageWidth;
+    public int featuredImageHeight;
 
     public TopStoriesAdapter(Context context,List<Post> stories) {
         this.context = context;
@@ -36,7 +41,29 @@ public class TopStoriesAdapter extends RecyclerView.Adapter<TopStoriesAdapter.Vi
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View item = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_top_story,parent,false);
 
-        return new ViewHolder(item);
+        ViewHolder viewHolder = new ViewHolder(item);
+
+        if(featuredImageWidth <= 0 || featuredImageHeight <= 0) {
+            populateDimensions(viewHolder);
+        }
+
+        return viewHolder;
+    }
+
+    /**
+     * Populates Image Width and Image height dimensions.
+     *
+     * @param viewHolder    View Holder to populate dimension from.
+     */
+    private void populateDimensions(final ViewHolder viewHolder) {
+        viewHolder.featureImage.post(new Runnable() {
+
+            @Override
+            public void run() {
+                featuredImageWidth = viewHolder.featureImage.getWidth();
+                featuredImageHeight = (int) ((9.0f / 16.0f) * featuredImageWidth);
+            }
+        });
     }
 
     @Override
@@ -55,33 +82,42 @@ public class TopStoriesAdapter extends RecyclerView.Adapter<TopStoriesAdapter.Vi
      * @param holder ListView holder instance.
      * @param post Post for which the featured media is to be loaded.
      */
-    private void loadFeaturedImage(final ViewHolder holder, final Post post) {
-        holder.featureImage.post(new Runnable() {
+    private void loadFeaturedImage(ViewHolder holder, Post post) {
+        Picasso.with(context).cancelRequest(holder.featureImage);
 
-            @Override
-            public void run() {
-                if(post.hasFeaturedMedia()) {
-                    FeaturedMedia media = post.getFeaturedMedia();
+        String url = null;
 
-                    if(holder.featuredImageWidth <= 0 || holder.featuredImageHeight <= 0) {
-                        holder.featuredImageWidth = holder.featureImage.getWidth();
-                        holder.featuredImageHeight = (int) ((9.0f / 16.0f) * holder.featuredImageWidth);
-                    }
-
-                    String url = media.getOptimalSourceUrl(holder.featuredImageWidth,holder.featuredImageHeight);
-                    Picasso.with(context)
-                            .load(url)
-                            .fit()
-                            .centerCrop()
-                            .placeholder(R.drawable.ic_image_white_24dp)
-                            .error(R.drawable.ic_image_white_24dp)
-                            .into(holder.featureImage);
-                } else {
-                    Picasso.with(context).cancelRequest(holder.featureImage);
-                    holder.featureImage.setImageResource(R.drawable.ic_image_white_24dp);
-                }
+        if(post.hasFeaturedMedia()) {
+            FeaturedMedia media = post.getFeaturedMedia();
+            if(featuredImageWidth <= 0 || featuredImageHeight <= 0) {
+                featuredImageWidth = (int) Metrics.dipToPixels(context, context.getResources().getDimension(R.dimen.card_width_default));
+                featuredImageHeight = (int) ((9.0/16.0) * featuredImageWidth);
             }
-        });
+            url = media.getOptimalSourceUrl(featuredImageWidth,featuredImageHeight);
+        }
+
+        Picasso.with(context)
+                .load(url)
+                .fit()
+                .centerCrop()
+                .placeholder(R.drawable.ic_image_white_24dp)
+                .error(R.drawable.ic_image_white_24dp)
+                .into(holder.featureImage);
+    }
+
+    /**
+     * Replaces Stories.
+     *
+     * @param posts     Stories to be updated.
+     */
+    public void replaceStories(List<Post> posts) {
+        stories.clear();
+
+        notifyDataSetChanged();
+
+        stories.addAll(posts);
+
+        notifyDataSetChanged();
     }
 
     @Override
@@ -93,9 +129,6 @@ public class TopStoriesAdapter extends RecyclerView.Adapter<TopStoriesAdapter.Vi
 
         public ImageView featureImage;
         public TextView postTitle, postDate, postAuthor;
-
-        public int featuredImageWidth;
-        public int featuredImageHeight;
 
         public ViewHolder(View itemView) {
             super(itemView);

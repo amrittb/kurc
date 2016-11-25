@@ -153,6 +153,16 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     /**
+     * Returns post at position.
+     *
+     * @param pos   Post at position.
+     * @return      Post reference.
+     */
+    public Post getItem(int pos) {
+        return list.get(pos);
+    }
+
+    /**
      * Replace posts with given posts.
      *
      * @param posts     Posts to be replaced.

@@ -28,8 +28,6 @@ import np.edu.ku.kurc.views.widget.EndlessRecyclerViewScrollListener;
 public class PostsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
                                                         PostsContract.ExtendedListView{
 
-    private List<Post> postList = new ArrayList<>();
-
     private String categorySlug;
 
     private PostsAdapter adapter;
@@ -38,13 +36,11 @@ public class PostsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private AppCompatTextView noPostsTxt;
     private SwipeRefreshLayout swipeContainer;
     private CoordinatorLayout coordinatorLayout;
-    private EndlessRecyclerViewScrollListener scrollListener;
 
     private PostsContract.ExtendedPresenter presenter;
 
     private boolean isViewActive;
-
-
+    
     /**
      * Creates a new instance of PostsFragment.
      *
@@ -81,7 +77,7 @@ public class PostsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
         coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.coordinator_layout);
 
-        adapter = new PostsAdapter(getContext(), postList, new View.OnClickListener() {
+        adapter = new PostsAdapter(getContext(), new ArrayList<Post>(), new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
@@ -112,7 +108,7 @@ public class PostsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         recyclerView.setAdapter(adapter);
         recyclerView.setNestedScrollingEnabled(false);
 
-        scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+        EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 view.post(new Runnable() {
@@ -190,7 +186,7 @@ public class PostsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
      */
     @Nullable
     private String getOldestPostDate() {
-        return getPostDateOfIndex(postList.size() - 1);
+        return getPostDateOfIndex(adapter.getItemCount() - 1);
     }
 
     /**
@@ -201,11 +197,7 @@ public class PostsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
      */
     @Nullable
     private String getPostDateOfIndex(int index) {
-        if(postList == null || postList.isEmpty()) {
-            return null;
-        }
-
-        Post post = postList.get(index);
+        Post post = adapter.getItem(index);
 
         // Post may be null because of footer item which is triggered when adding null to post list.
         if(post == null) {
@@ -216,7 +208,7 @@ public class PostsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 return null;
             }
 
-            post = postList.get(i);
+            post = adapter.getItem(i);
         }
 
         return DateUtils.toString(post.date);

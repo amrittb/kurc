@@ -3,5 +3,6 @@
     <style name="PostCardStyle" parent="Theme.AppCompat.Light">
         <item name="cardCornerRadius">@dimen/card_radius_default</item>
         <item name="cardElevation">@dimen/elevation_2</item>
+        <item name="cardPreventCornerOverlap">false</item>
     </style>
 </resources>

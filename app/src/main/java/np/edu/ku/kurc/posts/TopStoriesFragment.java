@@ -33,8 +33,6 @@ public class TopStoriesFragment extends Fragment implements PostsContract.ListVi
     private View topStoriesLoadingBar;
     private Button topStoriesRetryBtn;
 
-    private List<Post> stories = new ArrayList<>();
-
     private TopStoriesAdapter topStoriesAdapter;
 
     private PostsContract.Presenter presenter;
@@ -61,10 +59,28 @@ public class TopStoriesFragment extends Fragment implements PostsContract.ListVi
         topStoriesRetryContainer = view.findViewById(R.id.retry_container);
         topStoriesRetryBtn = (Button) view.findViewById(R.id.retry_btn);
 
-        topStoriesAdapter = new TopStoriesAdapter(getContext(),stories);
+        initStories();
+    }
+
+    /**
+     * Initializes Stories.
+     */
+    private void initStories() {
+        List<Post> stories = new ArrayList<>();
+
+        Post dummyPost = new Post(0,"Loading...", Calendar.getInstance().getTime(),Calendar.getInstance().getTime(),"slug","link","content","excerpt");
+        Author dummyAuthor = new Author();
+        dummyAuthor.name = "kurc";
+
+        dummyPost.embedded = new Embedded();
+        dummyPost.embedded.authors = new ArrayList<>();
+        dummyPost.embedded.authors.add(dummyAuthor);
+
+        stories.add(dummyPost);
+
+        topStoriesAdapter = new TopStoriesAdapter(getContext(), stories);
 
         initStoriesView();
-        initStories();
     }
 
     /**
@@ -84,22 +100,6 @@ public class TopStoriesFragment extends Fragment implements PostsContract.ListVi
                 presenter.loadTopStories(true);
             }
         });
-    }
-
-    /**
-     * Initializes Stories.
-     */
-    private void initStories() {
-        Post dummyPost = new Post(0,"Loading...", Calendar.getInstance().getTime(),Calendar.getInstance().getTime(),"slug","link","content","excerpt");
-        Author dummyAuthor = new Author();
-        dummyAuthor.name = "kurc";
-
-        dummyPost.embedded = new Embedded();
-        dummyPost.embedded.authors = new ArrayList<>();
-        dummyPost.embedded.authors.add(dummyAuthor);
-
-        stories.add(dummyPost);
-        topStoriesAdapter = new TopStoriesAdapter(getContext(), stories);
     }
 
     @Override
@@ -129,11 +129,7 @@ public class TopStoriesFragment extends Fragment implements PostsContract.ListVi
 
     @Override
     public void showPosts(List<Post> posts) {
-        stories.clear();
-
-        stories.addAll(posts);
-
-        topStoriesAdapter.notifyDataSetChanged();
+        topStoriesAdapter.replaceStories(posts);
 
         topStoriesView.setVisibility(View.VISIBLE);
     }

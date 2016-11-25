@@ -1,5 +1,7 @@
 package np.edu.ku.kurc.posts.data;
 
+import android.os.Handler;
+
 import java.util.List;
 
 import np.edu.ku.kurc.common.Const;
@@ -65,6 +67,7 @@ public class PostsRepository implements PostsDataSourceContract {
 
             @Override
             public void onPostsLoaded(String action) {
+                isCacheOld = false;
                 // When posts are loaded from remote source, load its copy from local data source.
                 getPostsFromLocalDataSource(perPage, category, postsAfter, postsBefore, callback);
             }
