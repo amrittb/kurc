@@ -17,6 +17,7 @@
     <dimen name="font_sub_heading">16sp</dimen>
 
     <!-- typical spacing between two views -->
+    <dimen name="spacing_ultra_extra_huge">72dp</dimen>
     <dimen name="spacing_ultra_huge">56dp</dimen>
     <dimen name="spacing_huge">40dp</dimen>
     <dimen name="spacing_large">24dp</dimen>
@@ -35,6 +36,7 @@
     <dimen name="fab_margin">16dp</dimen>
 
     <dimen name="avatar_size">40dp</dimen>
+    <dimen name="avatar_size_huge">180dp</dimen>
 
     <dimen name="elevation_2">2dp</dimen>
     <dimen name="elevation_4">4dp</dimen>

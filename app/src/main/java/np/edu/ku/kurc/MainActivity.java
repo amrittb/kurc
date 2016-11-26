@@ -21,6 +21,7 @@ import java.util.HashMap;
 
 import np.edu.ku.kurc.auth.AuthManager;
 import np.edu.ku.kurc.common.Const;
+import np.edu.ku.kurc.developers.AboutDevelopersFragment;
 import np.edu.ku.kurc.fragments.HomeFragment;
 import np.edu.ku.kurc.posts.ExtendedPostsPresenter;
 import np.edu.ku.kurc.posts.PostsFragment;
@@ -167,6 +168,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_home:
                 swapHomeFragment();
                 break;
+            case R.id.nav_developer:
+                swapAboutDevelopersFragment();
+                break;
             case R.id.nav_logout:
                 logout();
                 break;
@@ -204,6 +208,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     /**
+     * Swaps About Developers Fragment.
+     */
+    private void swapAboutDevelopersFragment() {
+        swapFragment(AboutDevelopersFragment.instance(), Const.FRAGMENT_TAG_ABOUT_DEVELOPERS);
+    }
+
+    /**
      * Swaps Posts Fragment in the fragment container.
      *
      * @param categorySlug Category slug of the post category.
@@ -227,12 +238,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Fragment fragmentByTag = fragmentManager.findFragmentByTag(tag);
 
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        if(fragmentByTag != null && fragmentByTag.isAdded()) {
-            hideAllFragments(transaction);
 
+        hideAllFragments(transaction);
+
+        if(fragmentByTag != null && fragmentByTag.isAdded()) {
             transaction.show(fragmentByTag);
         } else {
             transaction.add(R.id.content_main, fragment,tag);
+            transaction.show(fragment);
 
             fragmentMap.put(tag,fragment);
         }
