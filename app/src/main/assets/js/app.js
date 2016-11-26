@@ -29,7 +29,7 @@ function modifyContent() {
 }
 
 function resizeImages() {
-	$("#kurc-content img").each(function() {
+	$("#kurc-content img, #Kurc-content video, #kurc-content iframe").each(function() {
         var width = $(this).width();
         var height = $(this).height();
 

@@ -2,7 +2,7 @@ body {
     background: #f9f9f9;
 }
 
-img, video {
+img, video, iframe {
 	width: 100%;
     height: auto;
     background: #e0e9e3;
@@ -20,6 +20,16 @@ p {
 }
 
 #kurc-content img {
+	margin-left: -10px;
+	margin-right: -10px;
+}
+
+#kurc-content video {
+	margin-left: -10px;
+	margin-right: -10px;
+}
+
+#kurc-content iframe {
 	margin-left: -10px;
 	margin-right: -10px;
 }
