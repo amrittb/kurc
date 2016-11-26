@@ -1,5 +1,6 @@
 package np.edu.ku.kurc;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -166,6 +167,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_home:
                 swapHomeFragment();
                 break;
+            case R.id.nav_logout:
+                logout();
+                break;
             default:
                 if(categories != null) {
                     Category category = categories.findById(id);
@@ -178,6 +182,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    /**
+     * Logs out the authenticated member.
+     */
+    private void logout() {
+        AuthManager manager = new AuthManager(this);
+
+        manager.logout();
+
+        startActivity(new Intent(this,LoginActivity.class));
+        finish();
     }
 
     /**

@@ -24,6 +24,8 @@
     <string name="nav_committee">Committee</string>
     <string name="nav_settings">Settings</string>
     <string name="nav_feedback">Send Feedback</string>
+    <string name="nav_developer">About Developer</string>
+    <string name="nav_logout">Log out</string>
 
     <string name="placeholder_member_info">Member Info</string>
     <string name="placeholder_member_name">Member Name</string>

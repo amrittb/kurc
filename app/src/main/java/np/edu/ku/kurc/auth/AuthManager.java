@@ -69,4 +69,13 @@ public class AuthManager {
 
         return gson.fromJson(memberJson,Member.class);
     }
+
+    /**
+     * Logs out the member.
+     */
+    public void logout() {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.remove(Const.AUTH_PREFS_MEMBER_KEY);
+        editor.apply();
+    }
 }
