@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,6 +37,7 @@ public class PostsRemoteDataSource implements PostsRemoteDataSourceContract {
 
     private IntentFilter postFilter = new IntentFilter(PostSyncService.ACTION_POST_SYNC);
     private IntentFilter postsFilter = new IntentFilter(PostSyncService.ACTION_POSTS_SYNC);
+    private IntentFilter stickyPostFilter = new IntentFilter(PostSyncService.ACTION_STICKY_POST_SYNC);
     private IntentFilter postsAfterFilter = new IntentFilter(PostSyncService.ACTION_POSTS_AFTER_SYNC);
     private IntentFilter postsBeforeFilter = new IntentFilter(PostSyncService.ACTION_POSTS_BEFORE_SYNC);
 
@@ -59,6 +59,7 @@ public class PostsRemoteDataSource implements PostsRemoteDataSourceContract {
         if(receiverReferenceCount == 1) {
             localBroadcastManager.registerReceiver(postsSyncBroadcastReceiver, postFilter);
             localBroadcastManager.registerReceiver(postsSyncBroadcastReceiver, postsFilter);
+            localBroadcastManager.registerReceiver(postsSyncBroadcastReceiver, stickyPostFilter);
             localBroadcastManager.registerReceiver(postsSyncBroadcastReceiver, postsAfterFilter);
             localBroadcastManager.registerReceiver(postsSyncBroadcastReceiver, postsBeforeFilter);
         }
@@ -104,11 +105,17 @@ public class PostsRemoteDataSource implements PostsRemoteDataSourceContract {
         registerCallback(PostSyncService.ACTION_POST_SYNC, callback);
     }
 
+    @Override
+    public void getStickyPost(LoadFromRemoteCallback callback) {
+        PostSyncService.startStickyPostSync(context);
+        registerCallback(PostSyncService.ACTION_STICKY_POST_SYNC, callback);
+    }
+
     /**
      * Registers callback for remote posts load.
      *
      * @param action        Action Type of load.
-     * @param callback      Callback instance.
+     * @param callback      Callback stickyInstance.
      */
     private void registerCallback(String action, LoadFromRemoteCallback callback) {
         List<LoadFromRemoteCallback> callbackList = callbacks.get(action);

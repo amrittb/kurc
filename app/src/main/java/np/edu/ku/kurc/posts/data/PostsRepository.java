@@ -12,6 +12,7 @@ public class PostsRepository implements PostsDataSourceContract {
 
     private boolean isPostCacheOld;
     private boolean isPostsCacheOld;
+    private boolean isStickyPostCacheOld;
 
     private PostsDataSourceContract localDataSource;
     private PostsRemoteDataSourceContract remoteDataSource;
@@ -83,6 +84,47 @@ public class PostsRepository implements PostsDataSourceContract {
         }
     }
 
+    /**
+     * Fetches posts from remote data source.
+     *
+     * @param perPage       Posts per page.
+     * @param category      Post category to be fetched.
+     * @param postsAfter    Posts After this date to be fetched.
+     * @param postsBefore   Posts before this date to be fetched.
+     * @param callback      Posts Fetched callback.
+     */
+    private void getPostsFromRemoteDataSource(final int perPage, final String category, final String postsAfter, final String postsBefore, final LoadPostsCallback callback) {
+        remoteDataSource.getPosts(perPage, category, postsAfter, postsBefore, new PostsRemoteDataSourceContract.LoadFromRemoteCallback() {
+
+            @Override
+            public void onLoaded(String action) {
+                isPostsCacheOld = false;
+                // When posts are loaded from remote source, load its copy from local data source.
+                getPostsFromLocalDataSource(perPage, category, postsAfter, postsBefore, callback);
+            }
+
+            @Override
+            public void onLoadError(String action) {
+                // If there is any error show on posts load error.
+                callback.onPostsLoadError();
+            }
+        });
+    }
+
+    /**
+     * Fetches posts from local data source.
+     *
+     * @param perPage       Posts per page.
+     * @param category      Post category to be loaded.
+     * @param postsAfter    Posts After this date to be loaded.
+     * @param postsBefore   Posts before this date to be loaded.
+     * @param callback      Posts Loaded callback.
+     */
+    private void getPostsFromLocalDataSource(int perPage, String category, String postsAfter, String postsBefore, LoadPostsCallback callback) {
+        localDataSource.getPosts(perPage, category, postsAfter, postsBefore, callback);
+    }
+
+
     @Override
     public void refreshPost() {
         isPostCacheOld = true;
@@ -144,44 +186,59 @@ public class PostsRepository implements PostsDataSourceContract {
         localDataSource.getPost(id,callback);
     }
 
+    @Override
+    public void getStickyPost(final LoadPostCallback callback) {
+        if(isStickyPostCacheOld) {
+            getStickyPostFromRemoteSource(callback);
+        } else {
+            localDataSource.getStickyPost(new LoadPostCallback() {
+
+                @Override
+                public void onPostLoaded(Post post) {
+                    if(!post.hasContent()) {
+                        getStickyPostFromRemoteSource(callback);
+                    }
+
+                    callback.onPostLoaded(post);
+                }
+
+                @Override
+                public void onPostLoadError() {
+                    getStickyPostFromRemoteSource(callback);
+                }
+            });
+        }
+    }
+
     /**
-     * Fetches posts from remote data source.
+     * Loads Sticky post from remote source.
      *
-     * @param perPage       Posts per page.
-     * @param category      Post category to be fetched.
-     * @param postsAfter    Posts After this date to be fetched.
-     * @param postsBefore   Posts before this date to be fetched.
-     * @param callback      Posts Fetched callback.
+     * @param callback  Load post callback.
      */
-    private void getPostsFromRemoteDataSource(final int perPage, final String category, final String postsAfter, final String postsBefore, final LoadPostsCallback callback) {
-        remoteDataSource.getPosts(perPage, category, postsAfter, postsBefore, new PostsRemoteDataSourceContract.LoadFromRemoteCallback() {
+    private void getStickyPostFromRemoteSource(final LoadPostCallback callback) {
+        remoteDataSource.getStickyPost(new PostsRemoteDataSourceContract.LoadFromRemoteCallback() {
 
             @Override
             public void onLoaded(String action) {
-                isPostsCacheOld = false;
-                // When posts are loaded from remote source, load its copy from local data source.
-                getPostsFromLocalDataSource(perPage, category, postsAfter, postsBefore, callback);
+                isStickyPostCacheOld = false;
+
+                getStickyPostFromLocalSource(callback);
             }
 
             @Override
             public void onLoadError(String action) {
-                // If there is any error show on posts load error.
-                callback.onPostsLoadError();
+                callback.onPostLoadError();
             }
         });
     }
 
     /**
-     * Fetches posts from local data source.
+     * Loads Sticky Post from local source.
      *
-     * @param perPage       Posts per page.
-     * @param category      Post category to be loaded.
-     * @param postsAfter    Posts After this date to be loaded.
-     * @param postsBefore   Posts before this date to be loaded.
-     * @param callback      Posts Loaded callback.
+     * @param callback  Load Post callback.
      */
-    private void getPostsFromLocalDataSource(int perPage, String category, String postsAfter, String postsBefore, LoadPostsCallback callback) {
-        localDataSource.getPosts(perPage, category, postsAfter, postsBefore, callback);
+    private void getStickyPostFromLocalSource(LoadPostCallback callback) {
+        localDataSource.getStickyPost(callback);
     }
 
     /**

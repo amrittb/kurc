@@ -23,6 +23,7 @@ public final class Const {
     // Fragment tags.
     public static final String FRAGMENT_TAG_HOME = "HOME_FRAGMENT";
     public static final String TOP_STORIES_FRAGMENT_TAG = "TOP_STORIES_FRAGMENT";
+    public static final String STICKY_POST_FRAGMENT_TAG = "STICKY_POST_FRAGMENT";
 
     public static final String KEY_POST = "POST";
 

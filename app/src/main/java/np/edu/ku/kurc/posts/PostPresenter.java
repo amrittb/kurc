@@ -51,4 +51,15 @@ public class PostPresenter implements PostsContract.ItemPresenter {
 
         postsRepository.getPost(id,loadPostCallback);
     }
+
+    @Override
+    public void loadStickyPost(boolean forceUpdate) {
+        postView.setLoadingIndicator(true);
+
+        if(forceUpdate) {
+            postsRepository.refreshPost();
+        }
+
+        postsRepository.getStickyPost(loadPostCallback);
+    }
 }

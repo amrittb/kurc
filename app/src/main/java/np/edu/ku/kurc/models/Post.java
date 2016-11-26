@@ -191,10 +191,6 @@ public class Post extends BaseModel<Post,PostSchema> {
 
         PostCollection posts = (PostCollection) getCollection(cursor);
 
-        if(posts.isEmpty()) {
-            posts = latestPaginated(context, 1, 1, false, false);
-        }
-
         if ( ! posts.isEmpty()) {
 
             posts.loadMetadata(context);

@@ -43,20 +43,22 @@ public class PostViewModel extends ViewModel<Post> {
         postContent = (WebView) postContainer.findViewById(R.id.post_content);
         postAuthorAvatar = (ImageView) postContainer.findViewById(R.id.post_author_avatar);
 
-        postContent.setVisibility(View.GONE);
+        hidePostView();
     }
 
     @Override
     public void onBindModel(Post model) {
-        postContainer.setVisibility(View.VISIBLE);
+        showPostView();
 
         postTitle.setText(model.title);
         postDate.setText(model.getDateString(context));
         postAuthor.setText(model.getAuthor().name);
-        postContent.loadData(model.content,"text/html",null);
 
-        if(model.content != null && !model.content.contentEquals("")) {
-            postContent.setVisibility(View.VISIBLE);
+        if(model.hasContent()) {
+            postContent.loadData(model.content,"text/html",null);
+            showContent();
+        } else {
+            hideContent();
         }
 
         Picasso.with(context)
@@ -64,5 +66,33 @@ public class PostViewModel extends ViewModel<Post> {
                 .resize(avatarSize,avatarSize)
                 .centerCrop()
                 .into(postAuthorAvatar);
+    }
+
+    /**
+     * Shows Post View.
+     */
+    public void showPostView() {
+        postContainer.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Hides Post View.
+     */
+    public void hidePostView() {
+        postContainer.setVisibility(View.GONE);
+    }
+
+    /**
+     * Shows Post Content.
+     */
+    public void showContent() {
+        postContent.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Hides Post Content.
+     */
+    public void hideContent() {
+        postContent.setVisibility(View.GONE);
     }
 }

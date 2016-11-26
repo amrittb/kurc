@@ -55,6 +55,17 @@ public class PostsLocalDataSource implements PostsDataSourceContract {
         }
     }
 
+    @Override
+    public void getStickyPost(LoadPostCallback callback) {
+        Post post = ModelFactory.getInstance(Post.class).getLatestPinned(context);
+
+        if(post != null) {
+            callback.onPostLoaded(post);
+        } else {
+            callback.onPostLoadError();
+        }
+    }
+
     /**
      * Returns posts query for given arguments.
      *

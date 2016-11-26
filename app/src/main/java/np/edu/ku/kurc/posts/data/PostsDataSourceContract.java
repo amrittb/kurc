@@ -14,6 +14,8 @@ public interface PostsDataSourceContract {
 
     void getPost(int id, LoadPostCallback callback);
 
+    void getStickyPost(LoadPostCallback callback);
+
     interface LoadPostsCallback {
         void onPostsLoaded(List<Post> posts);
 

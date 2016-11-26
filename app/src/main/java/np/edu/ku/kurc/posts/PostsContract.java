@@ -61,5 +61,7 @@ public interface PostsContract {
 
     interface ItemPresenter {
         void loadPost(int id, boolean forceUpdate);
+
+        void loadStickyPost(boolean forceUpdate);
     }
 }

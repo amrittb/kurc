@@ -2,38 +2,27 @@ package np.edu.ku.kurc.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import np.edu.ku.kurc.R;
 import np.edu.ku.kurc.common.Const;
-import np.edu.ku.kurc.models.Post;
+import np.edu.ku.kurc.posts.PostPresenter;
+import np.edu.ku.kurc.posts.PostViewFragment;
 import np.edu.ku.kurc.posts.PostsPresenter;
 import np.edu.ku.kurc.posts.TopStoriesFragment;
 import np.edu.ku.kurc.posts.data.PostsRepository;
-import np.edu.ku.kurc.views.viewmodels.PostViewModel;
 
 public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    private CoordinatorLayout coordinatorLayout;
-
-    private View pinnedPostContainer;
-    private View pinnedPostLoadingBar;
-    private View pinnedPostLoadingContainer;
-    private View retryPinnedPostContainer;
-    private Button retryPinnedPostBtn;
-
-    private PostViewModel postViewModel;
     private SwipeRefreshLayout swipeContainer;
 
     private PostsRepository postsRepository;
     private TopStoriesFragment topStoriesFragment;
+    private PostViewFragment stickyPostFragment;
 
     /**
      * Creates home fragment instance.
@@ -56,27 +45,17 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.coordinator_layout);
-
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
-
-        pinnedPostContainer = view.findViewById(R.id.post_container);
-        pinnedPostLoadingBar = view.findViewById(R.id.pinned_post_loading_bar);
-        pinnedPostLoadingContainer = view.findViewById(R.id.pinned_post_loading_container);
-
-        retryPinnedPostContainer = pinnedPostLoadingContainer.findViewById(R.id.retry_container);
-        retryPinnedPostBtn = (Button) retryPinnedPostContainer.findViewById(R.id.retry_btn);
-
-        postViewModel = new PostViewModel(pinnedPostContainer);
 
         initSwipeContainer();
 
         initStoriesContainer();
-        initPinnedPost();
-
-        loadPinnedPost();
+        initStickyPostContainer();
     }
 
+    /**
+     * Initializes swipe container.
+     */
     private void initSwipeContainer() {
         swipeContainer.setOnRefreshListener(this);
         swipeContainer.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent);
@@ -104,59 +83,56 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     /**
      * Initializes pinned post.
      */
-    private void initPinnedPost() {
-        retryPinnedPostBtn.setOnClickListener(new View.OnClickListener() {
+    private void initStickyPostContainer() {
+        Fragment f = getFragmentManager().findFragmentById(R.id.sticky_post_fragment_container);
 
-            @Override
-            public void onClick(View v) {
-                loadPinnedPost();
+        if(f == null) {
+            if(stickyPostFragment == null) {
+                stickyPostFragment = PostViewFragment.stickyInstance();
+                stickyPostFragment.setPresenter(new PostPresenter(postsRepository, stickyPostFragment));
             }
-        });
-    }
 
-    /**
-     * Loads Pinned Post.
-     */
-    private void loadPinnedPost() {
-        pinnedPostLoadingBar.setVisibility(View.VISIBLE);
-        retryPinnedPostContainer.setVisibility(View.GONE);
-
-        Post p = new Post();
-
-        Post post = p.getLatestPinned(getActivity().getApplicationContext());
-
-        consumePinnedPost(post);
-    }
-
-    private void consumePinnedPost(Post post) {
-        if(post != null) {
-            postViewModel.onBindModel(post);
-
-            pinnedPostLoadingContainer.setVisibility(View.GONE);
-            pinnedPostContainer.setVisibility(View.VISIBLE);
-        } else {
-            pinnedPostLoadingBar.setVisibility(View.GONE);
-            retryPinnedPostContainer.setVisibility(View.VISIBLE);
-
-            Snackbar.make(coordinatorLayout,"Could not fetch pinned post.", Snackbar.LENGTH_LONG)
-                    .setAction("TRY AGAIN", new View.OnClickListener(){
-                        @Override
-                        public void onClick(View v) {
-                            loadPinnedPost();
-                        }
-                    }).show();
+            getFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.sticky_post_fragment_container,stickyPostFragment,Const.STICKY_POST_FRAGMENT_TAG)
+                    .commit();
         }
     }
 
     @Override
     public void onRefresh() {
+        refreshTopStories();
+        refreshStickyPost();
 
+        swipeContainer.setRefreshing(false);
     }
 
     /**
-     * Sets Posts Repository instance.
+     * Refreshes top stories.
+     */
+    private void refreshTopStories() {
+        if(topStoriesFragment == null) {
+            initStoriesContainer();
+        }
+
+        topStoriesFragment.refreshTopStories();
+    }
+
+    /**
+     * Refreshes sticky post.
+     */
+    private void refreshStickyPost() {
+        if(stickyPostFragment == null) {
+            initStickyPostContainer();
+        }
+
+        stickyPostFragment.refreshStickyPost();
+    }
+
+    /**
+     * Sets Posts Repository stickyInstance.
      *
-     * @param repository    Posts Repository instance.
+     * @param repository    Posts Repository stickyInstance.
      */
     public void setPostsRepository(PostsRepository repository) {
         this.postsRepository = repository;

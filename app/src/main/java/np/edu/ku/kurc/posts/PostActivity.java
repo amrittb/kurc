@@ -177,8 +177,7 @@ public class PostActivity extends AppCompatActivity {
         PostViewFragment fragment = (PostViewFragment) getSupportFragmentManager().findFragmentById(R.id.post_container);
 
         if(fragment != null) {
-            fragment.setPostId(post.id);
-            fragment.loadPost();
+            fragment.loadPost(post.id);
 
             return;
         }

@@ -116,6 +116,13 @@ public class TopStoriesFragment extends Fragment implements PostsContract.ListVi
         isViewActive = false;
     }
 
+    /**
+     * Refreshes top stories.
+     */
+    public void refreshTopStories() {
+        presenter.loadTopStories(true);
+    }
+
     @Override
     public void setLoadingIndicator(boolean active) {
         if(active) {

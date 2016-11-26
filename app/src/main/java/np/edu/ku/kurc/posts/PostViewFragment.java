@@ -15,6 +15,11 @@ import np.edu.ku.kurc.views.viewmodels.PostViewModel;
 
 public class PostViewFragment extends Fragment implements PostsContract.ItemView {
 
+    private static final String MODE_POST_BY_ID = "MODE_POST_BY_ID";
+    private static final String MODE_POST_STICKY = "MODE_POST_STICKY";
+
+    private String loadMode;
+
     private int postId;
 
     private View coordinatorLayout;
@@ -31,10 +36,10 @@ public class PostViewFragment extends Fragment implements PostsContract.ItemView
     private PostsContract.ItemPresenter presenter;
 
     /**
-     * Builds instance of PostViewFragment.
+     * Builds stickyInstance of PostViewFragment.
      *
-     * @param id    Id of post to be loaded.
-     * @return      PostViewFragment Instance.
+     * @param id Id of post to be loaded.
+     * @return PostViewFragment Instance.
      */
     public static PostViewFragment instance(int id) {
         PostViewFragment fragment = new PostViewFragment();
@@ -44,8 +49,36 @@ public class PostViewFragment extends Fragment implements PostsContract.ItemView
         return fragment;
     }
 
-    public void setPostId(int postId) {
+    /**
+     * Builds stickyInstance of PostViewFragment.
+     *
+     * @return      PostViewFragment Instance.
+     */
+    public static PostViewFragment stickyInstance() {
+        PostViewFragment fragment = new PostViewFragment();
+
+        fragment.setLoadMode(MODE_POST_STICKY);
+
+        return fragment;
+    }
+
+    /**
+     * Setter for post id.
+     *
+     * @param postId    Post Id to be set.
+     */
+    private void setPostId(int postId) {
+        setLoadMode(MODE_POST_BY_ID);
         this.postId = postId;
+    }
+
+    /**
+     * Sets the post loading mode.
+     *
+     * @param loadMode  Post Loading Mode.
+     */
+    private void setLoadMode(String loadMode) {
+        this.loadMode = loadMode;
     }
 
     @Nullable
@@ -93,8 +126,30 @@ public class PostViewFragment extends Fragment implements PostsContract.ItemView
     /**
      * Loads Post.
      */
-    public void loadPost() {
-        presenter.loadPost(postId,false);
+    private void loadPost() {
+        if(loadMode.equals(MODE_POST_BY_ID)) {
+            presenter.loadPost(postId,false);
+        } else if(loadMode.equals(MODE_POST_STICKY)) {
+            presenter.loadStickyPost(false);
+        }
+    }
+
+    /**
+     * Loads post of given id.
+     *
+     * @param id    Id Of post to be loaded.
+     */
+    public void loadPost(int id) {
+        setPostId(id);
+        loadPost();
+    }
+
+    /**
+     * Refreshes Sticky Post.
+     */
+    public void refreshStickyPost() {
+        postViewModel.hidePostView();
+        presenter.loadStickyPost(true);
     }
 
     @Override
@@ -136,7 +191,7 @@ public class PostViewFragment extends Fragment implements PostsContract.ItemView
     }
 
     private void showFetchError() {
-        Snackbar.make(coordinatorLayout,"Could not load this post.", Snackbar.LENGTH_LONG)
+        Snackbar.make(coordinatorLayout,"Could not load post.", Snackbar.LENGTH_LONG)
                 .setAction("TRY AGAIN", new View.OnClickListener(){
                     @Override
                     public void onClick(View v) {

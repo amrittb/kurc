@@ -14,6 +14,7 @@ public class PostSyncService extends SyncService<Post, PostCollection> {
 
     public static final String ACTION_POST_SYNC = ACTION_PREFIX + "POST_SYNC";
     public static final String ACTION_POSTS_SYNC = ACTION_PREFIX + "POSTS_SYNC";
+    public static final String ACTION_STICKY_POST_SYNC = ACTION_PREFIX + "STICKY_POST_SYNC";
     public static final String ACTION_POSTS_AFTER_SYNC = ACTION_PREFIX + "POSTS_AFTER_SYNC";
     public static final String ACTION_POSTS_BEFORE_SYNC = ACTION_PREFIX + "POSTS_BEFORE_SYNC";
 
@@ -42,6 +43,17 @@ public class PostSyncService extends SyncService<Post, PostCollection> {
         Intent intent = new Intent(context, PostSyncService.class);
         intent.setAction(ACTION_POST_SYNC);
         intent.putExtra(EXTRA_POST_ID, postId);
+        context.startService(intent);
+    }
+
+    /**
+     * Starts Sticky Post Sync.
+     *
+     * @param context   Service context.
+     */
+    public static void startStickyPostSync(Context context) {
+        Intent intent = new Intent(context, PostSyncService.class);
+        intent.setAction(ACTION_STICKY_POST_SYNC);
         context.startService(intent);
     }
 
@@ -112,6 +124,8 @@ public class PostSyncService extends SyncService<Post, PostCollection> {
             if(ACTION_POST_SYNC.equals(action)) {
                 final int postId = intent.getIntExtra(EXTRA_POST_ID,0);
                 handlePostSync(postId);
+            } else if(ACTION_STICKY_POST_SYNC.equals(action)) {
+                handleStickyPostSync();
             } else if(ACTION_POSTS_SYNC.equals(action)) {
                 final int perPage = intent.getIntExtra(EXTRA_POSTS_PER_PAGE,ApiConstants.POSTS_PER_PAGE_DEFAULT);
                 handlePostsSync(perPage);
@@ -136,6 +150,14 @@ public class PostSyncService extends SyncService<Post, PostCollection> {
         isSyncingPost = true;
         Call<Post> call = ServiceFactory.makeService(PostService.class).getPost(postId);
         handleModelSync(call, ACTION_POST_SYNC);
+    }
+
+    /**
+     * Handles Sticky Post Sync.
+     */
+    private void handleStickyPostSync() {
+        Call<PostCollection> call = ServiceFactory.makeService(PostService.class).getStickyPost();
+        handleCollectionSync(call, ACTION_STICKY_POST_SYNC);
     }
 
     /**
