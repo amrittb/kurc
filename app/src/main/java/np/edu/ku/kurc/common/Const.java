@@ -40,4 +40,7 @@ public final class Const {
 
     // Posts Count Constants.
     public static final int TOP_STORIES_POST_COUNT = 5;
+
+    // Post View Url pattern
+    public static final String KURC_POST_VIEW_URL_PATTERN = "http:\\/\\/ku.edu.np\\/kurc\\/index.php\\/(20[0-2][0-9])\\/[0-9]{2}\\/[0-9]{2}\\/([a-zA-Z0-9-]*)(\\/)?";
 }

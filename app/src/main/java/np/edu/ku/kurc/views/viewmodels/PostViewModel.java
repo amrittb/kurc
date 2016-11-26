@@ -60,7 +60,7 @@ public class PostViewModel extends ViewModel<Post> {
         webSettings.setJavaScriptEnabled(true);
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
 
-        webViewClient = new KurcWebViewClient();
+        webViewClient = new KurcWebViewClient(postContent.getContext());
 
         postContent.setWebViewClient(webViewClient);
         postContent.addJavascriptInterface(new KurcJsInterface(),"Android");
