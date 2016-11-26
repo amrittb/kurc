@@ -1,0 +1,25 @@
+body {
+    background: #f9f9f9;
+}
+
+img, video {
+	width: 100%;
+    height: auto;
+    background: #e0e9e3;
+    border: none;
+    text-align: center;
+}
+
+p {
+	text-align: justify;
+}
+
+#kurc-content {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+#kurc-content img {
+	margin-left: -10px;
+	margin-right: -10px;
+}

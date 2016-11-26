@@ -4,14 +4,15 @@
     android:id="@+id/post_container"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:padding="@dimen/spacing_normal"
-    android:visibility="gone"
+    android:paddingTop="@dimen/spacing_normal"
     >
 
     <ImageView
         android:id="@+id/post_author_avatar"
         android:layout_width="@dimen/avatar_size"
         android:layout_height="@dimen/avatar_size"
+        android:layout_marginLeft="@dimen/spacing_normal"
+        android:layout_marginStart="@dimen/spacing_normal"
         android:layout_marginEnd="@dimen/spacing_small"
         android:layout_marginRight="@dimen/spacing_small"
         android:background="@color/gray_green"
@@ -23,6 +24,8 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/post_author_avatar"
         android:layout_toEndOf="@id/post_author_avatar"
+        android:layout_marginEnd="@dimen/spacing_normal"
+        android:layout_marginRight="@dimen/spacing_normal"
         android:minHeight="@dimen/avatar_size"
         android:gravity="center_vertical"
         >
@@ -64,5 +67,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/post_detail"
         android:layout_marginTop="@dimen/spacing_normal"
+        android:background="@android:color/transparent"
         />
 </RelativeLayout>

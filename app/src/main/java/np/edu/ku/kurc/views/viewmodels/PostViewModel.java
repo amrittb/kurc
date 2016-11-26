@@ -1,12 +1,15 @@
 package np.edu.ku.kurc.views.viewmodels;
 
+import android.os.Build;
 import android.view.View;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import np.edu.ku.kurc.BuildConfig;
 import np.edu.ku.kurc.R;
 import np.edu.ku.kurc.models.Post;
 import np.edu.ku.kurc.utils.Metrics;
@@ -22,6 +25,7 @@ public class PostViewModel extends ViewModel<Post> {
     private WebView postContent;
     private ImageView postAuthorAvatar;
     private int avatarSize;
+    private KurcWebViewClient webViewClient;
 
     public PostViewModel(View root) {
         super(root);
@@ -43,7 +47,35 @@ public class PostViewModel extends ViewModel<Post> {
         postContent = (WebView) postContainer.findViewById(R.id.post_content);
         postAuthorAvatar = (ImageView) postContainer.findViewById(R.id.post_author_avatar);
 
+        initPostContentView();
+
         hidePostView();
+    }
+
+    /**
+     * Initializes Post Content View.
+     */
+    public void initPostContentView() {
+        WebSettings webSettings = postContent.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+
+        webViewClient = new KurcWebViewClient();
+
+        postContent.setWebViewClient(webViewClient);
+        postContent.addJavascriptInterface(new KurcJsInterface(),"Android");
+
+        if(BuildConfig.DEBUG) {
+            postContent.setWebChromeClient(new KurcWebChromeClient());
+        }
+
+        if(Build.VERSION.SDK_INT >= 19) {
+            postContent.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        } else {
+            postContent.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }
+
+        postContent.loadUrl("file:///android_asset/index.html");
     }
 
     @Override
@@ -55,8 +87,13 @@ public class PostViewModel extends ViewModel<Post> {
         postAuthor.setText(model.getAuthor().name);
 
         if(model.hasContent()) {
-            postContent.loadData(model.content,"text/html",null);
-            showContent();
+            // If page is not loaded, we defer adding content when the page completes loading.
+            if(webViewClient.isPageLoaded()) {
+                postContent.loadUrl("javascript:showContent('" + model.content +"')");
+                showContent();
+            } else {
+                webViewClient.setContentWhenPageLoaded(model.content);
+            }
         } else {
             hideContent();
         }
