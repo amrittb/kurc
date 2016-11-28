@@ -1,47 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/spacing_huge"
+    android:layout_width="match_parent"
     >
 
-    <ImageView
-        android:id="@+id/developer_avatar"
-        android:layout_width="@dimen/avatar_size_huge"
-        android:layout_height="@dimen/avatar_size_huge"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/circle_shape"
-        />
-
-    <TextView
-        android:id="@+id/developer_name"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/developer_avatar"
-        android:paddingTop="@dimen/spacing_normal"
-        android:text="@string/placeholder_post_author"
-        />
+        android:padding="@dimen/spacing_huge"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:gravity="center"
+        >
 
-    <TextView
-        android:id="@+id/developer_email"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/developer_name"
-        android:paddingTop="@dimen/spacing_normal"
-        />
+        <ImageView
+            android:id="@+id/developer_avatar"
+            android:layout_width="@dimen/avatar_size_huge"
+            android:layout_height="@dimen/avatar_size_huge"
+            android:background="@drawable/circle_shape"
+            />
 
-    <Button
-        android:id="@+id/developer_visit_site"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/developer_email"
-        android:paddingTop="@dimen/spacing_normal"
-        android:text="@string/message_visit_site"
-        style="@style/Widget.AppCompat.Button.Colored"
-        />
+        <TextView
+            android:id="@+id/developer_name"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:paddingTop="@dimen/spacing_normal"
+            />
 
-</RelativeLayout>
+        <TextView
+            android:id="@+id/developer_email"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:paddingTop="@dimen/spacing_normal"
+            />
+
+        <Button
+            android:id="@+id/developer_visit_site"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:paddingTop="@dimen/spacing_normal"
+            android:text="@string/message_visit_site"
+            style="@style/Widget.AppCompat.Button.Colored"
+            />
+
+    </LinearLayout>
+</ScrollView>
