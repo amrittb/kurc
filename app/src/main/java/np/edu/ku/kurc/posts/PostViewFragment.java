@@ -27,9 +27,11 @@ public class PostViewFragment extends Fragment implements PostsContract.ItemView
     private View postLoadingContainer;
     private View postLoadingBar;
 
-    private PostViewModel postViewModel;
+    private View postNotFoundText;
 
     private View postRetryContainer;
+
+    private PostViewModel postViewModel;
 
     private boolean isViewActive;
 
@@ -94,6 +96,8 @@ public class PostViewFragment extends Fragment implements PostsContract.ItemView
         postLoadingContainer = view.findViewById(R.id.post_loading_container);
         postLoadingBar = view.findViewById(R.id.post_loading_bar);
 
+        postNotFoundText = view.findViewById(R.id.posts_not_found);
+
         postRetryContainer = postLoadingContainer.findViewById(R.id.retry_container);
         Button postRetryBtn = (Button) postRetryContainer.findViewById(R.id.retry_btn);
 
@@ -155,26 +159,32 @@ public class PostViewFragment extends Fragment implements PostsContract.ItemView
     @Override
     public void setLoadingIndicator(boolean active) {
         postRetryContainer.setVisibility(View.GONE);
+        postNotFoundText.setVisibility(View.GONE);
 
         if(active) {
             postLoadingContainer.setVisibility(View.VISIBLE);
             postLoadingBar.setVisibility(View.VISIBLE);
         } else {
-            postLoadingContainer.setVisibility(View.GONE);
             postLoadingBar.setVisibility(View.GONE);
         }
     }
 
     @Override
     public void showPost(Post post) {
+        postLoadingContainer.setVisibility(View.GONE);
+
         postViewModel.onBindModel(post);
 
         setLoadingIndicator(!post.hasContent());
     }
 
     @Override
+    public void showNotPost() {
+        postNotFoundText.setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public void showPostLoadError() {
-        postLoadingContainer.setVisibility(View.VISIBLE);
         postRetryContainer.setVisibility(View.VISIBLE);
 
         showFetchError();

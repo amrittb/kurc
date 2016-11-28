@@ -54,6 +54,8 @@ public interface PostsContract {
 
         void showPost(Post post);
 
+        void showNotPost();
+
         void showPostLoadError();
 
         boolean isActive();

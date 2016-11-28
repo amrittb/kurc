@@ -147,6 +147,11 @@ public class PostsRepository implements PostsDataSourceContract {
                 }
 
                 @Override
+                public void onPostNotFound() {
+                    getPostFromRemoteSource(id, callback);
+                }
+
+                @Override
                 public void onPostLoadError() {
                     getPostFromRemoteSource(id, callback);
                 }
@@ -200,6 +205,11 @@ public class PostsRepository implements PostsDataSourceContract {
                     }
 
                     callback.onPostLoaded(post);
+                }
+
+                @Override
+                public void onPostNotFound() {
+                    getStickyPostFromRemoteSource(callback);
                 }
 
                 @Override

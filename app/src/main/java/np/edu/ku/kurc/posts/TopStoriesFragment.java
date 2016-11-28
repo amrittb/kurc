@@ -31,6 +31,8 @@ public class TopStoriesFragment extends Fragment implements PostsContract.ListVi
 
     private View topStoriesRetryContainer;
     private View topStoriesLoadingBar;
+    private View topStoriesNotFoundTxt;
+
     private Button topStoriesRetryBtn;
 
     private TopStoriesAdapter topStoriesAdapter;
@@ -53,8 +55,11 @@ public class TopStoriesFragment extends Fragment implements PostsContract.ListVi
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.coordinator_layout);
 
-        topStoriesLoadingBar = view.findViewById(R.id.top_stories_loading_bar);
         topStoriesView = (SnappingRecyclerView) view.findViewById(R.id.top_stories);
+
+        topStoriesLoadingBar = view.findViewById(R.id.top_stories_loading_bar);
+
+        topStoriesNotFoundTxt = view.findViewById(R.id.posts_not_found);
 
         topStoriesRetryContainer = view.findViewById(R.id.retry_container);
         topStoriesRetryBtn = (Button) view.findViewById(R.id.retry_btn);
@@ -107,13 +112,20 @@ public class TopStoriesFragment extends Fragment implements PostsContract.ListVi
         super.onStart();
         isViewActive = true;
 
-        presenter.loadTopStories(false);
+        loadTopStories();
     }
 
     @Override
     public void onStop() {
         super.onStop();
         isViewActive = false;
+    }
+
+    /**
+     * Loads Top Stories.
+     */
+    public void loadTopStories() {
+        presenter.loadTopStories(false);
     }
 
     /**
@@ -125,10 +137,12 @@ public class TopStoriesFragment extends Fragment implements PostsContract.ListVi
 
     @Override
     public void setLoadingIndicator(boolean active) {
+        topStoriesRetryContainer.setVisibility(View.GONE);
+        topStoriesNotFoundTxt.setVisibility(View.GONE);
+
         if(active) {
             topStoriesView.setVisibility(View.INVISIBLE);
             topStoriesLoadingBar.setVisibility(View.VISIBLE);
-            topStoriesRetryContainer.setVisibility(View.GONE);
         } else {
             topStoriesLoadingBar.setVisibility(View.GONE);
         }
@@ -149,14 +163,14 @@ public class TopStoriesFragment extends Fragment implements PostsContract.ListVi
                 .setAction("TRY AGAIN", new View.OnClickListener(){
                     @Override
                     public void onClick(View v) {
-                        presenter.loadTopStories(false);
+                        loadTopStories();
                     }
                 }).show();
     }
 
     @Override
     public void showPostsNotFound() {
-        topStoriesRetryContainer.setVisibility(View.VISIBLE);
+        topStoriesNotFoundTxt.setVisibility(View.VISIBLE);
     }
 
     @Override

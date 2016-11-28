@@ -16,14 +16,6 @@
         android:padding="@dimen/spacing_normal"
         />
 
-    <ProgressBar
-        android:id="@+id/top_stories_loading_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="?android:attr/progressBarStyle"
-        android:layout_centerInParent="true"
-        />
-
     <np.edu.ku.kurc.views.widget.SnappingRecyclerView
         android:id="@+id/top_stories"
         android:layout_width="match_parent"
@@ -32,6 +24,21 @@
         android:layout_marginBottom="@dimen/spacing_small"
         android:scrollbars="horizontal"
         android:visibility="invisible"
+        />
+
+    <ProgressBar
+        android:id="@+id/top_stories_loading_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="?android:attr/progressBarStyle"
+        android:layout_centerInParent="true"
+        />
+
+    <include
+        layout="@layout/include_posts_not_found"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
         />
 
     <include

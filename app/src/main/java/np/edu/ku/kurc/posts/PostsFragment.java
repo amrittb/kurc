@@ -6,13 +6,13 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -32,7 +32,10 @@ public class PostsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private PostsAdapter adapter;
 
     private RecyclerView recyclerView;
-    private AppCompatTextView noPostsTxt;
+
+    private View noPostsTxt;
+    private View retryContainer;
+
     private SwipeRefreshLayout swipeContainer;
     private CoordinatorLayout coordinatorLayout;
 
@@ -72,7 +75,18 @@ public class PostsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         recyclerView = (RecyclerView) view.findViewById(R.id.post_list);
-        noPostsTxt = (AppCompatTextView) view.findViewById(R.id.txt_no_posts);
+
+        noPostsTxt = view.findViewById(R.id.posts_not_found);
+        retryContainer = view.findViewById(R.id.retry_container);
+
+        Button retryBtn = (Button) retryContainer.findViewById(R.id.retry_btn);
+        retryBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loadPosts();
+            }
+        });
+
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
         coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.coordinator_layout);
 
@@ -128,7 +142,7 @@ public class PostsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         super.onStart();
         isViewActive = true;
 
-        presenter.loadPostsForCategory(categorySlug, false);
+        loadPosts();
     }
 
     @Override
@@ -143,7 +157,18 @@ public class PostsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
      */
     @Override
     public void onRefresh() {
-        loadNewerPosts();
+        if(adapter.getItemCount() > 0) {
+            loadNewerPosts();
+        } else {
+            loadPosts();
+        }
+    }
+
+    /**
+     * Loads Posts.
+     */
+    public void loadPosts() {
+        presenter.loadPostsForCategory(categorySlug, false);
     }
 
     /**
@@ -215,6 +240,9 @@ public class PostsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     @Override
     public void setLoadingIndicator(final boolean active) {
+        noPostsTxt.setVisibility(View.GONE);
+        retryContainer.setVisibility(View.GONE);
+
         swipeContainer.post(new Runnable() {
 
             @Override
@@ -231,20 +259,20 @@ public class PostsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     @Override
     public void showPostsLoadError() {
-        showNetworkError();
+        retryContainer.setVisibility(View.VISIBLE);
 
-        Snackbar.make(coordinatorLayout,"Could not fetch entries.", Snackbar.LENGTH_LONG)
+        Snackbar.make(coordinatorLayout,"Could not fetch posts.", Snackbar.LENGTH_LONG)
                 .setAction("TRY AGAIN", new View.OnClickListener(){
                     @Override
                     public void onClick(View v) {
-                        // Show retry container.
+                        loadPosts();
                     }
                 }).show();
     }
 
     @Override
     public void showPostsNotFound() {
-        // Show no posts container.
+        noPostsTxt.setVisibility(View.VISIBLE);
     }
 
     @Override

@@ -62,7 +62,7 @@ public class PostsLocalDataSource implements PostsDataSourceContract {
         if(post != null) {
             callback.onPostLoaded(post);
         } else {
-            callback.onPostLoadError();
+            callback.onPostNotFound();
         }
     }
 

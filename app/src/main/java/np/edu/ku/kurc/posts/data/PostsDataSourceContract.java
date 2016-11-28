@@ -25,6 +25,8 @@ public interface PostsDataSourceContract {
     interface LoadPostCallback {
         void onPostLoaded(Post post);
 
+        void onPostNotFound();
+
         void onPostLoadError();
     }
 }

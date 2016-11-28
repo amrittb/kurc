@@ -6,18 +6,6 @@
     android:layout_height="match_parent"
 >
 
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/txt_no_posts"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_normal"
-        android:layout_centerInParent="true"
-        android:drawableTop="@drawable/ic_not_interested_black_48dp"
-        android:drawableTint="@color/gray"
-        android:visibility="gone"
-        android:text="@string/message_no_posts"
-        />
-
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_container"
         android:layout_width="match_parent"
@@ -26,12 +14,31 @@
         tools:context="np.edu.ku.kurc.posts.PostsFragment"
         >
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/post_list"
-            android:layout_width="match_parent"
+        <FrameLayout
             android:layout_height="match_parent"
-            android:scrollbars="vertical"
-        />
+            android:layout_width="match_parent"
+            >
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/post_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical"
+                />
+
+            <include
+                layout="@layout/include_posts_not_found"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+
+            <include
+                layout="@layout/include_retry_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+
+        </FrameLayout>
 
     </android.support.v4.widget.SwipeRefreshLayout>
 

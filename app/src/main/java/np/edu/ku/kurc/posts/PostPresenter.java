@@ -23,6 +23,17 @@ public class PostPresenter implements PostsContract.ItemPresenter {
         }
 
         @Override
+        public void onPostNotFound() {
+            if(!postView.isActive()) {
+                return;
+            }
+
+            postView.setLoadingIndicator(false);
+
+            postView.showNotPost();
+        }
+
+        @Override
         public void onPostLoadError() {
             if(!postView.isActive()) {
                 return;
