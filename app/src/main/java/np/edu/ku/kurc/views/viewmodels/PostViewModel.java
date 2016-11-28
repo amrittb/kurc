@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 import np.edu.ku.kurc.BuildConfig;
 import np.edu.ku.kurc.R;
 import np.edu.ku.kurc.models.Post;
@@ -26,6 +27,7 @@ public class PostViewModel extends ViewModel<Post> {
     private ImageView postAuthorAvatar;
     private int avatarSize;
     private KurcWebViewClient webViewClient;
+    private CropCircleTransformation cropCircleTransformation;
 
     public PostViewModel(View root) {
         super(root);
@@ -38,6 +40,10 @@ public class PostViewModel extends ViewModel<Post> {
     @Override
     public void onBindView(View root) {
         avatarSize = (int) Metrics.dipToPixels(context,context.getResources().getDimension(R.dimen.avatar_size));
+
+        if(cropCircleTransformation == null) {
+            cropCircleTransformation = new CropCircleTransformation();
+        }
 
         postContainer = root.findViewById(R.id.post_container);
 
@@ -102,6 +108,7 @@ public class PostViewModel extends ViewModel<Post> {
                 .load(model.getAuthor().avatar)
                 .resize(avatarSize,avatarSize)
                 .centerCrop()
+                .transform(cropCircleTransformation)
                 .into(postAuthorAvatar);
     }
 

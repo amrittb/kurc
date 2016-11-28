@@ -26,7 +26,7 @@
                     android:layout_marginLeft="@dimen/spacing_small"
                     android:layout_marginStart="@dimen/spacing_small"
                     android:layout_marginBottom="@dimen/spacing_small"
-                    android:background="@color/gray_green"
+                    android:background="@drawable/circle_shape"
                     />
 
                 <RelativeLayout
@@ -97,6 +97,7 @@
                     android:paddingStart="@dimen/spacing_normal"
                     android:paddingEnd="@dimen/spacing_normal"
                     android:paddingRight="@dimen/spacing_normal"
+                    android:paddingBottom="@dimen/spacing_small"
                     android:text="@string/placeholder_post_title"
                     android:textSize="@dimen/font_sub_heading"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body2"
@@ -110,16 +111,29 @@
                     >
 
                         <ImageButton
-                            android:id="@+id/post_bookmark_btn"
+                            android:id="@+id/post_open_in_browser_btn"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentTop="true"
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentRight="true"
                             android:padding="@dimen/spacing_small"
-                            android:background="@android:color/transparent"
+                            android:background="?android:attr/selectableItemBackground"
                             android:tint="@color/gray"
+                            app:srcCompat="@drawable/ic_open_in_browser_black_24dp"
+                            />
+
+                        <ImageButton
+                            android:id="@+id/post_bookmark_btn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toLeftOf="@id/post_open_in_browser_btn"
+                            android:layout_toStartOf="@id/post_open_in_browser_btn"
+                            android:padding="@dimen/spacing_small"
                             app:srcCompat="@drawable/ic_bookmark_border_black_24dp"
+                            android:background="?android:attr/selectableItemBackground"
+                            android:tint="@color/gray"
+                            android:visibility="gone"
                             />
                 </RelativeLayout>
         </RelativeLayout>

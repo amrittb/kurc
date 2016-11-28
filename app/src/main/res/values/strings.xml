@@ -51,4 +51,5 @@
     <string name="error_global">Opps! Something went wrong.\n Try again later?</string>
     <string name="error_network">Opps! Something is wrong with your network.\n Check your network.</string>
     <string name="message_visit_site">Visit Website</string>
+    <string name="menu_open_in_browser">Open In Browser</string>
 </resources>

@@ -2,8 +2,10 @@ package np.edu.ku.kurc.models;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.text.format.DateUtils;
 
 import com.google.gson.annotations.SerializedName;
@@ -351,5 +353,15 @@ public class Post extends BaseModel<Post,PostSchema> {
         c.close();
 
         return after;
+    }
+
+    /**
+     * View Post in browser.
+     *
+     * @param context   Context.
+     */
+    public void openInBrowser(Context context) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+        context.startActivity(intent);
     }
 }

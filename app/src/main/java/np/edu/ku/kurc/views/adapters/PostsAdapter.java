@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,6 +15,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 import np.edu.ku.kurc.posts.PostActivity;
 import np.edu.ku.kurc.R;
 import np.edu.ku.kurc.common.Const;
@@ -34,10 +36,14 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     private FooterViewHolder footerViewHolder;
 
+    private CropCircleTransformation cropCircleTransformation;
+
     public PostsAdapter(Context context, List<Post> list, View.OnClickListener reloadOlderPostsClickListener) {
         this.context = context;
         this.list = list;
         this.reloadOlderPostsClickListener = reloadOlderPostsClickListener;
+
+        cropCircleTransformation = new CropCircleTransformation();
     }
 
     @Override
@@ -112,6 +118,7 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 .load(post.getAuthor().avatar)
                 .resize(holder.avatarSize,holder.avatarSize)
                 .centerCrop()
+                .transform(cropCircleTransformation)
                 .into(holder.authorAvatar);
     }
 
@@ -261,6 +268,7 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         public ImageView authorAvatar;
         public ImageView featureImage;
         public TextView postTitle, postDate, postAuthor;
+        public ImageButton openInBrowserBtn;
 
         public int featuredImageWidth;
         public int featuredImageHeight;
@@ -275,6 +283,8 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             postDate = (TextView) itemView.findViewById(R.id.post_date);
             postAuthor = (TextView) itemView.findViewById(R.id.post_author);
 
+            openInBrowserBtn = (ImageButton) itemView.findViewById(R.id.post_open_in_browser_btn);
+
             avatarSize = (int) Metrics.dipToPixels(context,context.getResources().getDimension(R.dimen.avatar_size));
 
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -287,6 +297,16 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     i.putExtra(Const.KEY_POST,(new Gson()).toJson(list.get(pos)));
 
                     v.getContext().startActivity(i);
+                }
+            });
+
+            openInBrowserBtn.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    int pos = getAdapterPosition();
+
+                    list.get(pos).openInBrowser(context);
                 }
             });
         }

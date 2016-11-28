@@ -15,7 +15,7 @@
         android:layout_marginStart="@dimen/spacing_normal"
         android:layout_marginEnd="@dimen/spacing_small"
         android:layout_marginRight="@dimen/spacing_small"
-        android:background="@color/gray_green"
+        android:background="@drawable/circle_shape"
         />
 
     <RelativeLayout
