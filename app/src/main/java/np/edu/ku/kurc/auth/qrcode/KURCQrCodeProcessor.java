@@ -1,4 +1,4 @@
-package np.edu.ku.kurc.qrcode;
+package np.edu.ku.kurc.auth.qrcode;
 
 import android.util.SparseArray;
 

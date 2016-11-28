@@ -1,4 +1,4 @@
-package np.edu.ku.kurc.fragments;
+package np.edu.ku.kurc.auth;
 
 import android.os.Bundle;
 import android.app.Dialog;

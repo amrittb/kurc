@@ -1,12 +1,14 @@
-package np.edu.ku.kurc;
+package np.edu.ku.kurc.auth;
 
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.SurfaceHolder;
@@ -14,11 +16,9 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.images.Size;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
@@ -27,13 +27,11 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.lang.reflect.Field;
 
-import np.edu.ku.kurc.auth.AuthManager;
-import np.edu.ku.kurc.auth.MemberAuthHandler;
+import np.edu.ku.kurc.MainActivity;
+import np.edu.ku.kurc.R;
 import np.edu.ku.kurc.common.Const;
-import np.edu.ku.kurc.fragments.LoginDialog;
 import np.edu.ku.kurc.models.Member;
-import np.edu.ku.kurc.qrcode.KURCQrCodeProcessor;
-import np.edu.ku.kurc.utils.Metrics;
+import np.edu.ku.kurc.auth.qrcode.KURCQrCodeProcessor;
 
 public class LoginActivity extends AppCompatActivity implements KURCQrCodeProcessor.MemberProcessObserver,
         MemberAuthHandler,
@@ -44,9 +42,7 @@ public class LoginActivity extends AppCompatActivity implements KURCQrCodeProces
     private AuthManager authManager;
 
     private SurfaceView qrCameraView;
-    private TextView openScannerText;
-    private ImageButton openScannerBtn;
-    private FrameLayout cameraViewContainer;
+
     private Button toggleFlashBtn;
 
     private KURCQrCodeProcessor qrProcessor;
@@ -63,18 +59,21 @@ public class LoginActivity extends AppCompatActivity implements KURCQrCodeProces
         authManager = new AuthManager(this);
 
         qrCameraView = (SurfaceView) findViewById(R.id.qrCameraView);
-        openScannerText = (TextView) findViewById(R.id.openScannerText);
-        openScannerBtn = (ImageButton) findViewById(R.id.openScannerBtn);
-        cameraViewContainer = (FrameLayout) findViewById(R.id.cameraViewContainer);
         toggleFlashBtn = (Button) findViewById(R.id.toggleFlashBtn);
 
         Button guestLoginBtn = (Button) findViewById(R.id.loginAsGuestBtn);
 
         guestLoginBtn.setOnClickListener(this);
-        openScannerBtn.setOnClickListener(this);
         toggleFlashBtn.setOnClickListener(this);
 
         initializeQrCodeScanner();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        openQrCodeScanner();
     }
 
     /**
@@ -87,64 +86,16 @@ public class LoginActivity extends AppCompatActivity implements KURCQrCodeProces
 
         cameraSource = new CameraSource.Builder(this, qrCodeDetector)
                 .setAutoFocusEnabled(true)
-                .setRequestedPreviewSize(Const.QR_PREVIEW_SIZE, Const.QR_PREVIEW_SIZE)
                 .build();
 
         qrProcessor = new KURCQrCodeProcessor(this);
 
         qrCodeDetector.setProcessor(qrProcessor);
-
-        resizeCameraViewSize();
-    }
-
-    /**
-     * Resize Camera View for better fit.
-     */
-    private void resizeCameraViewSize() {
-        cameraViewContainer.post(new Runnable() {
-
-            @Override
-            public void run() {
-                int size = getOptimalCameraViewSize();
-
-                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) cameraViewContainer.getLayoutParams();
-                params.width = size;
-                params.height = size;
-
-                cameraViewContainer.setLayoutParams(params);
-            }
-        });
-    }
-
-    /**
-     * Returns optimal camera view size.
-     *
-     * @return optimal camera view size.
-     */
-    private int getOptimalCameraViewSize() {
-        int width = qrCameraView.getWidth();
-        int height = qrCameraView.getHeight();
-
-        int size = width;
-
-        if (height < width) {
-            size = height;
-        }
-
-        int maxSize = (int) Metrics.dipToPixels(this, Const.QR_VIEW_MAX_SIZE_DP);
-        if (maxSize < size) {
-            size = maxSize;
-        }
-
-        return size;
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.openScannerBtn:
-                openQrCodeScanner();
-                break;
             case R.id.loginAsGuestBtn:
                 handleLogin(Member.getGuestMember());
                 break;
@@ -173,23 +124,28 @@ public class LoginActivity extends AppCompatActivity implements KURCQrCodeProces
      * Opens QR Code scanner.
      */
     private void openQrCodeScanner() {
-        try {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, Const.PERMISSION_REQUEST_CAMERA);
-                return;
-            }
-            cameraSource.start(qrCameraView.getHolder());
-            syncCameraViewWithSource();
+        qrCameraView.post(new Runnable() {
 
-            if(getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
-                toggleFlashBtn.setVisibility(View.VISIBLE);
-            }
+            @Override
+            public void run() {
+                try {
+                    if (ActivityCompat.checkSelfPermission(LoginActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(LoginActivity.this, new String[]{Manifest.permission.CAMERA}, Const.PERMISSION_REQUEST_CAMERA);
+                        return;
+                    }
+                    cameraSource.start(qrCameraView.getHolder());
+                    syncCameraViewWithSource();
 
-            openScannerBtn.setVisibility(View.INVISIBLE);
-            openScannerText.setVisibility(View.INVISIBLE);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+                    if(getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
+                        toggleFlashBtn.setVisibility(View.VISIBLE);
+                    }
+
+                    resizeCameraView();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     /**
@@ -214,6 +170,33 @@ public class LoginActivity extends AppCompatActivity implements KURCQrCodeProces
     }
 
     /**
+     * Resize Camera View.
+     */
+    private void resizeCameraView() {
+        if(cameraSource.getPreviewSize() != null) {
+            qrCameraView.post(new Runnable() {
+
+                @Override
+                public void run() {
+                    Size size = cameraSource.getPreviewSize();
+
+                    float ratio = ((float) size.getWidth()) / ((float) size.getHeight());
+
+                    int height = qrCameraView.getHeight();
+
+                    int width = (int) (ratio * height);
+
+                    FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) qrCameraView.getLayoutParams();
+                    params.width = width;
+                    params.height = height;
+
+                    qrCameraView.setLayoutParams(params);
+                }
+            });
+        }
+    }
+
+    /**
      * Toggles Camera Flash
      */
     private void toggleCameraFlash() {
@@ -224,12 +207,14 @@ public class LoginActivity extends AppCompatActivity implements KURCQrCodeProces
             isFlashTurnedOn = !isFlashTurnedOn;
 
             String btnText = getResources().getString((!isFlashTurnedOn) ? R.string.btn_text_flash_on : R.string.btn_text_flash_off);
+            Drawable drawable = ContextCompat.getDrawable(this,(!isFlashTurnedOn) ? R.drawable.ic_flash_on_white_24dp: R.drawable.ic_flash_off_white_24dp);
             String mode = (isFlashTurnedOn) ? Camera.Parameters.FLASH_MODE_TORCH: Camera.Parameters.FLASH_MODE_OFF;
 
             params.setFlashMode(mode);
             camera.setParameters(params);
 
             toggleFlashBtn.setText(btnText);
+            toggleFlashBtn.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null);
         }
     }
 
@@ -292,7 +277,7 @@ public class LoginActivity extends AppCompatActivity implements KURCQrCodeProces
 
             Toast.makeText(this,"Yay! One more member.",Toast.LENGTH_LONG).show();
         } else {
-            Toast.makeText(this,"You have me invalid credentials",Toast.LENGTH_LONG).show();
+            Toast.makeText(this,"You have invalid credentials",Toast.LENGTH_LONG).show();
         }
     }
 

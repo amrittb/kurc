@@ -1,6 +1,4 @@
-package np.edu.ku.kurc.qrcode;
-
-import android.util.Log;
+package np.edu.ku.kurc.auth.qrcode;
 
 import com.google.android.gms.vision.barcode.Barcode;
 

@@ -15,6 +15,7 @@ import com.flaviofaria.kenburnsview.KenBurnsView;
 import com.flaviofaria.kenburnsview.RandomTransitionGenerator;
 
 import np.edu.ku.kurc.auth.AuthManager;
+import np.edu.ku.kurc.auth.LoginActivity;
 import np.edu.ku.kurc.common.AsyncCallback;
 import np.edu.ku.kurc.common.Const;
 import np.edu.ku.kurc.models.Category;

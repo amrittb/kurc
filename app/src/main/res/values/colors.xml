@@ -11,8 +11,10 @@
     <color name="gray_dark">#5F5F5F</color>
     <color name="gray_green">#e0e9e3</color>
     <color name="black">#323232</color>
+    <color name="black_darkest">#000000</color>
 
     <color name="blue_grey">#607D8B</color>
 
     <color name="black_trans_30">#4D000000</color>
+    <color name="white_trans_30">#4Dffffff</color>
 </resources>
