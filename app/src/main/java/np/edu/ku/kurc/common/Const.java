@@ -26,7 +26,10 @@ public final class Const {
     public static final String TOP_STORIES_FRAGMENT_TAG = "TOP_STORIES_FRAGMENT";
     public static final String STICKY_POST_FRAGMENT_TAG = "STICKY_POST_FRAGMENT";
 
+    // Bundle Keys.
     public static final String KEY_POST = "POST";
+    public static final String KEY_FRAGMENT_TAGS = "FRAGMENT_TAGS";
+    public static final String KEY_NAV_SELECTION_ID = "NAV_SELECTION_ID";
 
     // Service Constants.
     public static final String SERVICE_KEY_RESULT_CODE = "RESULT_CODE";
@@ -47,4 +50,7 @@ public final class Const {
 
     // Hero Image Transaction duration
     public static final long HERO_IMAGE_TRANSACTION_DURATION = 30000;
+
+    // Navigation orders.
+    public static final int NAV_CATEGORIES_ORDER = 2;
 }

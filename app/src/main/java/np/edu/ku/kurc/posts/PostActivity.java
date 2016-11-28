@@ -36,6 +36,7 @@ public class PostActivity extends AppCompatActivity {
     private CollapsingToolbarLayout collapsingToolbar;
 
     private PostsRepository postsRepository;
+    private PostViewFragment postViewFragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,9 +44,21 @@ public class PostActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_post);
 
+        parsePostFromIntent();
+
         initPostsRepository();
 
-        parsePostFromIntent();
+        if(savedInstanceState != null) {
+            post = new Gson().fromJson(savedInstanceState.getString(Const.KEY_POST),Post.class);
+
+            postViewFragment = (PostViewFragment) getSupportFragmentManager().findFragmentByTag(getPostViewFragmentTag());
+        } else {
+            postViewFragment = PostViewFragment.instance(post.id);
+        }
+
+        PostPresenter postPresenter = new PostPresenter(postsRepository, postViewFragment);
+
+        postViewFragment.setPresenter(postPresenter);
 
         initToolbar();
     }
@@ -64,6 +77,13 @@ public class PostActivity extends AppCompatActivity {
         super.onStop();
 
         postsRepository.unregisterReceivers();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putString(Const.KEY_POST,new Gson().toJson(post));
+
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -204,20 +224,14 @@ public class PostActivity extends AppCompatActivity {
      * Initializes Post View Fragment.
      */
     private void initPostViewFragment() {
-        PostViewFragment fragment = (PostViewFragment) getSupportFragmentManager().findFragmentById(R.id.post_container);
-
-        if(fragment != null) {
-            fragment.loadPost(post.id);
-
-            return;
+        if(postViewFragment.isInLayout()) {
+            postViewFragment.loadPost(post.id);
+        } else {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.post_container, postViewFragment, getPostViewFragmentTag())
+                    .commit();
         }
-
-        PostViewFragment instance = PostViewFragment.instance(post.id);
-        instance.setPresenter(new PostPresenter(postsRepository,instance));
-
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.post_container, instance, getPostViewFragmentTag())
-                .commit();
     }
 
     /**
@@ -227,6 +241,6 @@ public class PostActivity extends AppCompatActivity {
      */
     @NonNull
     private String getPostViewFragmentTag() {
-        return "POST_VIEW_FRAGMENT_" + Integer.toString(post.id);
+        return "POST_VIEW_FRAGMENT";
     }
 }

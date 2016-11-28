@@ -53,6 +53,13 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         initStickyPostContainer();
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setRetainInstance(true);
+    }
+
     /**
      * Initializes swipe container.
      */

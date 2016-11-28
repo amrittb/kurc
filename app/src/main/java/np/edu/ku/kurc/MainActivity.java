@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import np.edu.ku.kurc.auth.AuthManager;
@@ -39,10 +40,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private NavigationView navigationView;
 
     private FragmentManager fragmentManager;
+
+    private int navSelectedId = 0;
+
     private HashMap<String, Fragment> fragmentMap = new HashMap<>();
 
     private CategoryCollection categories;
-
     private PostsRepository postsRepository;
 
     @Override
@@ -71,6 +74,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         postsRepository = PostsRepository.getInstance(new PostsLocalDataSource(getApplicationContext()),
                                                         new PostsRemoteDataSource(getApplicationContext()));
 
+        if(savedInstanceState != null) {
+            restoreFragmentInstances(savedInstanceState);
+
+            navSelectedId = savedInstanceState.getInt(Const.KEY_NAV_SELECTION_ID,0);
+        }
     }
 
     @Override
@@ -87,6 +95,49 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         postsRepository.unregisterReceivers();
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        saveFragmentInstances(outState);
+
+        outState.putInt(Const.KEY_NAV_SELECTION_ID,navSelectedId);
+
+        super.onSaveInstanceState(outState);
+    }
+
+    /**
+     * Saves Fragment instances.
+     *
+     * @param outState  Out State Bundle object.
+     */
+    private void saveFragmentInstances(Bundle outState) {
+        ArrayList<String> tags = new ArrayList<>();
+
+        for(String tag: fragmentMap.keySet()) {
+            tags.add(tag);
+        }
+
+        outState.putStringArrayList(Const.KEY_FRAGMENT_TAGS,tags);
+    }
+
+    /**
+     * Restores Fragment Instances.
+     *
+     * @param savedInstanceState    Bundle saved instance.
+     */
+    private void restoreFragmentInstances(Bundle savedInstanceState) {
+        ArrayList<String> tags = savedInstanceState.getStringArrayList(Const.KEY_FRAGMENT_TAGS);
+
+        if (tags != null) {
+            for(String tag: tags) {
+                Fragment f = fragmentManager.findFragmentByTag(tag);
+
+                if(f != null) {
+                    fragmentMap.put(tag,f);
+                }
+            }
+        }
+    }
+
     /**
      * Populates Menu Items from database.
      *
@@ -97,24 +148,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         categories = (CategoryCollection) (new Category()).all(getApplicationContext());
 
         for(Category category: categories) {
-            MenuItem item = menu.add(R.id.menu_group_main,category.id,2,category.name);
+            MenuItem item = menu.add(R.id.menu_group_main,category.id, Const.NAV_CATEGORIES_ORDER,category.name);
             item.setIcon(category.getMenuIcon());
             item.setCheckable(true);
         }
 
-        selectFirstNavItem();
+        selectNavigationItem();
     }
 
     /**
      * Selects First Navigation item.
      */
-    private void selectFirstNavItem() {
+    private void selectNavigationItem() {
         navigationView.post(new Runnable() {
 
             @Override
             public void run() {
-                navigationView.getMenu().getItem(0).setChecked(true);
-                onNavigationItemSelected(navigationView.getMenu().getItem(0));
+                MenuItem item = navigationView.getMenu().findItem(navSelectedId);
+
+                if(item != null) {
+                    item.setChecked(true);
+                    onNavigationItemSelected(item);
+                } else {
+                    MenuItem firstItem = navigationView.getMenu().getItem(0);
+                    if(firstItem != null) {
+                        firstItem.setChecked(true);
+                        onNavigationItemSelected(firstItem);
+                    }
+                }
             }
         });
     }
@@ -159,12 +220,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        int id = item.getItemId();
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        navSelectedId = item.getItemId();
 
         toolbar.setTitle(item.getTitle());
 
-        switch (id) {
+        switch (navSelectedId) {
             case R.id.nav_home:
                 swapHomeFragment();
                 break;
@@ -176,7 +237,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             default:
                 if(categories != null) {
-                    Category category = categories.findById(id);
+                    Category category = categories.findById(navSelectedId);
                     if(category != null) {
                         swapPostsFragment(category.slug);
                     }

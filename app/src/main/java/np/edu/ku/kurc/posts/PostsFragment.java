@@ -102,6 +102,13 @@ public class PostsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         initRecyclerView();
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setRetainInstance(true);
+    }
+
     /**
      * Initializes swipe container.
      */

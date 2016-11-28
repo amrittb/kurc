@@ -4,12 +4,14 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
 import np.edu.ku.kurc.R;
+import np.edu.ku.kurc.common.Const;
 import np.edu.ku.kurc.models.Post;
 import np.edu.ku.kurc.views.viewmodels.PostViewModel;
 
@@ -109,6 +111,13 @@ public class PostViewFragment extends Fragment implements PostsContract.ItemView
         });
 
         postViewModel = new PostViewModel(view);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setRetainInstance(true);
     }
 
     @Override
