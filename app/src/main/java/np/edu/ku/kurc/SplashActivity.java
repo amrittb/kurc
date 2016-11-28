@@ -8,10 +8,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.TextView;
+
+import com.flaviofaria.kenburnsview.KenBurnsView;
+import com.flaviofaria.kenburnsview.RandomTransitionGenerator;
 
 import np.edu.ku.kurc.auth.AuthManager;
 import np.edu.ku.kurc.common.AsyncCallback;
+import np.edu.ku.kurc.common.Const;
 import np.edu.ku.kurc.models.Category;
 import np.edu.ku.kurc.models.collection.CategoryCollection;
 import np.edu.ku.kurc.network.api.ServiceFactory;
@@ -55,6 +60,12 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
+        KenBurnsView heroImage = (KenBurnsView) findViewById(R.id.hero_bg);
+
+        RandomTransitionGenerator generator = new RandomTransitionGenerator(Const.HERO_IMAGE_TRANSACTION_DURATION, new AccelerateDecelerateInterpolator());
+        heroImage.setTransitionGenerator(generator);
+        heroImage.restart();
 
         appSetupCard = (CardView) findViewById(R.id.app_setup_card);
         appSetupProgress =  appSetupCard.findViewById(R.id.app_setup_progress);

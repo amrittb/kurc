@@ -44,4 +44,7 @@ public final class Const {
 
     // Post View Url pattern
     public static final String KURC_POST_VIEW_URL_PATTERN = "http:\\/\\/ku.edu.np\\/kurc\\/index.php\\/(20[0-2][0-9])\\/[0-9]{2}\\/[0-9]{2}\\/([a-zA-Z0-9-]*)(\\/)?";
+
+    // Hero Image Transaction duration
+    public static final long HERO_IMAGE_TRANSACTION_DURATION = 30000;
 }
