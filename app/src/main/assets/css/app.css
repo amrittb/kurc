@@ -3,11 +3,16 @@ body {
 }
 
 img, video, iframe {
-	width: 100%;
-    height: auto;
     background: #e0e9e3;
     border: none;
-    text-align: center;
+	text-align: center;
+}
+
+.full-width-media {
+	width: 100%;
+	height: auto;
+	margin-left: -10px;
+	margin-right: -10px;
 }
 
 p {
@@ -17,19 +22,4 @@ p {
 #kurc-content {
 	padding-left: 10px;
 	padding-right: 10px;
-}
-
-#kurc-content img {
-	margin-left: -10px;
-	margin-right: -10px;
-}
-
-#kurc-content video {
-	margin-left: -10px;
-	margin-right: -10px;
-}
-
-#kurc-content iframe {
-	margin-left: -10px;
-	margin-right: -10px;
 }

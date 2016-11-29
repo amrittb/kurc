@@ -22,6 +22,9 @@ import java.util.HashMap;
 
 import np.edu.ku.kurc.auth.AuthManager;
 import np.edu.ku.kurc.auth.LoginActivity;
+import np.edu.ku.kurc.committee.CommitteeFragment;
+import np.edu.ku.kurc.committee.CommitteePresenter;
+import np.edu.ku.kurc.committee.data.CommitteeRepository;
 import np.edu.ku.kurc.common.Const;
 import np.edu.ku.kurc.developers.AboutDevelopersFragment;
 import np.edu.ku.kurc.fragments.HomeFragment;
@@ -230,6 +233,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_home:
                 swapHomeFragment();
                 break;
+            case R.id.nav_committee:
+                swapCommitteeFragment();
+                break;
             case R.id.nav_developer:
                 swapAboutDevelopersFragment();
                 break;
@@ -267,6 +273,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      */
     private void swapHomeFragment() {
         swapFragment(HomeFragment.instance(postsRepository),Const.FRAGMENT_TAG_HOME);
+    }
+
+    /**
+     * Swaps Committee Fragment.
+     */
+    private void swapCommitteeFragment() {
+        CommitteeFragment fragment = CommitteeFragment.instance();
+
+        fragment.setPresenter(new CommitteePresenter(new CommitteeRepository(), fragment));
+
+        swapFragment(fragment, Const.FRAGMENT_TAG_COMMITTEE);
     }
 
     /**

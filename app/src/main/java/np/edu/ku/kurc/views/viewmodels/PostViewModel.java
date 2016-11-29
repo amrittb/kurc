@@ -29,6 +29,8 @@ public class PostViewModel extends ViewModel<Post> {
     private KurcWebViewClient webViewClient;
     private CropCircleTransformation cropCircleTransformation;
 
+    private boolean isCommitteeMode;
+
     public PostViewModel(View root) {
         super(root);
     }
@@ -95,7 +97,11 @@ public class PostViewModel extends ViewModel<Post> {
         if(model.hasContent()) {
             // If page is not loaded, we defer adding content when the page completes loading.
             if(webViewClient.isPageLoaded()) {
-                postContent.loadUrl("javascript:showContent('" + model.content +"')");
+                if(isCommitteeMode) {
+                    postContent.loadUrl("javascript:showCommittee('" + model.content +"')");
+                } else {
+                    postContent.loadUrl("javascript:showContent('" + model.content +"')");
+                }
                 showContent();
             } else {
                 webViewClient.setContentWhenPageLoaded(model.content);
@@ -138,5 +144,12 @@ public class PostViewModel extends ViewModel<Post> {
      */
     public void hideContent() {
         postContent.setVisibility(View.GONE);
+    }
+
+    /**
+     * Changes Post View Model to committee mode.
+     */
+    public void setCommitteeMode() {
+        this.isCommitteeMode = true;
     }
 }
