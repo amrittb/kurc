@@ -4,7 +4,7 @@ apply from: 'app-config.gradle'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25"
+    buildToolsVersion "25.0.1"
     defaultConfig {
         applicationId "np.edu.ku.kurc"
         minSdkVersion 15
