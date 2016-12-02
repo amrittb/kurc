@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.flaviofaria.kenburnsview.KenBurnsView;
@@ -57,6 +58,8 @@ public class SplashActivity extends AppCompatActivity {
     private View appSetupProgress;
     private TextView appSetupMessage;
 
+    private View appSetupRetryContainer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +74,15 @@ public class SplashActivity extends AppCompatActivity {
         appSetupCard = (CardView) findViewById(R.id.app_setup_card);
         appSetupProgress =  appSetupCard.findViewById(R.id.app_setup_progress);
         appSetupMessage = (TextView) appSetupCard.findViewById(R.id.app_setup_message);
+        appSetupRetryContainer = appSetupCard.findViewById(R.id.retry_container);
+        Button appSetupRetryBtn = (Button) appSetupRetryContainer.findViewById(R.id.retry_btn);
+
+        appSetupRetryBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setupApp();
+            }
+        });
 
         new Handler().postDelayed(new Runnable() {
 
@@ -143,6 +155,9 @@ public class SplashActivity extends AppCompatActivity {
      */
     public void setupApp() {
         appSetupCard.setVisibility(View.VISIBLE);
+        appSetupMessage.setVisibility(View.VISIBLE);
+        appSetupProgress.setVisibility(View.VISIBLE);
+        appSetupRetryContainer.setVisibility(View.GONE);
 
         fetchCategories();
     }
@@ -191,24 +206,20 @@ public class SplashActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure() {
-                    showSetupError(R.string.error_global);
+                    showSetupError();
                 }
             });
         } else {
-            showSetupError(R.string.error_network);
+            showSetupError();
         }
     }
 
     /**
      * Shows App setup Error message.
-     *
-     * @param errorMessageResource Error Message Resource.
      */
-    private void showSetupError(int errorMessageResource) {
-        Drawable drawable = ContextCompat.getDrawable(this, R.drawable.ic_not_interested_black_48dp);
-
+    private void showSetupError() {
+        appSetupMessage.setVisibility(View.GONE);
         appSetupProgress.setVisibility(View.GONE);
-        appSetupMessage.setText(errorMessageResource);
-        appSetupMessage.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null);
+        appSetupRetryContainer.setVisibility(View.VISIBLE);
     }
 }
