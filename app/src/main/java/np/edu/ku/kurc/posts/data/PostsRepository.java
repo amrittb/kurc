@@ -10,6 +10,7 @@ public class PostsRepository implements PostsDataSourceContract {
 
     private static PostsRepository instance;
 
+    private boolean isPageCacheOld;
     private boolean isPostCacheOld;
     private boolean isPostsCacheOld;
     private boolean isStickyPostCacheOld;
@@ -46,7 +47,7 @@ public class PostsRepository implements PostsDataSourceContract {
         return instance;
     }
 
-    private PostsRepository(PostsDataSourceContract localDataSource, PostsRemoteDataSourceContract remoteDataSource) {
+    protected PostsRepository(PostsDataSourceContract localDataSource, PostsRemoteDataSourceContract remoteDataSource) {
         this.localDataSource = localDataSource;
         this.remoteDataSource = remoteDataSource;
     }
@@ -189,6 +190,72 @@ public class PostsRepository implements PostsDataSourceContract {
      */
     private void getPostFromLocalDataSource(int id, LoadPostCallback callback) {
         localDataSource.getPost(id,callback);
+    }
+
+    @Override
+    public void refreshPage() {
+        isPageCacheOld = true;
+    }
+
+    @Override
+    public void getPage(final int id, final LoadPostCallback callback) {
+        if(isPageCacheOld) {
+            getPageFromRemoteSource(id, callback);
+        } else {
+            localDataSource.getPage(id, new LoadPostCallback() {
+
+                @Override
+                public void onPostLoaded(Post post) {
+                    if(!post.hasContent()) {
+                        getPageFromRemoteSource(id, callback);
+                    }
+
+                    callback.onPostLoaded(post);
+                }
+
+                @Override
+                public void onPostNotFound() {
+                    getPageFromRemoteSource(id, callback);
+                }
+
+                @Override
+                public void onPostLoadError() {
+                    getPageFromRemoteSource(id, callback);
+                }
+            });
+        }
+    }
+
+    /**
+     * Loads page from remote source.
+     *
+     * @param id            Id of post to be loaded.
+     * @param callback      Page Load Callback.
+     */
+    private void getPageFromRemoteSource(final int id, final LoadPostCallback callback) {
+        remoteDataSource.getPage(id, new PostsRemoteDataSourceContract.LoadFromRemoteCallback() {
+            @Override
+            public void onLoaded(String action) {
+                isPageCacheOld = false;
+
+                getPageFromLocalDataSource(id,callback);
+            }
+
+            @Override
+            public void onLoadError(String action) {
+                callback.onPostLoadError();
+            }
+        });
+    }
+
+    /**
+     * Loads page from local data source.
+     *
+     * @param id            Id of post to be loaded.
+     * @param callback      Post Load callback.
+     */
+    private void getPageFromLocalDataSource(int id, LoadPostCallback callback) {
+        localDataSource.getPage(id,callback);
     }
 
     @Override

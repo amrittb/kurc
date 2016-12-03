@@ -56,6 +56,16 @@ public class PostsLocalDataSource implements PostsDataSourceContract {
     }
 
     @Override
+    public void refreshPage() {
+        // No implementation needed.
+    }
+
+    @Override
+    public void getPage(int id, LoadPostCallback callback) {
+        getPost(id, callback);
+    }
+
+    @Override
     public void getStickyPost(LoadPostCallback callback) {
         Post post = ModelFactory.getInstance(Post.class).getLatestPinned(context);
 

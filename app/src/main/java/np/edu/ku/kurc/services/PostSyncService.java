@@ -13,11 +13,13 @@ import retrofit2.Call;
 public class PostSyncService extends SyncService<Post, PostCollection> {
 
     public static final String ACTION_POST_SYNC = ACTION_PREFIX + "POST_SYNC";
+    public static final String ACTION_PAGE_SYNC = ACTION_PREFIX + "PAGE_SYNC";
     public static final String ACTION_POSTS_SYNC = ACTION_PREFIX + "POSTS_SYNC";
     public static final String ACTION_STICKY_POST_SYNC = ACTION_PREFIX + "STICKY_POST_SYNC";
     public static final String ACTION_POSTS_AFTER_SYNC = ACTION_PREFIX + "POSTS_AFTER_SYNC";
     public static final String ACTION_POSTS_BEFORE_SYNC = ACTION_PREFIX + "POSTS_BEFORE_SYNC";
 
+    private static final String EXTRA_PAGE_ID = EXTRA_PREFIX + "PAGE_ID";
     private static final String EXTRA_POST_ID = EXTRA_PREFIX + "POST_ID";
     private static final String EXTRA_POSTS_AFTER = EXTRA_PREFIX + "POSTS_AFTER";
     private static final String EXTRA_POSTS_BEFORE = EXTRA_PREFIX + "POSTS_BEFORE";
@@ -43,6 +45,19 @@ public class PostSyncService extends SyncService<Post, PostCollection> {
         Intent intent = new Intent(context, PostSyncService.class);
         intent.setAction(ACTION_POST_SYNC);
         intent.putExtra(EXTRA_POST_ID, postId);
+        context.startService(intent);
+    }
+
+    /**
+     * Starts Page Sync Service.
+     *
+     * @param context   Service Context.
+     * @param id    Id of page which is to be synced.
+     */
+    public static void startPageSync(Context context, int id) {
+        Intent intent = new Intent(context, PostSyncService.class);
+        intent.setAction(ACTION_PAGE_SYNC);
+        intent.putExtra(EXTRA_PAGE_ID, id);
         context.startService(intent);
     }
 
@@ -121,9 +136,12 @@ public class PostSyncService extends SyncService<Post, PostCollection> {
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
             final String action = intent.getAction();
-            if(ACTION_POST_SYNC.equals(action)) {
-                final int postId = intent.getIntExtra(EXTRA_POST_ID,0);
+            if (ACTION_POST_SYNC.equals(action)) {
+                final int postId = intent.getIntExtra(EXTRA_POST_ID, 0);
                 handlePostSync(postId);
+            } else if(ACTION_PAGE_SYNC.equals(action)) {
+                final int pageId = intent.getIntExtra(EXTRA_PAGE_ID,0);
+                handlePageSync(pageId);
             } else if(ACTION_STICKY_POST_SYNC.equals(action)) {
                 handleStickyPostSync();
             } else if(ACTION_POSTS_SYNC.equals(action)) {
@@ -150,6 +168,16 @@ public class PostSyncService extends SyncService<Post, PostCollection> {
         isSyncingPost = true;
         Call<Post> call = ServiceFactory.makeService(PostService.class).getPost(postId);
         handleModelSync(call, ACTION_POST_SYNC);
+    }
+
+    /**
+     * Handles Page Syncing.
+     *
+     * @param pageId    Syncs Page for given page id.
+     */
+    private void handlePageSync(int pageId) {
+        Call<Post> pageCall = ServiceFactory.makeService(PostService.class).getPage(pageId);
+        handleModelSync(pageCall, ACTION_PAGE_SYNC);
     }
 
     /**

@@ -10,6 +10,8 @@ public interface PostsRemoteDataSourceContract {
 
     void getPost(int id, LoadFromRemoteCallback callback);
 
+    void getPage(int id, LoadFromRemoteCallback callback);
+
     void getStickyPost(LoadFromRemoteCallback callback);
 
     interface LoadFromRemoteCallback {

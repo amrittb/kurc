@@ -119,6 +119,11 @@ public class CommitteeFragment extends Fragment implements CommitteeContract.Vie
     }
 
     @Override
+    public void showCommitteeNotFound() {
+        postRetryContainer.setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public boolean isActive() {
         return isViewActive;
     }

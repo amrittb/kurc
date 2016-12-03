@@ -35,6 +35,7 @@ public class PostsRemoteDataSource implements PostsRemoteDataSourceContract {
         }
     };
 
+    private IntentFilter pageFilter = new IntentFilter(PostSyncService.ACTION_PAGE_SYNC);
     private IntentFilter postFilter = new IntentFilter(PostSyncService.ACTION_POST_SYNC);
     private IntentFilter postsFilter = new IntentFilter(PostSyncService.ACTION_POSTS_SYNC);
     private IntentFilter stickyPostFilter = new IntentFilter(PostSyncService.ACTION_STICKY_POST_SYNC);
@@ -57,6 +58,7 @@ public class PostsRemoteDataSource implements PostsRemoteDataSourceContract {
         receiverReferenceCount++;
 
         if(receiverReferenceCount == 1) {
+            localBroadcastManager.registerReceiver(postsSyncBroadcastReceiver, pageFilter);
             localBroadcastManager.registerReceiver(postsSyncBroadcastReceiver, postFilter);
             localBroadcastManager.registerReceiver(postsSyncBroadcastReceiver, postsFilter);
             localBroadcastManager.registerReceiver(postsSyncBroadcastReceiver, stickyPostFilter);
@@ -103,6 +105,12 @@ public class PostsRemoteDataSource implements PostsRemoteDataSourceContract {
     public void getPost(int id, LoadFromRemoteCallback callback) {
         PostSyncService.startPostSync(context, id);
         registerCallback(PostSyncService.ACTION_POST_SYNC, callback);
+    }
+
+    @Override
+    public void getPage(int id, LoadFromRemoteCallback callback) {
+        PostSyncService.startPageSync(context, id);
+        registerCallback(PostSyncService.ACTION_PAGE_SYNC, callback);
     }
 
     @Override

@@ -23,6 +23,9 @@ public interface PostService {
     @GET("posts/{id}?_embed")
     Call<Post> getPost(@Path("id") int postId); // @TODO no _embed needed. Remove after saving posts to DB
 
+    @GET("pages/{id}?_embed")
+    Call<Post> getPage(@Path("id") int pageId);
+
     @GET("posts?_embed")
     Call<PostCollection> getPosts(@Query("per_page") int perPage);
 

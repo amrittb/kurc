@@ -14,6 +14,10 @@ public interface PostsDataSourceContract {
 
     void getPost(int id, LoadPostCallback callback);
 
+    void refreshPage();
+
+    void getPage(int id, LoadPostCallback callback);
+
     void getStickyPost(LoadPostCallback callback);
 
     interface LoadPostsCallback {

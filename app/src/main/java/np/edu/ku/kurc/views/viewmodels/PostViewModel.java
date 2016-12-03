@@ -96,15 +96,10 @@ public class PostViewModel extends ViewModel<Post> {
 
         if(model.hasContent()) {
             // If page is not loaded, we defer adding content when the page completes loading.
-            if(webViewClient.isPageLoaded()) {
-                if(isCommitteeMode) {
-                    postContent.loadUrl("javascript:showCommittee('" + model.content +"')");
-                } else {
-                    postContent.loadUrl("javascript:showContent('" + model.content +"')");
-                }
-                showContent();
+            if(isCommitteeMode) {
+                webViewClient.setCommitteeWhenPageLoaded(postContent, model.content);
             } else {
-                webViewClient.setContentWhenPageLoaded(model.content);
+                webViewClient.setContentWhenPageLoaded(postContent, model.content);
             }
         } else {
             hideContent();

@@ -12,8 +12,10 @@ public class PostSchema extends BaseSchema {
     public static final String COLUMN_EXCERPT = "excerpt";
     public static final String COLUMN_CONTENT = "content";
     public static final String COLUMN_STICKY = "sticky";
+    public static final String COLUMN_TYPE = "type";
     public static final String COLUMN_AUTHOR_ID = "author_id";
     public static final String COLUMN_FEATURED_MEDIA_ID = "featured_media_id";
+    public static final String DEFAULT_TYPE = "'post'";
 
     /**
      * Creates Table.
@@ -29,6 +31,7 @@ public class PostSchema extends BaseSchema {
                 COLUMN_EXCERPT + " " + TYPE_TEXT + "," +
                 COLUMN_CONTENT + " " + TYPE_TEXT + "," +
                 COLUMN_STICKY + " " + TYPE_INT + "," +
+                COLUMN_TYPE + " " + TYPE_TEXT + " " + CONSTRAINT_DEFAULT + " " + DEFAULT_TYPE + "," +
                 COLUMN_CREATED_AT + " " + TYPE_TEXT + "," +
                 COLUMN_UPDATED_AT + " " + TYPE_TEXT + "," +
                 COLUMN_AUTHOR_ID + " " + TYPE_INT + "," +

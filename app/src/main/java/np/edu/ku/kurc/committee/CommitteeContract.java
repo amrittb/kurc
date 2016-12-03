@@ -12,6 +12,8 @@ public interface CommitteeContract {
 
         void showCommitteeLoadError();
 
+        void showCommitteeNotFound();
+
         boolean isActive();
     }
 

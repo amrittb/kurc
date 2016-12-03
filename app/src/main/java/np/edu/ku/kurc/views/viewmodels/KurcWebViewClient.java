@@ -14,10 +14,13 @@ import np.edu.ku.kurc.common.Const;
 
 public class KurcWebViewClient extends WebViewClient {
 
-    private boolean isFinished;
+    private Context context;
+
     private String content;
 
-    private Context context;
+    private boolean isFinished;
+
+    private boolean isCommitteeMode;
 
     public KurcWebViewClient(Context context) {
         this.context = context;
@@ -29,8 +32,6 @@ public class KurcWebViewClient extends WebViewClient {
 
         if(content != null) {
             setPostContent(view, content);
-            view.setVisibility(View.VISIBLE);
-            content = null;
         }
     }
 
@@ -59,8 +60,29 @@ public class KurcWebViewClient extends WebViewClient {
      *
      * @param content   Content to be loaded.
      */
-    public void setContentWhenPageLoaded(String content) {
+    public void setContentWhenPageLoaded(WebView view, String content) {
+        this.isCommitteeMode = false;
+
+        setContent(view, content);
+    }
+
+    /**
+     * Sets Committee page when loaded.
+     *
+     * @param content   Content to be loaded.
+     */
+    public void setCommitteeWhenPageLoaded(WebView view, String content) {
+        isCommitteeMode = true;
+
+        setContent(view, content);
+    }
+
+    private void setContent(WebView view, String content) {
         this.content = content;
+
+        if(isFinished) {
+            setPostContent(view, this.content);
+        }
     }
 
     /**
@@ -70,7 +92,15 @@ public class KurcWebViewClient extends WebViewClient {
      * @param content   Content to be loaded.
      */
     private void setPostContent(WebView view, String content) {
-        view.loadUrl("javascript:showContent('" + content + "')");
+        if(isCommitteeMode) {
+            view.loadUrl("javascript:showCommittee('" + content + "')");
+        } else {
+            view.loadUrl("javascript:showContent('" + content + "')");
+        }
+
+        view.setVisibility(View.VISIBLE);
+
+        content = null;
     }
 
     /**

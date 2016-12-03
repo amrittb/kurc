@@ -24,7 +24,6 @@ import np.edu.ku.kurc.auth.AuthManager;
 import np.edu.ku.kurc.auth.LoginActivity;
 import np.edu.ku.kurc.committee.CommitteeFragment;
 import np.edu.ku.kurc.committee.CommitteePresenter;
-import np.edu.ku.kurc.committee.data.CommitteeRepository;
 import np.edu.ku.kurc.common.Const;
 import np.edu.ku.kurc.developers.AboutDevelopersFragment;
 import np.edu.ku.kurc.fragments.HomeFragment;
@@ -50,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private HashMap<String, Fragment> fragmentMap = new HashMap<>();
 
     private CategoryCollection categories;
+
     private PostsRepository postsRepository;
 
     @Override
@@ -281,7 +281,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void swapCommitteeFragment() {
         CommitteeFragment fragment = CommitteeFragment.instance();
 
-        fragment.setPresenter(new CommitteePresenter(new CommitteeRepository(), fragment));
+        fragment.setPresenter(new CommitteePresenter(postsRepository, fragment));
 
         swapFragment(fragment, Const.FRAGMENT_TAG_COMMITTEE);
     }

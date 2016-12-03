@@ -21,6 +21,7 @@ android {
             Properties properties = getDebugProperties()
 
             buildConfigField("String","KURC_API_URL",properties.getProperty("kurc.api.url",""))
+            buildConfigField("Integer","KURC_COMMITTEE_PAGE_ID",properties.getProperty("kurc.api.committee.pageid","0"))
         }
         release {
             minifyEnabled false
@@ -29,6 +30,7 @@ android {
             Properties properties = getReleaseProperties()
 
             buildConfigField("String","KURC_API_URL",properties.getProperty("kurc.api.url",""))
+            buildConfigField("Integer","KURC_COMMITTEE_PAGE_ID",properties.getProperty("kurc.api.committee.pageid","0"))
         }
     }
 }

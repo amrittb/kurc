@@ -57,6 +57,9 @@ public class Post extends BaseModel<Post,PostSchema> {
     @SerializedName("sticky")
     public boolean isSticky;
 
+    @SerializedName("type")
+    public String type;
+
     @SerializedName("_embedded")
     public Embedded embedded;
 
@@ -299,21 +302,23 @@ public class Post extends BaseModel<Post,PostSchema> {
      * @param savedId   Saved Post Id.
      */
     private void saveCategories(SQLiteDatabase db, long savedId) {
-        try {
-            db.beginTransaction();
+        if(categoryIds != null) {
+            try {
+                db.beginTransaction();
 
-            ContentValues values = new ContentValues();
+                ContentValues values = new ContentValues();
 
-            for(Integer categoryId: categoryIds) {
-                values.put(CategoryPostSchema.COLUMN_POST_ID,savedId);
-                values.put(CategoryPostSchema.COLUMN_CATEGORY_ID,categoryId);
+                for(Integer categoryId: categoryIds) {
+                    values.put(CategoryPostSchema.COLUMN_POST_ID,savedId);
+                    values.put(CategoryPostSchema.COLUMN_CATEGORY_ID,categoryId);
 
-                db.insertWithOnConflict(CategoryPostSchema.TABLE_NAME,null,values,SQLiteDatabase.CONFLICT_REPLACE);
+                    db.insertWithOnConflict(CategoryPostSchema.TABLE_NAME,null,values,SQLiteDatabase.CONFLICT_REPLACE);
+                }
+
+                db.setTransactionSuccessful();
+            } finally {
+                db.endTransaction();
             }
-
-            db.setTransactionSuccessful();
-        } finally {
-            db.endTransaction();
         }
     }
 
