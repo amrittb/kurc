@@ -1,23 +1,23 @@
-package np.edu.ku.kurc.committee;
+package np.edu.ku.kurc.pages;
 
 import np.edu.ku.kurc.framework.BaseView;
 import np.edu.ku.kurc.models.Post;
 
-public interface CommitteeContract {
+public interface PageContract {
 
     interface View extends BaseView<Presenter> {
         void setLoadingIndicator(boolean active);
 
-        void showCommittee(Post committee);
+        void showPage(Post page);
 
-        void showCommitteeLoadError();
+        void showPageLoadError();
 
-        void showCommitteeNotFound();
+        void showPageNotFound();
 
         boolean isActive();
     }
 
     interface Presenter {
-        void loadCommittee();
+        void loadPage(int id, boolean refresh);
     }
 }

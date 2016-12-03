@@ -20,6 +20,7 @@ public class PostTransformer extends BaseTransformer<Post> {
         transformed.put(PostSchema.COLUMN_CONTENT,model.content);
         transformed.put(PostSchema.COLUMN_EXCERPT,model.excerpt);
         transformed.put(PostSchema.COLUMN_STICKY,model.isSticky);
+        transformed.put(PostSchema.COLUMN_TYPE,model.type);
         transformed.put(PostSchema.COLUMN_CREATED_AT,DateUtils.toString(model.date));
         transformed.put(PostSchema.COLUMN_UPDATED_AT,DateUtils.toString(model.modified));
 
@@ -49,6 +50,7 @@ public class PostTransformer extends BaseTransformer<Post> {
         p.excerpt = c.getString(c.getColumnIndexOrThrow(PostSchema.COLUMN_EXCERPT));
         p.content = c.getString(c.getColumnIndexOrThrow(PostSchema.COLUMN_CONTENT));
         p.isSticky = (c.getInt(c.getColumnIndexOrThrow(PostSchema.COLUMN_STICKY)) > 0);
+        p.type = c.getString(c.getColumnIndexOrThrow(PostSchema.COLUMN_TYPE));
 
         p.authorId = c.getInt(c.getColumnIndexOrThrow(PostSchema.COLUMN_AUTHOR_ID));
         p.featuredMediaId = c.getInt(c.getColumnIndexOrThrow(PostSchema.COLUMN_FEATURED_MEDIA_ID));

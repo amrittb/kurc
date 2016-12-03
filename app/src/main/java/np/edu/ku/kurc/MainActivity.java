@@ -23,7 +23,7 @@ import java.util.HashMap;
 import np.edu.ku.kurc.auth.AuthManager;
 import np.edu.ku.kurc.auth.LoginActivity;
 import np.edu.ku.kurc.committee.CommitteeFragment;
-import np.edu.ku.kurc.committee.CommitteePresenter;
+import np.edu.ku.kurc.pages.PagePresenter;
 import np.edu.ku.kurc.common.Const;
 import np.edu.ku.kurc.developers.AboutDevelopersFragment;
 import np.edu.ku.kurc.fragments.HomeFragment;
@@ -281,7 +281,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void swapCommitteeFragment() {
         CommitteeFragment fragment = CommitteeFragment.instance();
 
-        fragment.setPresenter(new CommitteePresenter(postsRepository, fragment));
+        fragment.setPresenter(new PagePresenter(postsRepository, fragment));
 
         swapFragment(fragment, Const.FRAGMENT_TAG_COMMITTEE);
     }
