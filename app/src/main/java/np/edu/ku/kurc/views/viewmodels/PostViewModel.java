@@ -1,5 +1,6 @@
 package np.edu.ku.kurc.views.viewmodels;
 
+import android.content.pm.ApplicationInfo;
 import android.os.Build;
 import android.view.View;
 import android.webkit.WebSettings;
@@ -64,6 +65,12 @@ public class PostViewModel extends ViewModel<Post> {
      * Initializes Post Content View.
      */
     public void initPostContentView() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            if (0 != (context.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE)) {
+                WebView.setWebContentsDebuggingEnabled(true);
+            }
+        }
+
         WebSettings webSettings = postContent.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);

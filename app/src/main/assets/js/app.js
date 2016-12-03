@@ -41,6 +41,8 @@ function modifyCommittee() {
 									.css("margin-left","auto")
 									.css("margin-right","auto");
 
+    $("#kurc-content table.tg td p").css("text-align","center");
+
 	$("#kurc-content table.tg td strong,#kurc-content table.tg td em").css("display","block");
 }
 
