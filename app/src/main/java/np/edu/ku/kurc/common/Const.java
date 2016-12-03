@@ -27,6 +27,7 @@ public final class Const {
     public static final String STICKY_POST_FRAGMENT_TAG = "STICKY_POST_FRAGMENT";
     public static final String FRAGMENT_TAG_COMMITTEE = "COMMITTEE_FRAGMENT";
     public static final String FRAGMENT_TAG_DOWNLOADS = "DOWNLOADS_FRAGMENT";
+    public static final String FRAGMENT_TAG_ABOUT_US = "ABOUT_US_FRAGMENT";
 
     // Bundle Keys.
     public static final String KEY_POST = "POST";

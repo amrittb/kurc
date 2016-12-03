@@ -25,6 +25,7 @@
     <string name="nav_downloads">Downloads</string>
     <string name="nav_settings">Settings</string>
     <string name="nav_feedback">Send Feedback</string>
+    <string name="nav_about_us">About Us</string>
     <string name="nav_developer">About Developer(s)</string>
     <string name="nav_logout">Log out</string>
 

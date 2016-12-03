@@ -23,6 +23,7 @@ android {
             buildConfigField("String","KURC_API_URL",properties.getProperty("kurc.api.url",""))
             buildConfigField("Integer","KURC_COMMITTEE_PAGE_ID",properties.getProperty("kurc.api.committee.pageid","0"))
             buildConfigField("Integer","KURC_DOWNLOADS_PAGE_ID",properties.getProperty("kurc.api.downloads.pageid","0"))
+            buildConfigField("Integer","KURC_ABOUT_US_PAGE_ID",properties.getProperty("kurc.api.aboutus.pageid","0"))
         }
         release {
             minifyEnabled false
@@ -33,6 +34,7 @@ android {
             buildConfigField("String","KURC_API_URL",properties.getProperty("kurc.api.url",""))
             buildConfigField("Integer","KURC_COMMITTEE_PAGE_ID",properties.getProperty("kurc.api.committee.pageid","0"))
             buildConfigField("Integer","KURC_DOWNLOADS_PAGE_ID",properties.getProperty("kurc.api.downloads.pageid","0"))
+            buildConfigField("Integer","KURC_ABOUT_US_PAGE_ID",properties.getProperty("kurc.api.aboutus.pageid","0"))
         }
     }
 }

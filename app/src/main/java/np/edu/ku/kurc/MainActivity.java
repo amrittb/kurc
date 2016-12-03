@@ -20,6 +20,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import np.edu.ku.kurc.aboutus.AboutUsFragment;
 import np.edu.ku.kurc.auth.AuthManager;
 import np.edu.ku.kurc.auth.LoginActivity;
 import np.edu.ku.kurc.committee.CommitteeFragment;
@@ -240,6 +241,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_downloads:
                 swapDownloadsFragment();
                 break;
+            case R.id.nav_about_us:
+                swapAboutUsFragment();
+                break;
             case R.id.nav_developer:
                 swapAboutDevelopersFragment();
                 break;
@@ -299,6 +303,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragment.setPresenter(new PagePresenter(postsRepository, fragment));
 
         swapFragment(fragment, Const.FRAGMENT_TAG_DOWNLOADS);
+    }
+
+    /**
+     * Swaps About Us fragment.
+     */
+    private void swapAboutUsFragment() {
+        AboutUsFragment fragment = AboutUsFragment.instance();
+
+        fragment.setPresenter(new PagePresenter(postsRepository, fragment));
+
+        swapFragment(fragment, Const.FRAGMENT_TAG_ABOUT_US);
     }
 
     /**

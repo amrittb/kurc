@@ -1,3 +1,4 @@
 kurc.api.url="http://example.com/wp-json/wp/v2/"
 kurc.api.committee.pageid=1
 kurc.api.downloads.pageid=1
+kurc.api.aboutus.pageid=1
