@@ -20,10 +20,10 @@ android {
 
             Properties properties = getDebugProperties()
 
-            buildConfigField("String","KURC_API_URL",properties.getProperty("kurc.api.url",""))
-            buildConfigField("Integer","KURC_COMMITTEE_PAGE_ID",properties.getProperty("kurc.api.committee.pageid","0"))
-            buildConfigField("Integer","KURC_DOWNLOADS_PAGE_ID",properties.getProperty("kurc.api.downloads.pageid","0"))
-            buildConfigField("Integer","KURC_ABOUT_US_PAGE_ID",properties.getProperty("kurc.api.aboutus.pageid","0"))
+            buildConfigField("String", "KURC_API_URL", properties.getProperty("kurc.api.url", ""))
+            buildConfigField("Integer", "KURC_COMMITTEE_PAGE_ID", properties.getProperty("kurc.api.committee.pageid", "0"))
+            buildConfigField("Integer", "KURC_DOWNLOADS_PAGE_ID", properties.getProperty("kurc.api.downloads.pageid", "0"))
+            buildConfigField("Integer", "KURC_ABOUT_US_PAGE_ID", properties.getProperty("kurc.api.aboutus.pageid", "0"))
         }
         release {
             minifyEnabled false
@@ -31,10 +31,10 @@ android {
 
             Properties properties = getReleaseProperties()
 
-            buildConfigField("String","KURC_API_URL",properties.getProperty("kurc.api.url",""))
-            buildConfigField("Integer","KURC_COMMITTEE_PAGE_ID",properties.getProperty("kurc.api.committee.pageid","0"))
-            buildConfigField("Integer","KURC_DOWNLOADS_PAGE_ID",properties.getProperty("kurc.api.downloads.pageid","0"))
-            buildConfigField("Integer","KURC_ABOUT_US_PAGE_ID",properties.getProperty("kurc.api.aboutus.pageid","0"))
+            buildConfigField("String", "KURC_API_URL", properties.getProperty("kurc.api.url", ""))
+            buildConfigField("Integer", "KURC_COMMITTEE_PAGE_ID", properties.getProperty("kurc.api.committee.pageid", "0"))
+            buildConfigField("Integer", "KURC_DOWNLOADS_PAGE_ID", properties.getProperty("kurc.api.downloads.pageid", "0"))
+            buildConfigField("Integer", "KURC_ABOUT_US_PAGE_ID", properties.getProperty("kurc.api.aboutus.pageid", "0"))
         }
     }
 }
@@ -42,6 +42,7 @@ android {
 dependencies {
     // Local libs dependencies
     compile fileTree(include: ['*.jar'], dir: 'libs')
+
     // Support Dependencies
     compile 'com.android.support:appcompat-v7:25.0.1'
     compile 'com.android.support:design:25.0.1'
@@ -49,15 +50,22 @@ dependencies {
     compile 'com.android.support:cardview-v7:25.0.1'
     compile 'com.android.support:palette-v7:25.0.1'
     // Google Play Services Dependencies
-    compile 'com.google.android.gms:play-services-vision:10.0.0'
+    compile 'com.google.android.gms:play-services-vision:10.0.1'
+
     // KenBurns View
     compile 'com.flaviofaria:kenburnsview:1.0.7'
-    //Networking
+
+    // Networking
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+
     // Image Manipulation
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'jp.wasabeef:picasso-transformations:2.1.0'
+
+    // FCM
+    compile 'com.google.firebase:firebase-messaging:10.0.1'
+
     // Android Test Dependencies
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -65,3 +73,6 @@ dependencies {
     // Test Dependencies
     testCompile 'junit:junit:4.12'
 }
+
+
+apply plugin: 'com.google.gms.google-services'
