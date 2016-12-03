@@ -23,6 +23,7 @@ import java.util.HashMap;
 import np.edu.ku.kurc.auth.AuthManager;
 import np.edu.ku.kurc.auth.LoginActivity;
 import np.edu.ku.kurc.committee.CommitteeFragment;
+import np.edu.ku.kurc.downloads.DownloadsFragment;
 import np.edu.ku.kurc.pages.PagePresenter;
 import np.edu.ku.kurc.common.Const;
 import np.edu.ku.kurc.developers.AboutDevelopersFragment;
@@ -236,6 +237,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_committee:
                 swapCommitteeFragment();
                 break;
+            case R.id.nav_downloads:
+                swapDownloadsFragment();
+                break;
             case R.id.nav_developer:
                 swapAboutDevelopersFragment();
                 break;
@@ -284,6 +288,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragment.setPresenter(new PagePresenter(postsRepository, fragment));
 
         swapFragment(fragment, Const.FRAGMENT_TAG_COMMITTEE);
+    }
+
+    /**
+     * Swaps Download fragment.
+     */
+    private void swapDownloadsFragment() {
+        DownloadsFragment fragment = DownloadsFragment.instance();
+
+        fragment.setPresenter(new PagePresenter(postsRepository, fragment));
+
+        swapFragment(fragment, Const.FRAGMENT_TAG_DOWNLOADS);
     }
 
     /**
